@@ -7,8 +7,14 @@
   "targets": {
     "install": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/package.json",
+        "{projectRoot}/package-lock.json"
+      ],
+      "outputs": ["{projectRoot}/node_modules"],
       "options": {
-        "command": "npm install",
+        "command": "npm ci --prefer-offline",
         "cwd": "apps/betty"
       }
     },
@@ -22,7 +28,12 @@
       },
       "configurations": {
         "development": {
+          "dependsOn": [],
           "args": ["--node-env=development"]
+        },
+        "production": {
+          "dependsOn": ["install"],
+          "args": ["--node-env=production"]
         }
       }
     },
@@ -57,7 +68,7 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "betty:build",
+        "buildTarget": "betty:build:development",
         "runBuildTargetDependencies": false
       },
       "configurations": {
