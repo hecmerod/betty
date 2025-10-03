@@ -14,14 +14,20 @@ Servidor NestJS en monorepo Nx optimizado para Raspberry Pi con arquitectura ARM
 
 ```
 betty/
+├── package.json                  # Dependencias Nx + tooling global
 ├── apps/
 │   ├── betty/                    # Aplicación NestJS principal
+│   │   ├── package.json          # Dependencias específicas de Betty
+│   │   ├── node_modules/         # Módulos propios de Betty
+│   │   ├── project.json          # Configuración Nx de la app
 │   │   └── src/
 │   │       ├── app/              # Módulos, controladores, servicios
+│   │       ├── config/           # Configuración (throttler, etc.)
 │   │       └── main.ts           # Punto de entrada
 │   └── betty-e2e/               # Tests end-to-end
 ├── scripts/
-│   └── start-rpi.sh             # Script optimizado para RPi
+│   ├── start-rpi.sh             # Script optimizado para RPi
+│   └── start-prod-secure.sh     # Script producción con seguridad
 ├── ecosystem.config.js          # Configuración PM2
 ├── Dockerfile.rpi              # Docker para ARM
 └── test-api.http              # Tests REST Client
@@ -48,6 +54,29 @@ betty/
 - `GET /api` - Info del servidor
 - `GET /api/health` - Estado y métricas de memoria
 - `GET /api/system` - Info del sistema y temperatura RPi
+
+## Gestión de Dependencias - REGLAS IMPORTANTES 📦
+
+⚠️ **CRITICAL**: Cada aplicación debe gestionar sus propias dependencias por separado:
+
+### Dependencias por App (apps/[app-name]/package.json)
+
+- **NestJS**: `@nestjs/core`, `@nestjs/common`, `@nestjs/platform-express`
+- **Funcionalidades específicas**: `@nestjs/throttler`, `helmet`, `rxjs`
+- **Librerías de la app**: Cualquier dependencia específica de la aplicación
+- **Archivo**: `apps/betty/package.json` con sus propias dependencias
+
+### Dependencias Globales (package.json raíz)
+
+- **Solo herramientas Nx**: `@nx/nest`, `@nx/webpack`, `@nx/eslint`
+- **Tooling general**: `eslint`, `prettier`, `jest`, `typescript`
+- **NO incluir**: Dependencias específicas de aplicaciones (NestJS, etc.)
+
+### Comandos de Instalación
+
+- `npm run install:all` - Instala workspace + todas las apps
+- `nx run [app]:install` - Instala dependencias de app específica
+- Build automático ejecuta instalación de dependencias de cada app
 
 ## Configuración ARM/Raspberry Pi
 

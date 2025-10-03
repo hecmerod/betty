@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "install:all": "npm install && nx run betty:install",
     "build": "nx build betty",
     "serve": "nx serve betty",
     "start": "node dist/apps/betty/main.js",
@@ -23,18 +24,11 @@
   },
   "private": true,
   "dependencies": {
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/core": "^11.0.0",
-    "@nestjs/platform-express": "^11.0.0",
-    "@nestjs/throttler": "^6.4.0",
-    "axios": "^1.6.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@nestjs/schematics": "^11.0.0",
-    "@nestjs/testing": "^11.0.0",
     "@nx/eslint": "21.6.3",
     "@nx/eslint-plugin": "21.6.3",
     "@nx/jest": "21.6.3",
@@ -55,13 +49,10 @@
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
     "nx": "21.6.3",
-    "pm2": "^6.0.13",
     "prettier": "^2.6.2",
     "ts-jest": "^29.4.0",
     "ts-node": "10.9.1",
-    "tslib": "^2.3.0",
     "typescript": "~5.9.2",
-    "typescript-eslint": "^8.40.0",
-    "webpack-cli": "^5.1.4"
+    "typescript-eslint": "^8.40.0"
   }
 }

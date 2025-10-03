@@ -1,0 +1,37 @@
+{
+  "name": "betty-server",
+  "version": "1.0.0",
+  "description": "NestJS server optimized for Raspberry Pi ARM architecture",
+  "main": "src/main.ts",
+  "private": true,
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/throttler": "^6.4.0",
+    "helmet": "^8.1.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.0",
+    "@types/node": "20.19.9",
+    "webpack-cli": "^5.1.4"
+  },
+  "peerDependencies": {
+    "typescript": "~5.9.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "nestjs",
+    "raspberry-pi",
+    "arm",
+    "server",
+    "iot"
+  ],
+  "author": "hecmerod",
+  "license": "MIT"
+}
