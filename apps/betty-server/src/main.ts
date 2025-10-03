@@ -1,6 +1,11 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { config } from 'dotenv';
+import { join } from 'path';
 import { AppModule } from './app.module';
+
+// Cargar variables de entorno desde .env
+config({ path: join(__dirname, '../.env') });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

@@ -51,9 +51,18 @@ betty/
 
 ## APIs Disponibles
 
-- `GET /api` - Info del servidor
 - `GET /api/health` - Estado y métricas de memoria
 - `GET /api/system` - Info del sistema y temperatura RPi
+- `GET /api/security` - Estado del filtrado MAC y configuración de seguridad
+
+## Filtrado MAC - Seguridad por Hardware 🛡️
+
+Betty Server incluye filtrado por dirección MAC para permitir solo dispositivos autorizados:
+
+### Configuración (.env)
+
+- **Archivo**: `apps/betty-server/.env` (no incluido en git)
+- **Ejemplo**: `apps/betty-server/.env.example`
 
 ## Gestión de Dependencias - REGLAS IMPORTANTES 📦
 
