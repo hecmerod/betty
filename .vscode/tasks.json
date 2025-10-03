@@ -1,0 +1,97 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Betty Server",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Start Development Server",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "start:dev"],
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\s*\\d{1,2}:\\d{2}:\\d{2}(?: AM| PM)? - File change detected\\. Starting incremental compilation\\.\\.\\.",
+          "endsPattern": "^\\s*\\d{1,2}:\\d{2}:\\d{2}(?: AM| PM)? - Compilation complete\\."
+        }
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Start Production Server",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "start:prod"],
+      "group": "build",
+      "dependsOn": "Build Betty Server"
+    },
+    {
+      "label": "Start with PM2",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "pm2:start"],
+      "group": "build",
+      "dependsOn": "Build Betty Server"
+    },
+    {
+      "label": "Start Raspberry Pi Script",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "start:rpi"],
+      "group": "build",
+      "dependsOn": "Build Betty Server"
+    },
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "test"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint Code",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint"],
+      "group": "build",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Docker Build for RPi",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "docker:build:rpi"],
+      "group": "build"
+    }
+  ]
+}
