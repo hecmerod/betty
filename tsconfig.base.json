@@ -15,9 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["apps/betty/src/*"],
-      "@config/*": ["apps/betty/src/config/*"],
-      "@throttler/*": ["apps/betty/src/config/throttler/*"]
+      "@app/*": ["apps/betty-server/src/*"],
+      "@config/*": ["apps/betty-server/src/config/*"],
+      "@throttler/*": ["apps/betty-server/src/config/throttler/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

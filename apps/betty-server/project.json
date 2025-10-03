@@ -1,7 +1,7 @@
 {
-  "name": "betty",
+  "name": "betty-server",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/betty/src",
+  "sourceRoot": "apps/betty-server/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -15,7 +15,7 @@
       "outputs": ["{projectRoot}/node_modules"],
       "options": {
         "command": "npm ci --prefer-offline",
-        "cwd": "apps/betty"
+        "cwd": "apps/betty-server"
       }
     },
     "build": {
@@ -24,7 +24,7 @@
       "options": {
         "command": "webpack-cli build",
         "args": ["--node-env=production"],
-        "cwd": "apps/betty"
+        "cwd": "apps/betty-server"
       },
       "configurations": {
         "development": {
@@ -42,8 +42,8 @@
       "cache": true,
       "executor": "@nx/js:prune-lockfile",
       "outputs": [
-        "{workspaceRoot}/dist/apps/betty/package.json",
-        "{workspaceRoot}/dist/apps/betty/package-lock.json"
+        "{workspaceRoot}/dist/apps/betty-server/package.json",
+        "{workspaceRoot}/dist/apps/betty-server/package-lock.json"
       ],
       "options": {
         "buildTarget": "build"
@@ -52,7 +52,7 @@
     "copy-workspace-modules": {
       "dependsOn": ["build"],
       "cache": true,
-      "outputs": ["{workspaceRoot}/dist/apps/betty/workspace_modules"],
+      "outputs": ["{workspaceRoot}/dist/apps/betty-server/workspace_modules"],
       "executor": "@nx/js:copy-workspace-modules",
       "options": {
         "buildTarget": "build"
@@ -68,15 +68,15 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "betty:build:development",
+        "buildTarget": "betty-server:build:development",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "betty:build:development"
+          "buildTarget": "betty-server:build:development"
         },
         "production": {
-          "buildTarget": "betty:build:production"
+          "buildTarget": "betty-server:build:production"
         }
       }
     },

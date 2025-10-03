@@ -5,7 +5,7 @@
       "label": "Build Betty Server",
       "type": "shell",
       "command": "npm",
-      "args": ["run", "build"],
+      "args": ["run", "betty-server:build"],
       "group": {
         "kind": "build",
         "isDefault": true

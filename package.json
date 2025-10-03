@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "betty": "nx build betty && NODE_ENV=production node dist/apps/betty/main.js",
-    "betty:dev": "nx serve betty --configuration=development",
-    "betty:test": "nx test betty",
-    "betty:install": "nx run betty:install",
-    "betty:build": "nx build betty"
+    "betty-server": "nx build betty-server && NODE_ENV=production node dist/apps/betty-server/main.js",
+    "betty-server:dev": "nx serve betty-server --configuration=development",
+    "betty-server:test": "nx test betty-server",
+    "betty-server:install": "nx run betty-server:install",
+    "betty-server:build": "nx build betty-server"
   },
   "private": true,
   "dependencies": {
