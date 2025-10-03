@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ThrottlerConfigModule } from './config/throttler/throttler-config.module';
 
 @Module({
-  imports: [],
+  imports: [ThrottlerConfigModule],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

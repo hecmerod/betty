@@ -85,6 +85,25 @@ Puedes probar estos endpoints usando el archivo `test-api.http` con la extensió
 - `ecosystem.config.js` - Configuración PM2
 - `Dockerfile.rpi` - Imagen Docker para ARM
 - `scripts/start-rpi.sh` - Script de inicio con monitoreo
+- `scripts/check-external-access.sh` - Verificación de acceso externo
+- `docs/port-forwarding-config.md` - Guía de configuración de router
+
+### 🌐 Acceso Externo Configurado ✅
+
+- **Host**: `0.0.0.0` (escucha en todas las interfaces)
+- **IP Local**: `http://192.168.1.232:3000/api`
+- **Firewall**: Puerto 3000/tcp permitido
+- **Seguridad**: Rate limiting + CORS + Helmet activados
+
+```bash
+# Verificar configuración de acceso
+npm run check:access
+
+# URLs disponibles ahora:
+# Local: http://localhost:3000/api
+# Red: http://192.168.1.232:3000/api
+# Externa (con port forwarding): http://[TU-IP]:8080/api
+```
 
 ## 📊 Monitoreo
 

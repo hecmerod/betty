@@ -9,10 +9,12 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
+        HOST: '0.0.0.0', // Importante: escuchar en todas las interfaces para acceso externo
       },
       env_development: {
         NODE_ENV: 'development',
         PORT: 3000,
+        HOST: '0.0.0.0',
       },
       // Configuraciones específicas para Raspberry Pi
       node_args: '--max-old-space-size=512', // Limitar memoria heap a 512MB
