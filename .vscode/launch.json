@@ -2,22 +2,76 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "🚀 Server Development ",
       "type": "node",
       "request": "launch",
-      "name": "Debug betty with Nx",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "betty"],
-      "env": {
-        "NODE_OPTIONS": "--inspect=9229"
-      },
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "betty-server:dev"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/apps/betty/dist/**/*.(m|c|)js",
-        "!**/node_modules/**"
-      ]
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "name": "🧪 Server Test ",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "betty-server:test"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
+      "name": "🔨 Server Build ",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "betty-server:build"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "📱 App Run ",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "betty-app"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
+      }
+    },
+    {
+      "name": "🚀 App Debug ",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "betty-app:dev"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
+      }
+    },
+    {
+      "name": "🔨 App Betty ",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "betty-app:build"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
+      }
     }
   ]
 }

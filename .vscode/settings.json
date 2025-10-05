@@ -1,0 +1,47 @@
+{
+  "dart.projectSearchDepth": 5,
+  "dart.flutterSdkPath": null,
+  "dart.additionalAnalyzerFileExtensions": [],
+  "dart.lineLength": 120,
+  "dart.closingLabels": true,
+  "dart.insertArgumentPlaceholders": true,
+  "dart.showTodos": true,
+  "dart.renameFilesWithClasses": "prompt",
+  "flutter.projectSearchDepth": 5,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.nx": true,
+    "**/build": true,
+    "**/.flutter-plugins": true,
+    "**/.flutter-plugins-dependencies": true,
+    "**/.packages": true,
+    "**/.dart_tool": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.nx": true,
+    "**/build": true,
+    "**/.dart_tool": true
+  },
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "eslint.workingDirectories": [
+    "apps/betty-server"
+  ],
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [120],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  }
+}
