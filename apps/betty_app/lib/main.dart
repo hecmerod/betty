@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/di/dependency_injection.dart';
-import 'health/health.dart';
+import 'camera/camera.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,12 +18,12 @@ class BettyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DependencyInjection.createHealthMonitorProvider(),
+      create: (_) => DependencyInjection.createCameraProvider(),
       child: MaterialApp(
-        title: 'Betty Health Monitor',
+        title: 'Betty Camera Control',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        home: const HealthMonitorPage(),
+        home: const CameraPage(),
       ),
     );
   }

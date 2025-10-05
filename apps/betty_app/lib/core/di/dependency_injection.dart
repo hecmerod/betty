@@ -1,16 +1,17 @@
 import '../config/app_config.dart';
-import '../../health/health.dart';
 import '../../auth/auth.dart';
 import '../../shared/shared.dart';
+import '../../camera/camera.dart';
 
 class DependencyInjection {
   static BettyApiService? _apiService;
-  static HealthRemoteDataSource? _healthRemoteDataSource;
   static AuthRemoteDataSource? _authRemoteDataSource;
-  static HealthRepository? _healthRepository;
+  static CameraRemoteDataSource? _cameraRemoteDataSource;
   static AuthRepository? _authRepository;
-  static GetHealthDataUseCase? _getHealthDataUseCase;
+  static CameraRepository? _cameraRepository;
   static GetProtectedDataUseCase? _getProtectedDataUseCase;
+  static GetPhotoUseCase? _getPhotoUseCase;
+  static GetVideoStreamUseCase? _getVideoStreamUseCase;
 
   // Services
   static BettyApiService get apiService {
@@ -19,54 +20,57 @@ class DependencyInjection {
   }
 
   // Data Sources
-  static HealthRemoteDataSource get healthRemoteDataSource {
-    _healthRemoteDataSource ??= HealthRemoteDataSourceImpl(apiService);
-    return _healthRemoteDataSource!;
-  }
-
   static AuthRemoteDataSource get authRemoteDataSource {
     _authRemoteDataSource ??= AuthRemoteDataSourceImpl(apiService);
     return _authRemoteDataSource!;
   }
 
-  // Repositories
-  static HealthRepository get healthRepository {
-    _healthRepository ??= HealthRepositoryImpl(healthRemoteDataSource);
-    return _healthRepository!;
+  static CameraRemoteDataSource get cameraRemoteDataSource {
+    _cameraRemoteDataSource ??= CameraRemoteDataSourceImpl(apiService);
+    return _cameraRemoteDataSource!;
   }
 
+  // Repositories
   static AuthRepository get authRepository {
     _authRepository ??= AuthRepositoryImpl(authRemoteDataSource);
     return _authRepository!;
   }
 
-  // Use Cases
-  static GetHealthDataUseCase get getHealthDataUseCase {
-    _getHealthDataUseCase ??= GetHealthDataUseCase(healthRepository);
-    return _getHealthDataUseCase!;
+  static CameraRepository get cameraRepository {
+    _cameraRepository ??= CameraRepositoryImpl(cameraRemoteDataSource);
+    return _cameraRepository!;
   }
 
+  // Use Cases
   static GetProtectedDataUseCase get getProtectedDataUseCase {
     _getProtectedDataUseCase ??= GetProtectedDataUseCase(authRepository);
     return _getProtectedDataUseCase!;
   }
 
+  static GetPhotoUseCase get getPhotoUseCase {
+    _getPhotoUseCase ??= GetPhotoUseCase(cameraRepository);
+    return _getPhotoUseCase!;
+  }
+
+  static GetVideoStreamUseCase get getVideoStreamUseCase {
+    _getVideoStreamUseCase ??= GetVideoStreamUseCase(cameraRepository);
+    return _getVideoStreamUseCase!;
+  }
+
   // Providers
-  static HealthMonitorProvider createHealthMonitorProvider() {
-    return HealthMonitorProvider(
-      getHealthDataUseCase: getHealthDataUseCase,
-      getProtectedDataUseCase: getProtectedDataUseCase,
-    );
+  static CameraProvider createCameraProvider() {
+    return CameraProvider(getPhotoUseCase: getPhotoUseCase, getVideoStreamUseCase: getVideoStreamUseCase);
   }
 
   // Clean up (for testing)
   static void reset() {
     _apiService = null;
-    _healthRemoteDataSource = null;
     _authRemoteDataSource = null;
-    _healthRepository = null;
+    _cameraRemoteDataSource = null;
     _authRepository = null;
-    _getHealthDataUseCase = null;
+    _cameraRepository = null;
     _getProtectedDataUseCase = null;
+    _getPhotoUseCase = null;
+    _getVideoStreamUseCase = null;
   }
 }
