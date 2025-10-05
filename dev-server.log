@@ -1,0 +1,50 @@
+
+> @betty-workspace/source@0.0.0 betty-server:dev
+> nx serve betty-server --configuration=development
+
+
+> nx run betty-server:serve:development
+
+> npx nodemon --exec "ts-node --project apps/betty-server/tsconfig.app.json apps/betty-server/src/main.ts" --watch apps/betty-server/src --ext ts
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): apps/betty-server/src/**/*[39m
+[33m[nodemon] watching extensions: ts[39m
+[32m[nodemon] starting `ts-node --project apps/betty-server/tsconfig.app.json apps/betty-server/src/main.ts`[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mThrottlerModule dependencies initialized[39m[38;5;3m +18ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mThrottlerConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +6ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +5ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/protected, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 11432  - [39m05/10/2025, 10:22:28 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +4ms[39m
+[31m[Nest] 11432  - [39m05/10/2025, 10:22:28 [31m  ERROR[39m [38;5;3m[NestApplication] [39m[31mError: listen EADDRINUSE: address already in use 0.0.0.0:3000[39m[38;5;3m +7ms[39m
+Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at Server.setupListenHandle [as _listen2] (node:net:1902:16)
+    at listenInCluster (node:net:1959:12)
+    at doListen (node:net:2133:7)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+Warning: command "npx nodemon --exec "ts-node --project apps/betty-server/tsconfig.app.json apps/betty-server/src/main.ts" --watch apps/betty-server/src --ext ts" exited with non-zero status code
+
+
+ NX   Running target serve for project betty-server failed
+
+Failed tasks:
+
+- betty-server:serve:development
+
+Hint: run the command with --verbose for more details.
+
+View structured, searchable error logs at https://cloud.nx.app/runs/xBvXeAr5JX
+

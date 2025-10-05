@@ -1,0 +1,9 @@
+# Flutter app specific .gitignore
+# Main Flutter rules are in the root .gitignore
+
+# Local development files
+.vscode/
+
+# Local build artifacts (additional to root gitignore)
+ios/Flutter/Generated.xcconfig
+ios/Runner/GeneratedPluginRegistrant.*
