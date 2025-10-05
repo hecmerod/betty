@@ -20,7 +20,9 @@
     "@nestjs/testing": "^11.0.0",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "20.19.9",
-    "webpack-cli": "^5.1.4"
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0"
   },
   "peerDependencies": {
     "typescript": "~5.9.2"

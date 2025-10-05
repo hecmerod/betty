@@ -19,21 +19,23 @@
       }
     },
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/js:tsc",
       "dependsOn": ["install"],
+      "outputs": ["{workspaceRoot}/dist/apps/betty-server"],
       "options": {
-        "command": "webpack-cli build",
-        "args": ["--node-env=production"],
-        "cwd": "apps/betty-server"
+        "main": "apps/betty-server/src/main.ts",
+        "tsConfig": "apps/betty-server/tsconfig.app.json",
+        "outputPath": "dist/apps/betty-server",
+        "clean": true
       },
       "configurations": {
         "development": {
-          "dependsOn": [],
-          "args": ["--node-env=development"]
+          "dependsOn": []
         },
         "production": {
           "dependsOn": ["install"],
-          "args": ["--node-env=production"]
+          "optimization": true,
+          "sourceMap": false
         }
       }
     },
@@ -63,20 +65,20 @@
       "executor": "nx:noop"
     },
     "serve": {
-      "continuous": true,
-      "executor": "@nx/js:node",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
       "options": {
-        "buildTarget": "betty-server:build:development",
-        "runBuildTargetDependencies": false
+        "command": "nodemon",
+        "cwd": "apps/betty-server"
       },
       "configurations": {
         "development": {
-          "buildTarget": "betty-server:build:development"
+          "dependsOn": ["install"],
+          "command": "nodemon"
         },
         "production": {
-          "buildTarget": "betty-server:build:production"
+          "dependsOn": ["build"],
+          "command": "node ../../dist/apps/betty-server/main.js"
         }
       }
     },
