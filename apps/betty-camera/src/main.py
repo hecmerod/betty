@@ -14,11 +14,20 @@ from fastapi.middleware.cors import CORSMiddleware
 # Importar componentes locales
 import sys
 import os
-sys.path.append(os.path.dirname(__file__))
 
-from camera.camera_manager import CameraManager
-from camera.routes import camera_router, config_router, init_camera_routes
-from utils.config import get_config, setup_logging
+# Agregar directorios al path de Python
+current_dir = os.path.dirname(__file__)
+sys.path.insert(0, current_dir)
+sys.path.insert(0, os.path.join(current_dir, 'camera'))
+sys.path.insert(0, os.path.join(current_dir, 'utils'))
+
+# Importar módulos directamente
+import camera_manager
+from camera_manager import CameraManager
+import routes
+from routes import camera_router, config_router, init_camera_routes
+import config
+from config import get_config, setup_logging
 
 
 # Instancia global del gestor de cámara
@@ -81,68 +90,7 @@ app.add_middleware(
 )
 
 # Incluir routers
-app.include_router(camera_router, prefix="/api")
-app.include_router(config_router, prefix="/api")
-
-
-@app.get("/")
-async def root():
-    """Endpoint raíz."""
-    return {
-        "message": "Betty Camera API",
-        "version": "1.0.0",
-        "status": "running",
-        "endpoints": {
-            "health": "/health",
-            "camera": "/api/camera/*",
-            "config": "/api/config/*",
-            "docs": "/docs"
-        }
-    }
-
-
-@app.get("/health")
-async def health():
-    """Health check endpoint."""
-    global camera_manager
-    
-    camera_status = camera_manager.get_status() if camera_manager else {"available": False}
-    
-    return {
-        "status": "healthy",
-        "timestamp": camera_status.get("timestamp", "unknown"),
-        "camera": camera_status,
-        "server": {
-            "version": "1.0.0",
-            "config_loaded": config is not None
-        }
-    }
-
-
-@app.get("/api/info")
-async def get_info():
-    """Información detallada de la API."""
-    global camera_manager, config
-    
-    return {
-        "application": {
-            "name": "Betty Camera API",
-            "version": "1.0.0",
-            "description": "API para control de cámara Raspberry Pi"
-        },
-        "camera": camera_manager.get_status() if camera_manager else {"available": False},
-        "configuration": {
-            "loaded": config is not None,
-            "config_file": str(config.config_path) if config else None
-        },
-        "endpoints": {
-            "camera_control": "/api/camera/",
-            "configuration": "/api/config/",
-            "streaming": "/api/camera/stream",
-            "file_management": "/api/camera/files"
-        }
-    }
-
+app.include_router(camera_router, prefix="/camera")
 
 def main():
     """Función principal."""
