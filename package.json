@@ -7,7 +7,10 @@
     "betty-server:dev": "nx serve betty-server --configuration=development",
     "betty-server:test": "nx test betty-server",
     "betty-server:install": "nx run betty-server:install",
-    "betty-server:build": "nx build betty-server"
+    "betty-server:build": "nx build betty-server",
+    "betty-app": "cd apps/betty_app && flutter run",
+    "betty-app:dev": "cd apps/betty_app && flutter run --debug",
+    "betty-app:build": "cd apps/betty_app && flutter build apk"
   },
   "private": true,
   "dependencies": {
