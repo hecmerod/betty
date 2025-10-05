@@ -56,15 +56,18 @@ Thumbs.db
 .nx/cache
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
-<<<<<<< HEAD
-.github/instructions/nx.instructions.md
-=======
 .github/instructions/nx.instructions.md
 
 # Runtime and compilation
 *.pid
 *.seed
 *.pid.lock
+
+# Build directories - All platforms and projects
+**/build/
+**/build/**
+build/
+build/**
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -75,10 +78,21 @@ Thumbs.db
 **/.pub/
 **/coverage/
 
-# Flutter build artifacts
+# Flutter build artifacts - All platforms
 **/android/app/debug/
 **/android/app/profile/
 **/android/app/release/
+**/android/.gradle/
+**/android/.cxx/
+**/android/local.properties
+**/ios/build/
+**/ios/Flutter/flutter_assets/
+**/ios/Runner.xcarchive/
+**/web/build/
+**/linux/build/
+**/macos/build/
+**/macos/Flutter/ephemeral/
+**/windows/build/
 
 # Flutter environment files
 apps/betty_app/.env
@@ -99,4 +113,3 @@ apps/betty_app/.env
 
 # Obfuscation related
 **/app.*.map.json
->>>>>>> 7b67243 (Add betty-app)
