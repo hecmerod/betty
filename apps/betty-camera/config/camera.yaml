@@ -1,0 +1,112 @@
+# Configuración de Betty Camera
+
+# Configuración de la Cámara
+camera:
+  # Resolución para fotos (ancho, alto) - OV5647 máxima: 2592x1944
+  photo_resolution: [2592, 1944]
+
+  # Resolución para videos (ancho, alto) - Optimizada para OV5647
+  video_resolution: [1640, 1232] # Calidad JPEG para fotos (0-100)
+  photo_quality: 85
+
+  # Bitrate para videos (bits por segundo)
+  video_bitrate: 10000000
+
+  # Frames por segundo para videos
+  fps: 30
+
+  # Configuraciones avanzadas de PiCamera2
+  controls:
+    # Brillo (-1.0 a 1.0)
+    brightness: 0.0
+
+    # Contraste (0.0 a 2.0)
+    contrast: 1.0
+
+    # Saturación (0.0 a 2.0)
+    saturation: 1.0
+
+    # Balance de blancos automático
+    awb_enable: true
+
+    # Modo de balance de blancos (si awb_enable es false)
+    # Opciones: auto, incandescent, tungsten, fluorescent, indoor, daylight, cloudy
+    awb_mode: 'auto'
+
+# Configuración del Servidor
+server:
+  # Host del servidor (0.0.0.0 para todas las interfaces)
+  host: '0.0.0.0'
+
+  # Puerto del servidor
+  port: 8001
+
+  # Modo debug
+  debug: false
+
+  # Directorio de salida para archivos capturados
+  output_dir: 'output'
+
+  # Límite de tamaño de archivos de upload (MB)
+  max_file_size: 100
+
+  # Tiempo máximo de grabación de video (segundos, 0 = sin límite)
+  max_recording_time: 300
+
+  # CORS (Cross-Origin Resource Sharing)
+  cors:
+    allow_origins: ['*']
+    allow_methods: ['GET', 'POST', 'DELETE']
+    allow_headers: ['*']
+
+# Configuración de Logging
+logging:
+  # Nivel de logging: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: 'INFO'
+
+  # Formato de logs
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+  # Archivo de logs (opcional, si no se especifica solo console)
+  # file: "logs/betty_camera.log"
+
+  # Rotación de logs
+  # max_bytes: 10485760  # 10MB
+  # backup_count: 5
+
+# Configuración de Streaming
+streaming:
+  # Calidad JPEG para streaming (0-100)
+  quality: 75
+
+  # FPS para streaming
+  fps: 15
+
+  # Buffer de frames para streaming
+  buffer_size: 10
+
+# Configuración de Seguridad
+security:
+  # API Key para acceso (opcional)
+  # api_key: "your-secret-api-key"
+
+  # Límite de requests por minuto
+  rate_limit: 60
+
+  # IPs permitidas (opcional, si está vacío permite todas)
+  allowed_ips: []
+
+# Configuración de Hardware Específico para Raspberry Pi
+hardware:
+  # Configuración específica para diferentes modelos de RPi
+  model: 'auto' # auto, rpi3, rpi4, rpi5
+
+  # Configuración de GPU
+  gpu_mem_split: 128
+
+  # Configuración de temperatura
+  temp_monitoring: true
+  temp_limit: 80 # Grados Celsius
+
+  # LED de estado de cámara
+  disable_camera_led: false

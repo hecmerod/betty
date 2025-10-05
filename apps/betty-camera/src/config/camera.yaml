@@ -1,0 +1,18 @@
+camera:
+  fps: 30
+  photo_quality: 85
+  photo_resolution:
+  - 1920
+  - 1080
+  video_bitrate: 10000000
+  video_resolution:
+  - 1280
+  - 720
+logging:
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+server:
+  debug: false
+  host: 0.0.0.0
+  output_dir: output
+  port: 8001
