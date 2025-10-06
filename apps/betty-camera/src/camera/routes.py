@@ -41,16 +41,18 @@ async def get_camera_photo():
 
 
 @camera_router.get("/video")
-async def get_camera_stream(): 
+async def get_camera_stream(annotated: bool = False): 
+    import time
+    import json
+    
     def generate_stream():
         start_time = time.time()
         timeout = 30
         timeout_json = json.dumps({"connectionReseted": True})
         
-        logger.info("🎬 Iniciando stream de video")
-        
         while time.time() - start_time < timeout:
-            frame = camera_manager.get_current_frame()
+            frame = camera_manager.get_annotated_frame() if annotated else camera_manager.get_current_frame()
+
             if frame:
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -62,3 +64,38 @@ async def get_camera_stream():
         generate_stream(),
         media_type="multipart/x-mixed-replace; boundary=frame"
     )
+
+
+@camera_router.get("/detections")
+async def get_current_detections():
+    """Obtener las detecciones actuales de objetos."""
+    if not camera_manager:
+        raise HTTPException(status_code=500, detail="Gestor de cámara no inicializado")
+    
+    detections = camera_manager.get_current_detections()
+    return detections
+
+
+@camera_router.get("/detection-status")
+async def get_detection_status():
+    """Obtener estado del sistema de detección adaptativo."""
+    if not camera_manager:
+        raise HTTPException(status_code=500, detail="Gestor de cámara no inicializado")
+    
+    status = camera_manager.get_detection_status()
+    return status
+
+
+@camera_router.post("/detection-mode/{active}")
+async def set_detection_mode(active: bool):
+    """Forzar cambio de modo de detección (debug)."""
+    if not camera_manager:
+        raise HTTPException(status_code=500, detail="Gestor de cámara no inicializado")
+    
+    camera_manager.force_detection_mode(active)
+    
+    return {
+        "message": "Modo de detección cambiado",
+        "new_mode": "activo" if active else "normal",
+        "status": camera_manager.get_detection_status()
+    }
