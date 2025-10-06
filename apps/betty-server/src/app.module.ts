@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CameraModule } from './camera/camera.module';
 import { AlarmModule } from './alarm/alarm.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AlarmModule } from './alarm/alarm.module';
     AuthModule,
     CameraModule,
     AlarmModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
