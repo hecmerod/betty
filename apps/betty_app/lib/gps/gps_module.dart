@@ -1,11 +1,11 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import '../../domain/repositories/i_gps_repository.dart';
-import '../../domain/use_cases/get_current_location_use_case.dart';
-import '../../domain/use_cases/stream_location_updates_use_case.dart';
-import '../../domain/use_cases/toggle_map_view_use_case.dart';
-import '../repositories/gps_repository_impl.dart';
-import '../../presentation/providers/gps_provider.dart';
+import 'domain/repositories/i_gps_repository.dart';
+import 'domain/use_cases/get_current_location_use_case.dart';
+import 'domain/use_cases/stream_location_updates_use_case.dart';
+import 'domain/use_cases/toggle_map_view_use_case.dart';
+import 'infrastructure/repositories/gps_repository_impl.dart';
+import 'presentation/providers/gps_provider.dart';
 
 class GpsModule {
   static List<SingleChildWidget> get providers => [
@@ -14,14 +14,12 @@ class GpsModule {
 
     // Use Cases
     ProxyProvider<IGpsRepository, GetCurrentLocationUseCase>(
-      update: (_, repository, __) => GetCurrentLocationUseCase(repository),
+      update: (_, repository, _) => GetCurrentLocationUseCase(repository),
     ),
     ProxyProvider<IGpsRepository, StreamLocationUpdatesUseCase>(
-      update: (_, repository, __) => StreamLocationUpdatesUseCase(repository),
+      update: (_, repository, _) => StreamLocationUpdatesUseCase(repository),
     ),
-    ProxyProvider<IGpsRepository, ToggleMapViewUseCase>(
-      update: (_, repository, __) => ToggleMapViewUseCase(repository),
-    ),
+    ProxyProvider<IGpsRepository, ToggleMapViewUseCase>(update: (_, repository, _) => ToggleMapViewUseCase(repository)),
 
     // Provider
     ChangeNotifierProxyProvider3<
