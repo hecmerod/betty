@@ -66,36 +66,3 @@ async def get_camera_stream(annotated: bool = False):
     )
 
 
-@camera_router.get("/detections")
-async def get_current_detections():
-    """Obtener las detecciones actuales de objetos."""
-    if not camera_manager:
-        raise HTTPException(status_code=500, detail="Gestor de cámara no inicializado")
-    
-    detections = camera_manager.get_current_detections()
-    return detections
-
-
-@camera_router.get("/detection-status")
-async def get_detection_status():
-    """Obtener estado del sistema de detección adaptativo."""
-    if not camera_manager:
-        raise HTTPException(status_code=500, detail="Gestor de cámara no inicializado")
-    
-    status = camera_manager.get_detection_status()
-    return status
-
-
-@camera_router.post("/detection-mode/{active}")
-async def set_detection_mode(active: bool):
-    """Forzar cambio de modo de detección (debug)."""
-    if not camera_manager:
-        raise HTTPException(status_code=500, detail="Gestor de cámara no inicializado")
-    
-    camera_manager.force_detection_mode(active)
-    
-    return {
-        "message": "Modo de detección cambiado",
-        "new_mode": "activo" if active else "normal",
-        "status": camera_manager.get_detection_status()
-    }
