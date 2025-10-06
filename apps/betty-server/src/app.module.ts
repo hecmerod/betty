@@ -5,6 +5,7 @@ import { ThrottlerConfigModule } from './config/throttler/throttler-config.modul
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CameraModule } from './camera/camera.module';
+import { AlarmModule } from './alarm/alarm.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CameraModule } from './camera/camera.module';
     ThrottlerConfigModule,
     AuthModule,
     CameraModule,
+    AlarmModule,
   ],
   controllers: [AppController],
   providers: [AppService],
