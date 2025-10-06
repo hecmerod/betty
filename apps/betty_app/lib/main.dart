@@ -10,11 +10,10 @@ import 'bottom_navigator_bar/bottom_navigator_bar.dart';
 import 'shared/error/error.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
-
   runZonedGuarded(
     () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await dotenv.load(fileName: ".env");
       await NotificationSetupService.initialize();
       runApp(const BettyApp());
     },
