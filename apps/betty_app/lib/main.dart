@@ -17,14 +17,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   NotificationHandler.instance.handleBackgroundMessage(message);
-
-  final data = message.data;
-  if (data.containsKey('type')) {
-    switch (data['type']) {
-      case 'security_alert':
-        break;
-    }
-  }
 }
 
 void main() async {

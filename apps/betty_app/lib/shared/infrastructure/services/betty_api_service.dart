@@ -25,4 +25,25 @@ class BettyApiService {
       throw Exception('Failed to fetch protected data: $e');
     }
   }
+
+  Future<bool> registerFCMToken(String fcmToken, String jwtToken) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('${baseUrl.replaceAll('/api', '')}/notifications/register'),
+            headers: {'Authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json'},
+            body: json.encode({'token': fcmToken, 'userId': 'betty-user', 'platform': 'mobile'}),
+          )
+          .timeout(timeout);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        return responseData['success'] == true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 }

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import '../config/firebase_config.dart';
+import '../di/dependency_injection.dart';
+import '../../auth/infrastructure/services/jwt_service.dart';
 import '../../notification/notification_handler.dart';
 
 class FirebaseNotificationService {
@@ -113,7 +115,10 @@ class FirebaseNotificationService {
 
   void _handleSystemUpdate(RemoteMessage message) {}
 
-  Future<void> _sendTokenToServer(String token) async {}
+  Future<void> _sendTokenToServer(String token) async {
+    final jwtToken = JwtService.generateToken();
+    await DependencyInjection.apiService.registerFCMToken(token, jwtToken);
+  }
 
   Future<void> subscribeToTopic(String topic) async {
     await _firebaseMessaging.subscribeToTopic(topic);
