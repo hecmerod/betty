@@ -1,1 +1,1 @@
-export 'infrastructure/infrastructure.dart';
+export 'server/betty_api_service.dart';

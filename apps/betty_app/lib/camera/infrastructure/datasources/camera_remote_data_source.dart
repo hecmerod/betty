@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
-import '../../../shared/infrastructure/services/betty_api_service.dart';
-import '../../../auth/infrastructure/services/jwt_service.dart';
+import '../../../shared/server/betty_api_service.dart';
+import '../../../shared/jwt/jwt_service.dart';
 import '../../../error/error.dart';
 
 abstract class CameraRemoteDataSource {

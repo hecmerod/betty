@@ -1,13 +1,12 @@
 import '../config/app_config.dart';
-import '../../auth/auth.dart';
 import '../../shared/shared.dart';
 import '../../camera/camera.dart';
+import '../../notification/notification.dart';
 
 class DependencyInjection {
   static BettyApiService? _apiService;
-  static AuthRemoteDataSource? _authRemoteDataSource;
+  static NotificationApiService? _notificationApiService;
   static CameraRemoteDataSource? _cameraRemoteDataSource;
-  static AuthRepository? _authRepository;
   static CameraRepository? _cameraRepository;
   static GetPhotoUseCase? _getPhotoUseCase;
   static GetVideoStreamUseCase? _getVideoStreamUseCase;
@@ -17,19 +16,14 @@ class DependencyInjection {
     return _apiService!;
   }
 
-  static AuthRemoteDataSource get authRemoteDataSource {
-    _authRemoteDataSource ??= AuthRemoteDataSourceImpl(apiService);
-    return _authRemoteDataSource!;
+  static NotificationApiService get notificationApiService {
+    _notificationApiService ??= NotificationApiService(apiService);
+    return _notificationApiService!;
   }
 
   static CameraRemoteDataSource get cameraRemoteDataSource {
     _cameraRemoteDataSource ??= CameraRemoteDataSourceImpl(apiService);
     return _cameraRemoteDataSource!;
-  }
-
-  static AuthRepository get authRepository {
-    _authRepository ??= AuthRepositoryImpl(authRemoteDataSource);
-    return _authRepository!;
   }
 
   static CameraRepository get cameraRepository {
@@ -53,9 +47,8 @@ class DependencyInjection {
 
   static void reset() {
     _apiService = null;
-    _authRemoteDataSource = null;
+    _notificationApiService = null;
     _cameraRemoteDataSource = null;
-    _authRepository = null;
     _cameraRepository = null;
     _getPhotoUseCase = null;
     _getVideoStreamUseCase = null;

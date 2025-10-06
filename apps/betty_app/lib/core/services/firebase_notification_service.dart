@@ -3,7 +3,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import '../../notification/config/firebase_config.dart';
 import '../di/dependency_injection.dart';
-import '../../auth/infrastructure/services/jwt_service.dart';
 import '../../notification/notification_handler.dart';
 import '../../error/error.dart';
 
@@ -153,8 +152,7 @@ class FirebaseNotificationService {
 
   Future<void> _sendTokenToServer(String token) async {
     try {
-      final jwtToken = JwtService.generateToken();
-      await DependencyInjection.apiService.registerFCMToken(token, jwtToken);
+      await DependencyInjection.notificationApiService.registerFCMToken(token);
     } catch (e, stackTrace) {
       ErrorService().reportNetworkError(
         message:
