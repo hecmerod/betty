@@ -9,7 +9,6 @@ class DependencyInjection {
   static CameraRemoteDataSource? _cameraRemoteDataSource;
   static AuthRepository? _authRepository;
   static CameraRepository? _cameraRepository;
-  static GetProtectedDataUseCase? _getProtectedDataUseCase;
   static GetPhotoUseCase? _getPhotoUseCase;
   static GetVideoStreamUseCase? _getVideoStreamUseCase;
 
@@ -38,11 +37,6 @@ class DependencyInjection {
     return _cameraRepository!;
   }
 
-  static GetProtectedDataUseCase get getProtectedDataUseCase {
-    _getProtectedDataUseCase ??= GetProtectedDataUseCase(authRepository);
-    return _getProtectedDataUseCase!;
-  }
-
   static GetPhotoUseCase get getPhotoUseCase {
     _getPhotoUseCase ??= GetPhotoUseCase(cameraRepository);
     return _getPhotoUseCase!;
@@ -63,7 +57,6 @@ class DependencyInjection {
     _cameraRemoteDataSource = null;
     _authRepository = null;
     _cameraRepository = null;
-    _getProtectedDataUseCase = null;
     _getPhotoUseCase = null;
     _getVideoStreamUseCase = null;
   }
