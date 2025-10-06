@@ -47,11 +47,7 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
   void dispose() {
     _timeoutTimer?.cancel();
     _timeoutTimer = null;
-
-    try {
-      _stopStream();
-    } catch (e) {}
-
+    _stopStream();
     super.dispose();
   }
 
@@ -83,16 +79,12 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
         if (contentType.contains('multipart/x-mixed-replace') ||
             contentType.contains('application/octet-stream') ||
             contentType.contains('image/jpeg')) {
-          print('✅ Content-Type válido, iniciando parsing...');
-
           _streamSubscription = _parseMultipartStream(response.stream).listen(
             _onFrameReceived,
             onError: (error) {
-              print('❌ Error en stream: $error');
               _onStreamError(error);
             },
             onDone: () {
-              print('🔚 Stream terminado');
               if (mounted) {
                 _onStreamError('Stream ended unexpectedly');
               }
@@ -113,15 +105,11 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
   }
 
   void _stopStream() {
-    // Cancelar subscription de forma segura
     _streamSubscription?.cancel();
     _streamSubscription = null;
 
-    // Cerrar HTTP client de forma segura
     if (_httpClient != null) {
-      try {
-        _httpClient!.close();
-      } catch (e) {}
+      _httpClient!.close();
       _httpClient = null;
     }
   }

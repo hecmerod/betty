@@ -13,13 +13,11 @@ class DependencyInjection {
   static GetPhotoUseCase? _getPhotoUseCase;
   static GetVideoStreamUseCase? _getVideoStreamUseCase;
 
-  // Services
   static BettyApiService get apiService {
     _apiService ??= BettyApiService(baseUrl: AppConfig.baseUrl);
     return _apiService!;
   }
 
-  // Data Sources
   static AuthRemoteDataSource get authRemoteDataSource {
     _authRemoteDataSource ??= AuthRemoteDataSourceImpl(apiService);
     return _authRemoteDataSource!;
@@ -30,7 +28,6 @@ class DependencyInjection {
     return _cameraRemoteDataSource!;
   }
 
-  // Repositories
   static AuthRepository get authRepository {
     _authRepository ??= AuthRepositoryImpl(authRemoteDataSource);
     return _authRepository!;
@@ -41,7 +38,6 @@ class DependencyInjection {
     return _cameraRepository!;
   }
 
-  // Use Cases
   static GetProtectedDataUseCase get getProtectedDataUseCase {
     _getProtectedDataUseCase ??= GetProtectedDataUseCase(authRepository);
     return _getProtectedDataUseCase!;
@@ -57,12 +53,10 @@ class DependencyInjection {
     return _getVideoStreamUseCase!;
   }
 
-  // Providers
   static CameraProvider createCameraProvider() {
     return CameraProvider(getPhotoUseCase: getPhotoUseCase, getVideoStreamUseCase: getVideoStreamUseCase);
   }
 
-  // Clean up (for testing)
   static void reset() {
     _apiService = null;
     _authRemoteDataSource = null;
