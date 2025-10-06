@@ -1,23 +1,31 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class AlarmService {
   private readonly logger = new Logger(AlarmService.name);
   private isActive = false;
 
-  async trigger(
-    data: Record<string, unknown>
-  ): Promise<{ triggered: boolean; notificationSent?: boolean }> {
-    this.logger.log('🚨 Alarm triggered with data:', data);
+  constructor(private readonly notificationsService: NotificationsService) {}
 
-    if (!this.isActive) {
-      return { triggered: false };
+  async trigger(data: Record<string, unknown>): Promise<void> {
+    try {
+      await this.notificationsService.sendNotification({
+        token: '',
+        notification: {
+          title: '🚨 BETTY ALARM',
+          body: 'Persona detectada en tu hogar',
+          imageUrl: '',
+        },
+        data: {
+          type: 'alarm',
+          timestamp: new Date().toISOString(),
+          detectionType: (data?.event_type as string) || 'person',
+        },
+      });
+    } catch (error) {
+      this.logger.error('❌ Error enviando notificación:', error);
     }
-
-    // Simplemente activar la alarma sin notificaciones automáticas
-    return {
-      triggered: true,
-    };
   }
 
   activate(): { success: boolean; message: string; status: string } {

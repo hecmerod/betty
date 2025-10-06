@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FirebaseService } from './firebase.service';
 import { SendNotificationDto, RegisterTokenDto } from './dto/notification.dto';
-import { of } from 'rxjs';
 
 interface DeviceToken {
   token: string;
