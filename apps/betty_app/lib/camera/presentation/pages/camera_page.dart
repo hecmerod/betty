@@ -26,7 +26,6 @@ class _CameraPageState extends State<CameraPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -123,7 +122,7 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                
+
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -172,7 +171,7 @@ class _CameraPageState extends State<CameraPage> {
                     ),
                   ),
                 ),
-                
+
                 if (provider.error != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),

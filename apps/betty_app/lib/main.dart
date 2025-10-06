@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/di/dependency_injection.dart';
 import 'notification/notification.dart';
-import 'camera/camera.dart';
+import 'bottom_navigator_bar/bottom_navigator_bar.dart';
 import 'error/error.dart';
 
 void main() async {
@@ -44,7 +44,7 @@ class BettyApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        home: const NotificationWrapper(child: CameraPage()),
+        home: const NotificationWrapper(child: MainNavigationPage()),
       ),
     );
   }
