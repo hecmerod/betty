@@ -6,9 +6,16 @@ import 'core/theme/app_theme.dart';
 import 'core/di/dependency_injection.dart';
 import 'camera/camera.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const BettyApp());
 }
 

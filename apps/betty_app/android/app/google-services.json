@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1029145018139",
+    "project_id": "betty-la-fragoneta",
+    "storage_bucket": "betty-la-fragoneta.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029145018139:android:f381749befcba220bc1dbe",
+        "android_client_info": {
+          "package_name": "com.example.betty_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCudnh_5mNkKu2WKyHCcyu9JAph3NPZVHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
