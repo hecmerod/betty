@@ -1,274 +1,316 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
+import '../../domain/entities/map_type.dart';
+import '../../domain/entities/gps_location.dart';
+import '../../infrastructure/ioc/gps_module.dart';
+import '../providers/gps_provider.dart';
 
-class GpsPage extends StatefulWidget {
+class GpsPage extends StatelessWidget {
   const GpsPage({super.key});
 
   @override
-  State<GpsPage> createState() => _GpsPageState();
+  Widget build(BuildContext context) {
+    return MultiProvider(providers: GpsModule.providers, child: const _GpsPageContent());
+  }
 }
 
-class _GpsPageState extends State<GpsPage> {
+class _GpsPageContent extends StatefulWidget {
+  const _GpsPageContent();
+
+  @override
+  State<_GpsPageContent> createState() => _GpsPageContentState();
+}
+
+class _GpsPageContentState extends State<_GpsPageContent> {
   final MapController _mapController = MapController();
-  Position? _currentPosition;
-  bool _isLoading = true;
-  String? _errorMessage;
-  late StreamSubscription<Position> _positionStream;
   List<Marker> _markers = [];
-  bool _isSatelliteView = false;
+  bool _isFirstLocation = true;
 
   @override
   void initState() {
     super.initState();
-    _initializeLocation();
-  }
-
-  @override
-  void dispose() {
-    _positionStream.cancel();
-    super.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeLocation();
+    });
   }
 
   Future<void> _initializeLocation() async {
-    try {
-      // Verificar permisos de localización
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          setState(() {
-            _errorMessage = 'Permisos de localización denegados';
-            _isLoading = false;
-          });
-          return;
-        }
-      }
+    final gpsProvider = Provider.of<GpsProvider>(context, listen: false);
 
-      if (permission == LocationPermission.deniedForever) {
-        setState(() {
-          _errorMessage = 'Permisos de localización permanentemente denegados';
-          _isLoading = false;
-        });
-        return;
-      }
+    // Obtener la ubicación inicial
+    await gpsProvider.getCurrentLocation();
 
-      // Verificar si el servicio de localización está habilitado
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        setState(() {
-          _errorMessage = 'Servicio de localización deshabilitado';
-          _isLoading = false;
-        });
-        return;
-      }
-
-      // Obtener posición actual
-      Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
-
-      setState(() {
-        _currentPosition = position;
-        _isLoading = false;
-        _updateMarker(position);
-      });
-
-      // Mover el mapa a la posición actual después de que se renderice
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
-      });
-
-      // Configurar stream para actualizaciones en tiempo real
-      _positionStream =
-          Geolocator.getPositionStream(
-            locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high,
-              distanceFilter: 10, // Actualizar cada 10 metros
-            ),
-          ).listen((Position position) {
-            setState(() {
-              _currentPosition = position;
-              _updateMarker(position);
-            });
-
-            // Mover el mapa a la nueva posición de forma segura
-            if (_mapController.camera.zoom > 0) {
-              _mapController.move(LatLng(position.latitude, position.longitude), _mapController.camera.zoom);
-            }
-          });
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Error al obtener localización: $e';
-        _isLoading = false;
-      });
-    }
+    // Iniciar el stream de ubicaciones
+    gpsProvider.startLocationStream();
   }
 
-  void _updateMarker(Position position) {
-    _markers = [
-      Marker(
-        point: LatLng(position.latitude, position.longitude),
-        child: const Icon(Icons.location_on, color: Colors.green, size: 40),
+  void _updateMarker(GpsLocation location) {
+    final marker = Marker(
+      point: LatLng(location.latitude, location.longitude),
+      width: 80,
+      height: 80,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.blue.withOpacity(0.3),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.blue, width: 2),
+        ),
+        child: const Icon(Icons.my_location, color: Colors.blue, size: 30),
       ),
-    ];
-  }
+    );
 
-  void _centerOnLocation() {
-    if (_currentPosition != null && _mapController.camera.zoom > 0) {
-      _mapController.move(LatLng(_currentPosition!.latitude, _currentPosition!.longitude), 15.0);
-    }
+    setState(() {
+      _markers = [marker];
+      
+      // Solo centrar el mapa la primera vez que se obtiene la ubicación
+      if (_isFirstLocation) {
+        _isFirstLocation = false;
+        // Usar un pequeño delay para asegurar que el mapa esté listo
+        Future.delayed(const Duration(milliseconds: 100), () {
+          _mapController.move(
+            LatLng(location.latitude, location.longitude),
+            15.0,
+          );
+        });
+      }
+    });
   }
 
   void _toggleMapType() {
-    setState(() {
-      _isSatelliteView = !_isSatelliteView;
-    });
+    final gpsProvider = Provider.of<GpsProvider>(context, listen: false);
+    gpsProvider.toggleMapView();
+  }
+
+  void _centerOnCurrentLocation() {
+    final gpsProvider = Provider.of<GpsProvider>(context, listen: false);
+    final location = gpsProvider.currentLocation;
+
+    if (location != null) {
+      _mapController.move(LatLng(location.latitude, location.longitude), 16.0);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('🗺️ Betty GPS'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: Icon(_isSatelliteView ? Icons.map : Icons.satellite_alt),
-            onPressed: _toggleMapType,
-            tooltip: _isSatelliteView ? 'Vista Estándar' : 'Vista Satélite',
-          ),
-          if (_currentPosition != null)
-            IconButton(
-              icon: const Icon(Icons.my_location),
-              onPressed: _centerOnLocation,
-              tooltip: 'Centrar en mi ubicación',
-            ),
-        ],
-      ),
-      body: _isLoading
-          ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [CircularProgressIndicator(), SizedBox(height: 16), Text('Obteniendo localización GPS...')],
-              ),
-            )
-          : _errorMessage != null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.location_off, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    _errorMessage!,
-                    style: const TextStyle(fontSize: 16, color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLoading = true;
-                        _errorMessage = null;
-                      });
-                      _initializeLocation();
-                    },
-                    child: const Text('Reintentar'),
-                  ),
-                ],
-              ),
-            )
-          : Stack(
-              children: [
+      backgroundColor: const Color(0xFF121212),
+      body: Consumer<GpsProvider>(
+        builder: (context, gpsProvider, child) {
+          // Actualizar marcador cuando cambie la ubicación
+          if (gpsProvider.currentLocation != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _updateMarker(gpsProvider.currentLocation!);
+            });
+          }
+
+          // Mostrar error si existe
+          if (gpsProvider.errorMessage != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(gpsProvider.errorMessage!),
+                  backgroundColor: Colors.red,
+                  duration: const Duration(seconds: 3),
+                ),
+              );
+            });
+          }
+
+          return Stack(
+            children: [
+              // Mapa
+              if (gpsProvider.currentLocation != null)
                 FlutterMap(
                   mapController: _mapController,
                   options: MapOptions(
-                    initialCenter: _currentPosition != null
-                        ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
-                        : const LatLng(40.4168, -3.7038), // Madrid por defecto
+                    initialCenter: LatLng(
+                      gpsProvider.currentLocation!.latitude,
+                      gpsProvider.currentLocation!.longitude,
+                    ),
                     initialZoom: 15.0,
                     minZoom: 3.0,
                     maxZoom: 18.0,
+                    interactionOptions: const InteractionOptions(flags: InteractiveFlag.all),
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: _isSatelliteView
-                          ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                          : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      urlTemplate: gpsProvider.mapType.tileUrl,
                       userAgentPackageName: 'com.example.betty_app',
-                      maxNativeZoom: 19,
+                      maxZoom: 18,
+                      subdomains: const ['a', 'b', 'c'],
                     ),
                     MarkerLayer(markers: _markers),
                   ],
                 ),
-                if (_currentPosition != null)
-                  Positioned(
-                    top: 16,
-                    left: 16,
-                    right: 16,
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
+
+              // Indicador de carga
+              if (gpsProvider.isLoading)
+                Container(
+                  color: Colors.black54,
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(color: Colors.blue),
+                        SizedBox(height: 16),
+                        Text('Obteniendo ubicación...', style: TextStyle(color: Colors.white, fontSize: 16)),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Controles del mapa
+              Positioned(
+                top: 50,
+                right: 16,
+                child: Column(
+                  children: [
+                    // Botón cambiar tipo de mapa
+                    Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.white.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
                           ),
                         ],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.location_on, size: 16, color: Colors.green),
-                              SizedBox(width: 4),
-                              Text('Localización Actual', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                            ],
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _toggleMapType,
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  gpsProvider.mapType == MapType.satellite ? Icons.map : Icons.satellite,
+                                  color: Colors.grey[700],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  gpsProvider.mapType == MapType.satellite ? 'Estándar' : 'Satélite',
+                                  style: TextStyle(color: Colors.grey[700], fontSize: 10),
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Lat: ${_currentPosition!.latitude.toStringAsFixed(6)}',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          Text(
-                            'Lng: ${_currentPosition!.longitude.toStringAsFixed(6)}',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          Text(
-                            'Precisión: ${_currentPosition!.accuracy.toStringAsFixed(1)}m',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Icon(
-                                _isSatelliteView ? Icons.satellite_alt : Icons.map,
-                                size: 12,
-                                color: Colors.grey[600],
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                _isSatelliteView ? 'Vista Satélite' : 'Vista Estándar',
-                                style: TextStyle(fontSize: 12, color: Colors.grey[600], fontStyle: FontStyle.italic),
-                              ),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    // Botón centrar ubicación
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _centerOnCurrentLocation,
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Icon(Icons.my_location, color: Colors.grey[700]),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Panel de información
+              if (gpsProvider.currentLocation != null)
+                Positioned(
+                  bottom: 20,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.location_on, color: Colors.blue[600], size: 20),
+                            const SizedBox(width: 8),
+                            const Text('Ubicación Actual', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildLocationInfo('Latitud', gpsProvider.currentLocation!.latitude.toStringAsFixed(6)),
+                        const SizedBox(height: 4),
+                        _buildLocationInfo('Longitud', gpsProvider.currentLocation!.longitude.toStringAsFixed(6)),
+                        const SizedBox(height: 4),
+                        _buildLocationInfo('Precisión', '${gpsProvider.currentLocation!.accuracy.toStringAsFixed(1)}m'),
+                        const SizedBox(height: 4),
+                        _buildLocationInfo(
+                          'Última actualización',
+                          _formatTimestamp(gpsProvider.currentLocation!.timestamp),
+                        ),
+                      ],
+                    ),
                   ),
-              ],
-            ),
+                ),
+            ],
+          );
+        },
+      ),
     );
+  }
+
+  Widget _buildLocationInfo(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('$label:', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+      ],
+    );
+  }
+
+  String _formatTimestamp(DateTime timestamp) {
+    final now = DateTime.now();
+    final difference = now.difference(timestamp).inSeconds;
+
+    if (difference < 60) {
+      return 'Hace $difference segundos';
+    } else if (difference < 3600) {
+      final minutes = difference ~/ 60;
+      return 'Hace $minutes minutos';
+    } else {
+      return '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}';
+    }
   }
 }
