@@ -6,5 +6,6 @@ export 'presentation/widgets/notification_wrapper.dart';
 export 'services/background_message_handler.dart';
 export 'services/notification_initializer.dart';
 export 'services/firebase_notification_setup.dart';
+export 'services/firebase_notification_service.dart';
 export 'infrastructure/services/notification_api_service.dart';
 export 'notification_handler.dart';

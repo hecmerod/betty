@@ -1,4 +1,4 @@
-import '../../core/services/firebase_notification_service.dart';
+import 'firebase_notification_service.dart';
 import '../config/firebase_config.dart';
 import '../../error/error.dart';
 

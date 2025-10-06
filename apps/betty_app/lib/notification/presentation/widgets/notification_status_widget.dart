@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/services/firebase_notification_service.dart';
+import '../../services/firebase_notification_service.dart';
 import '../../config/firebase_config.dart';
 
 class NotificationStatusWidget extends StatefulWidget {

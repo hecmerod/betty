@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import '../../notification/config/firebase_config.dart';
-import '../di/dependency_injection.dart';
-import '../../notification/notification_handler.dart';
+import '../config/firebase_config.dart';
+import '../../core/di/dependency_injection.dart';
+import '../notification_handler.dart';
 import '../../error/error.dart';
 
 class FirebaseNotificationService {
