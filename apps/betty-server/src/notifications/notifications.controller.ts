@@ -1,10 +1,7 @@
 import {
   Controller,
   Post,
-  Get,
-  Delete,
   Body,
-  Param,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -29,7 +26,6 @@ export class NotificationsController {
         sendNotificationDto
       );
     } catch (error) {
-      console.error('Error enviando notificación:', error);
       throw new HttpException(
         'Error enviando notificación',
         HttpStatus.INTERNAL_SERVER_ERROR

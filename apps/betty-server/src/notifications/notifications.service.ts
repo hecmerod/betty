@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FirebaseService } from './firebase.service';
 import { SendNotificationDto, RegisterTokenDto } from './dto/notification.dto';
+import { of } from 'rxjs';
 
 interface DeviceToken {
   token: string;
@@ -44,18 +45,14 @@ export class NotificationsService {
 
   async sendNotification(sendNotificationDto: SendNotificationDto) {
     try {
-      const result = await this.firebaseService.sendToDevice(
-        sendNotificationDto.token,
-        sendNotificationDto.notification,
-        sendNotificationDto.data
-      );
-
-      const deviceToken = this.deviceTokens.get(sendNotificationDto.token);
-      if (deviceToken) {
-        deviceToken.lastUsed = new Date();
+      for (const deviceToken of this.deviceTokens.values()) {
+        await this.firebaseService.sendToDevice(
+          deviceToken.token,
+          sendNotificationDto.notification,
+          sendNotificationDto.data
+        );
       }
-
-      return { success: true, messageId: result };
+      return { success: true };
     } catch (error) {
       this.logger.error('❌ Error enviando notificación:', error);
       throw error;
