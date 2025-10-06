@@ -7,7 +7,7 @@ class NotificationApiService {
 
   const NotificationApiService(this._apiService);
 
-  Future<bool> registerFCMToken(String fcmToken) async {
+  Future<bool> sendDeviceToken(String fcmToken) async {
     try {
       final response = await _apiService.post(
         '/notifications/register',

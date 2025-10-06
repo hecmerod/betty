@@ -15,7 +15,7 @@ void main() async {
 
   runZonedGuarded(
     () async {
-      await FirebaseNotificationSetup.initialize();
+      await NotificationSetupService.initialize();
       runApp(const BettyApp());
     },
     (error, stackTrace) {
