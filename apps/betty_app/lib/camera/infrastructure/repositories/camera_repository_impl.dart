@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import '../../domain/repositories/camera_repository.dart';
 import '../datasources/camera_remote_data_source.dart';
-import '../../../error/error.dart';
+import '../../../shared/error/error.dart';
 
 class CameraRepositoryImpl implements CameraRepository {
   final CameraRemoteDataSource remoteDataSource;

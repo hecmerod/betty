@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import '../../../shared/server/betty_api_service.dart';
 import '../../../shared/jwt/jwt_service.dart';
-import '../../../error/error.dart';
+import '../../../shared/error/error.dart';
 
 abstract class CameraRemoteDataSource {
   Future<Uint8List> capturePhoto();

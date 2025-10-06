@@ -7,7 +7,7 @@ import 'core/theme/app_theme.dart';
 import 'core/di/dependency_injection.dart';
 import 'notification/notification.dart';
 import 'bottom_navigator_bar/bottom_navigator_bar.dart';
-import 'error/error.dart';
+import 'shared/error/error.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

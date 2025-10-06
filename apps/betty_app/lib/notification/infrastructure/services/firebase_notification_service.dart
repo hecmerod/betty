@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../core/di/dependency_injection.dart';
-import '../../../error/error.dart';
+import '../../../shared/error/error.dart';
 
 class FirebaseNotificationService {
   static final FirebaseNotificationService _instance = FirebaseNotificationService._internal();

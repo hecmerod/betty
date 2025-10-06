@@ -1,6 +1,6 @@
 import 'dart:convert';
 import '../../../shared/server/betty_api_service.dart';
-import '../../../error/error.dart';
+import '../../../shared/error/error.dart';
 
 class NotificationApiService {
   final BettyApiService _apiService;
