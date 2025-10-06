@@ -71,7 +71,7 @@ class NotificationHandler {
         context: _context!,
         builder: (context) => NotificationDialog(notification: notification),
       ).then((_) {
-        // Auto dismiss if enabled
+        
         if (NotificationConfig.enableDialogAutoDismiss) {
           Future.delayed(NotificationConfig.dialogAutoDismiss, () {
             if (_context != null && _context!.mounted) {

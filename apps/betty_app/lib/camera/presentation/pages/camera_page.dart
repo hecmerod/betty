@@ -26,7 +26,7 @@ class _CameraPageState extends State<CameraPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Video Stream Section
+                
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -123,7 +123,7 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Photo Section
+                
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -172,7 +172,7 @@ class _CameraPageState extends State<CameraPage> {
                     ),
                   ),
                 ),
-                // Error Display
+                
                 if (provider.error != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),

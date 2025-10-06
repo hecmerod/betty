@@ -5,6 +5,7 @@ import '../../notification/config/firebase_config.dart';
 import '../di/dependency_injection.dart';
 import '../../auth/infrastructure/services/jwt_service.dart';
 import '../../notification/notification_handler.dart';
+import '../../error/error.dart';
 
 class FirebaseNotificationService {
   static final FirebaseNotificationService _instance = FirebaseNotificationService._internal();
@@ -51,30 +52,65 @@ class FirebaseNotificationService {
   }
 
   Future<void> _getAndStoreToken() async {
-    String? token;
+    try {
+      String? token;
 
-    if (kIsWeb) {
-      final vapidKey = FirebaseConfig.vapidKey;
-      if (vapidKey.isNotEmpty) {
-        token = await _firebaseMessaging.getToken(vapidKey: vapidKey);
+      if (kIsWeb) {
+        final vapidKey = FirebaseConfig.vapidKey;
+        if (vapidKey.isNotEmpty) {
+          token = await _firebaseMessaging.getToken(vapidKey: vapidKey);
+        } else {
+          ErrorService().reportFirebaseError(
+            message: 'Configuración de VAPID key faltante para web',
+            technicalDetails: 'vapidKey está vacío en FirebaseConfig',
+          );
+          return;
+        }
       } else {
-        return;
+        token = await _firebaseMessaging.getToken();
       }
-    } else {
-      token = await _firebaseMessaging.getToken();
-    }
 
-    if (token != null) {
-      _fcmToken = token;
-      await _sendTokenToServer(token);
+      if (token != null) {
+        _fcmToken = token;
+        await _sendTokenToServer(token);
+      } else {
+        ErrorService().reportFirebaseError(
+          message: 'No se pudo obtener el token FCM',
+          technicalDetails: 'Firebase devolvió token null',
+        );
+      }
+    } catch (e, stackTrace) {
+      ErrorService().reportFirebaseError(
+        message: 'Error al obtener el token de notificaciones',
+        technicalDetails: 'Error en _getAndStoreToken: $e',
+        stackTrace: stackTrace,
+      );
     }
   }
 
   void _setupTokenRefreshListener() {
-    _firebaseMessaging.onTokenRefresh.listen((fcmToken) async {
-      _fcmToken = fcmToken;
-      await _sendTokenToServer(fcmToken);
-    });
+    _firebaseMessaging.onTokenRefresh.listen(
+      (fcmToken) async {
+        try {
+          _fcmToken = fcmToken;
+          await _sendTokenToServer(fcmToken);
+        } catch (e, stackTrace) {
+          ErrorService().reportFirebaseError(
+            message: 'Error al actualizar el token de notificaciones',
+            technicalDetails: 'Error en token refresh: $e',
+            stackTrace: stackTrace,
+            context: {'newToken': fcmToken},
+          );
+        }
+      },
+      onError: (error, stackTrace) {
+        ErrorService().reportFirebaseError(
+          message: 'Error en el listener de actualización de token',
+          technicalDetails: 'Token refresh listener error: $error',
+          stackTrace: stackTrace,
+        );
+      },
+    );
   }
 
   void _setupMessageHandlers() {
@@ -119,24 +155,41 @@ class FirebaseNotificationService {
     try {
       final jwtToken = JwtService.generateToken();
       await DependencyInjection.apiService.registerFCMToken(token, jwtToken);
-      if (kDebugMode) {
-        print('✅ FCM Token enviado al servidor Betty exitosamente');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('⚠️ Error enviando FCM token al servidor Betty: $e');
-        print('📱 La app continuará funcionando sin sincronización del token');
-      }
-      // No relanzamos el error para que la app pueda continuar
+    } catch (e, stackTrace) {
+      ErrorService().reportNetworkError(
+        message:
+            'No se pudo sincronizar el token de notificaciones con el servidor. La aplicación continuará funcionando normalmente.',
+        technicalDetails: 'Error enviando FCM token: $e',
+        stackTrace: stackTrace,
+        context: {'token': token, 'service': 'FirebaseNotificationService'},
+      );
     }
   }
 
   Future<void> subscribeToTopic(String topic) async {
-    await _firebaseMessaging.subscribeToTopic(topic);
+    try {
+      await _firebaseMessaging.subscribeToTopic(topic);
+    } catch (e, stackTrace) {
+      ErrorService().reportFirebaseError(
+        message: 'No se pudo suscribir al tema de notificaciones',
+        technicalDetails: 'Error subscribing to topic $topic: $e',
+        stackTrace: stackTrace,
+        context: {'topic': topic},
+      );
+    }
   }
 
   Future<void> unsubscribeFromTopic(String topic) async {
-    await _firebaseMessaging.unsubscribeFromTopic(topic);
+    try {
+      await _firebaseMessaging.unsubscribeFromTopic(topic);
+    } catch (e, stackTrace) {
+      ErrorService().reportFirebaseError(
+        message: 'No se pudo desuscribir del tema de notificaciones',
+        technicalDetails: 'Error unsubscribing from topic $topic: $e',
+        stackTrace: stackTrace,
+        context: {'topic': topic},
+      );
+    }
   }
 
   String? get currentToken => _fcmToken;

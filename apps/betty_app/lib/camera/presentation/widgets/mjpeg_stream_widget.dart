@@ -52,7 +52,7 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
   }
 
   void _startStream() async {
-    // Detener stream anterior si existe
+    
     _stopStream();
 
     if (!mounted) return;
@@ -75,7 +75,7 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
       if (response.statusCode == 200) {
         final contentType = response.headers['content-type'] ?? '';
 
-        // Permitir tanto multipart/x-mixed-replace como application/octet-stream para MJPEG
+        
         if (contentType.contains('multipart/x-mixed-replace') ||
             contentType.contains('application/octet-stream') ||
             contentType.contains('image/jpeg')) {
@@ -89,7 +89,7 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
                 _onStreamError('Stream ended unexpectedly');
               }
             },
-            cancelOnError: false, // No cancelar automáticamente en errores
+            cancelOnError: false, 
           );
         } else {
           _onStreamError('Invalid content type: $contentType. Expected multipart/x-mixed-replace or image/jpeg');
@@ -117,11 +117,11 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
   Stream<Uint8List> _parseMultipartStream(Stream<List<int>> stream) async* {
     final buffer = <int>[];
 
-    // JPEG markers - basado en mjpeg_view library
+    
     const int startMarker1 = 0xFF;
-    const int startMarker2 = 0xD8; // SOI (Start of Image)
+    const int startMarker2 = 0xD8; 
     const int endMarker1 = 0xFF;
-    const int endMarker2 = 0xD9; // EOI (End of Image)
+    const int endMarker2 = 0xD9; 
 
     int soiSearchStart = 0;
     int foundSoiIndex = -1;
@@ -130,41 +130,41 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
       buffer.addAll(chunk);
 
       while (true) {
-        // Si ya encontramos SOI, buscar EOI
+        
         if (foundSoiIndex != -1) {
           final eoiSearchStart = foundSoiIndex + 2;
 
           if (buffer.length < eoiSearchStart + 2) {
-            break; // No hay suficientes bytes para EOI
+            break; 
           }
 
           final eoiIndex = _findJpegMarker(buffer, endMarker1, endMarker2, eoiSearchStart);
 
           if (eoiIndex == -1) {
-            break; // EOI no encontrado aún
+            break; 
           } else {
-            // Frame completo encontrado
+            
             final frame = buffer.sublist(foundSoiIndex, eoiIndex + 2);
 
             if (frame.length > 2) {
               yield Uint8List.fromList(frame);
             }
 
-            // Limpiar buffer y resetear búsqueda
+            
             buffer.removeRange(0, eoiIndex + 2);
             soiSearchStart = 0;
             foundSoiIndex = -1;
           }
         } else {
-          // Buscar SOI
+          
           if (buffer.length < soiSearchStart + 2) {
-            break; // No hay suficientes bytes para SOI
+            break; 
           }
 
           foundSoiIndex = _findJpegMarker(buffer, startMarker1, startMarker2, soiSearchStart);
 
           if (foundSoiIndex == -1) {
-            // SOI no encontrado, actualizar punto de búsqueda
+            
             soiSearchStart = buffer.length > 1 ? buffer.length - 1 : 0;
             break;
           }
@@ -185,7 +185,7 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
   }
 
   void _onFrameReceived(Uint8List frameData) {
-    _timeoutTimer?.cancel(); // Cancelar timeout ya que recibimos data
+    _timeoutTimer?.cancel(); 
     if (mounted) {
       setState(() {
         _currentFrame = frameData;
@@ -234,7 +234,7 @@ class _MjpegStreamWidgetState extends State<MjpegStreamWidget> {
     return Image.memory(
       _currentFrame!,
       fit: widget.fit,
-      gaplessPlayback: true, // Importante para streams continuos
+      gaplessPlayback: true, 
     );
   }
 }

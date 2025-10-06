@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../firebase_options.dart';
 import 'background_message_handler.dart';
 import 'notification_initializer.dart';
+import '../../error/error.dart';
 
 class FirebaseNotificationSetup {
   static Future<void> initialize() async {
@@ -10,8 +11,12 @@ class FirebaseNotificationSetup {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
       await NotificationInitializer.initialize();
-    } catch (e) {
-      // Log el error pero permite que la app continue
+    } catch (e, stackTrace) {
+      ErrorService().reportFirebaseError(
+        message: 'Error crítico al inicializar Firebase',
+        technicalDetails: 'FirebaseNotificationSetup error: $e',
+        stackTrace: stackTrace,
+      );
     }
   }
 }

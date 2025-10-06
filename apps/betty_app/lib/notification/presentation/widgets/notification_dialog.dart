@@ -62,7 +62,7 @@ class NotificationDialog extends StatelessWidget {
       ],
     );
 
-    // Aplicar ancho máximo configurable
+    
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: NotificationConfig.dialogMaxWidth),
       child: NotificationConfig.enableDialogAnimations

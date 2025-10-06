@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import '../../domain/repositories/camera_repository.dart';
 import '../datasources/camera_remote_data_source.dart';
+import '../../../error/error.dart';
 
 class CameraRepositoryImpl implements CameraRepository {
   final CameraRemoteDataSource remoteDataSource;
@@ -11,7 +12,13 @@ class CameraRepositoryImpl implements CameraRepository {
   Future<Uint8List> capturePhoto() async {
     try {
       return await remoteDataSource.capturePhoto();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      ErrorService().reportNetworkError(
+        message: 'Error al capturar foto desde el servidor de cámara',
+        technicalDetails: 'CameraRepository failed to capture photo: $e',
+        stackTrace: stackTrace,
+        context: {'repository': 'CameraRepositoryImpl'},
+      );
       throw Exception('Failed to capture photo: $e');
     }
   }
