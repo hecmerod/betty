@@ -1,4 +1,9 @@
 export 'config/notification_config.dart';
+export 'config/firebase_config.dart';
 export 'domain/models/notification_data.dart';
 export 'presentation/widgets/notification_dialog.dart';
+export 'presentation/widgets/notification_wrapper.dart';
+export 'services/background_message_handler.dart';
+export 'services/notification_initializer.dart';
+export 'services/firebase_notification_setup.dart';
 export 'notification_handler.dart';

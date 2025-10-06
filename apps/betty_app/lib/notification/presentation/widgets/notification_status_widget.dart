@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/services/firebase_notification_service.dart';
-import '../../../core/config/firebase_config.dart';
+import '../../config/firebase_config.dart';
 
 class NotificationStatusWidget extends StatefulWidget {
   const NotificationStatusWidget({super.key});

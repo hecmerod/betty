@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import '../config/firebase_config.dart';
+import '../../notification/config/firebase_config.dart';
 import '../di/dependency_injection.dart';
 import '../../auth/infrastructure/services/jwt_service.dart';
 import '../../notification/notification_handler.dart';
@@ -116,8 +116,19 @@ class FirebaseNotificationService {
   void _handleSystemUpdate(RemoteMessage message) {}
 
   Future<void> _sendTokenToServer(String token) async {
-    final jwtToken = JwtService.generateToken();
-    await DependencyInjection.apiService.registerFCMToken(token, jwtToken);
+    try {
+      final jwtToken = JwtService.generateToken();
+      await DependencyInjection.apiService.registerFCMToken(token, jwtToken);
+      if (kDebugMode) {
+        print('✅ FCM Token enviado al servidor Betty exitosamente');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ Error enviando FCM token al servidor Betty: $e');
+        print('📱 La app continuará funcionando sin sincronización del token');
+      }
+      // No relanzamos el error para que la app pueda continuar
+    }
   }
 
   Future<void> subscribeToTopic(String topic) async {
