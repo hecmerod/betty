@@ -31,9 +31,7 @@
     "**/.dart_tool": true
   },
   "typescript.preferences.importModuleSpecifier": "relative",
-  "eslint.workingDirectories": [
-    "apps/betty-server"
-  ],
+  "eslint.workingDirectories": ["apps/betty-server"],
   "[dart]": {
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
@@ -43,5 +41,6 @@
     "editor.suggestSelection": "first",
     "editor.tabCompletion": "onlySnippets",
     "editor.wordBasedSuggestions": "off"
-  }
+  },
+  "python.analysis.extraPaths": ["./apps/betty-camera/src/camera"]
 }
