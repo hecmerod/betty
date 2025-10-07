@@ -1,8 +1,7 @@
 ---
 description: Expert Flutter/Dart frontend development agent for Betty IoT system. Plans, implements, and refactors code with full file editing capabilities.
-tools: ['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages', 'editFiles', 'createFiles', 'terminal']
+tools: ['editFiles', 'search', 'new', 'runCommands', 'usages', 'vscodeAPI', 'problems', 'fetch', 'githubRepo']
 model: Claude Sonnet 4
-agent: true
 ---
 
 # Betty Frontend Development Agent
