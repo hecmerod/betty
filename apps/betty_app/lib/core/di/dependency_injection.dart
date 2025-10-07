@@ -2,6 +2,7 @@ import '../config/app_config.dart';
 import '../../shared/shared.dart';
 import '../../camera/camera.dart';
 import '../../notification/notification.dart';
+import '../../alarm/alarm.dart';
 
 class DependencyInjection {
   static BettyApiService? _apiService;
@@ -10,6 +11,11 @@ class DependencyInjection {
   static CameraRepository? _cameraRepository;
   static GetPhotoUseCase? _getPhotoUseCase;
   static GetVideoStreamUseCase? _getVideoStreamUseCase;
+
+  // Alarm dependencies
+  static AlarmApiService? _alarmApiService;
+  static GetAlarmStatusUseCase? _getAlarmStatusUseCase;
+  static ToggleAlarmUseCase? _toggleAlarmUseCase;
 
   static BettyApiService get apiService {
     _apiService ??= BettyApiService(baseUrl: AppConfig.baseUrl);
@@ -45,6 +51,26 @@ class DependencyInjection {
     return CameraProvider(getPhotoUseCase: getPhotoUseCase, getVideoStreamUseCase: getVideoStreamUseCase);
   }
 
+  // Alarm getters
+  static AlarmApiService get alarmApiService {
+    _alarmApiService ??= AlarmApiService(apiService);
+    return _alarmApiService!;
+  }
+
+  static GetAlarmStatusUseCase get getAlarmStatusUseCase {
+    _getAlarmStatusUseCase ??= GetAlarmStatusUseCase(alarmApiService);
+    return _getAlarmStatusUseCase!;
+  }
+
+  static ToggleAlarmUseCase get toggleAlarmUseCase {
+    _toggleAlarmUseCase ??= ToggleAlarmUseCase(alarmApiService);
+    return _toggleAlarmUseCase!;
+  }
+
+  static AlarmProvider createAlarmProvider() {
+    return AlarmProvider(getAlarmStatusUseCase, toggleAlarmUseCase);
+  }
+
   static void reset() {
     _apiService = null;
     _notificationApiService = null;
@@ -52,5 +78,10 @@ class DependencyInjection {
     _cameraRepository = null;
     _getPhotoUseCase = null;
     _getVideoStreamUseCase = null;
+
+    // Reset alarm dependencies
+    _alarmApiService = null;
+    _getAlarmStatusUseCase = null;
+    _toggleAlarmUseCase = null;
   }
 }

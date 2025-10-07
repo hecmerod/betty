@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../notification/notification_handler.dart';
+import '../../../alarm/alarm.dart';
 
 class PrimaryPage extends StatelessWidget {
   const PrimaryPage({super.key});
@@ -23,6 +25,15 @@ class PrimaryPage extends StatelessWidget {
             const SizedBox(height: 10),
             const Text('Página principal del sistema', style: TextStyle(fontSize: 16, color: Colors.grey)),
             const SizedBox(height: 40),
+
+            Consumer<AlarmProvider>(
+              builder: (context, alarmProvider, child) {
+                return const AlarmControlWidget();
+              },
+            ),
+
+            const SizedBox(height: 20),
+
             ElevatedButton.icon(
               onPressed: () {
                 NotificationHandler.instance.testNotification();

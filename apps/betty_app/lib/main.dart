@@ -36,8 +36,11 @@ class BettyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     ErrorService().initialize(navigatorKey);
 
-    return ChangeNotifierProvider(
-      create: (_) => DependencyInjection.createCameraProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DependencyInjection.createCameraProvider()),
+        ChangeNotifierProvider(create: (_) => DependencyInjection.createAlarmProvider()),
+      ],
       child: MaterialApp(
         title: 'Betty Camera Control',
         navigatorKey: navigatorKey,
