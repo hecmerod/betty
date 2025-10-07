@@ -14,24 +14,21 @@
       ],
       "outputs": ["{projectRoot}/node_modules"],
       "options": {
-        "command": "npm ci --prefer-offline",
+        "command": "npm install",
         "cwd": "apps/betty-server"
       }
     },
     "build": {
       "executor": "@nx/js:tsc",
       "dependsOn": ["install"],
-      "outputs": ["{workspaceRoot}/dist/apps/betty-server"],
+      "outputs": ["{workspaceRoot}/betty-server/dist/"],
       "options": {
         "main": "apps/betty-server/src/main.ts",
         "tsConfig": "apps/betty-server/tsconfig.app.json",
-        "outputPath": "dist/apps/betty-server",
+        "outputPath": "apps/betty-server/dist",
         "clean": true
       },
       "configurations": {
-        "development": {
-          "dependsOn": []
-        },
         "production": {
           "dependsOn": ["install"],
           "optimization": true,
@@ -39,36 +36,10 @@
         }
       }
     },
-    "prune-lockfile": {
-      "dependsOn": ["build"],
-      "cache": true,
-      "executor": "@nx/js:prune-lockfile",
-      "outputs": [
-        "{workspaceRoot}/dist/apps/betty-server/package.json",
-        "{workspaceRoot}/dist/apps/betty-server/package-lock.json"
-      ],
-      "options": {
-        "buildTarget": "build"
-      }
-    },
-    "copy-workspace-modules": {
-      "dependsOn": ["build"],
-      "cache": true,
-      "outputs": ["{workspaceRoot}/dist/apps/betty-server/workspace_modules"],
-      "executor": "@nx/js:copy-workspace-modules",
-      "options": {
-        "buildTarget": "build"
-      }
-    },
-    "prune": {
-      "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
-      "executor": "nx:noop"
-    },
     "serve": {
       "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "command": "nodemon",
         "cwd": "apps/betty-server"
       },
       "configurations": {
@@ -78,13 +49,8 @@
         },
         "production": {
           "dependsOn": ["build"],
-          "command": "node ../../dist/apps/betty-server/main.js"
+          "command": "node dist/src/main.js"
         }
-      }
-    },
-    "test": {
-      "options": {
-        "passWithNoTests": true
       }
     }
   }

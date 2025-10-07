@@ -62,9 +62,11 @@ app = FastAPI(
 app.include_router(camera_router, prefix="/camera")
 
 if __name__ == "__main__":
+    reload = os.getenv("DEV_MODE", "False").lower() in ("true", "1", "t")
+    print(reload)
     uvicorn.run(
         "main:app",
         host=os.getenv("HOST"),
         port=int(os.getenv("PORT")),
-        reload=os.getenv("DEV_MODE"),
+        reload=reload,
     )
