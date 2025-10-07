@@ -9,22 +9,24 @@ export class AlarmService {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   async trigger(data: Record<string, unknown>): Promise<void> {
-    try {
-      await this.notificationsService.sendNotification({
-        token: '',
-        notification: {
-          title: '🚨 BETTY ALARM',
-          body: 'Persona detectada en tu hogar',
-          imageUrl: '',
-        },
-        data: {
-          type: 'alarm',
-          timestamp: new Date().toISOString(),
-          detectionType: (data?.event_type as string) || 'person',
-        },
-      });
-    } catch (error) {
-      this.logger.error('❌ Error enviando notificación:', error);
+    if (this.isActive) {
+      try {
+        await this.notificationsService.sendNotification({
+          token: '',
+          notification: {
+            title: '🚨 BETTY ALARM',
+            body: 'Persona detectada en tu hogar',
+            imageUrl: '',
+          },
+          data: {
+            type: 'alarm',
+            timestamp: new Date().toISOString(),
+            detectionType: (data?.event_type as string) || 'person',
+          },
+        });
+      } catch (error) {
+        this.logger.error('❌ Error enviando notificación:', error);
+      }
     }
   }
 
