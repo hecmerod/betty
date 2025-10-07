@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../notification/notification_handler.dart';
 
 class PrimaryPage extends StatelessWidget {
   const PrimaryPage({super.key});
@@ -12,15 +13,28 @@ class PrimaryPage extends StatelessWidget {
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.home, size: 100, color: Colors.green),
-            SizedBox(height: 20),
-            Text('🍓 Bienvenido a Betty', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            Text('Página principal del sistema', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            const Icon(Icons.home, size: 100, color: Colors.green),
+            const SizedBox(height: 20),
+            const Text('🍓 Bienvenido a Betty', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            const Text('Página principal del sistema', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            const SizedBox(height: 40),
+            ElevatedButton.icon(
+              onPressed: () {
+                NotificationHandler.instance.testNotification();
+              },
+              icon: const Icon(Icons.notifications),
+              label: const Text('Probar Notificación'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              ),
+            ),
           ],
         ),
       ),

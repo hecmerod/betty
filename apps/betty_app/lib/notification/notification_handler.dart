@@ -71,7 +71,6 @@ class NotificationHandler {
         context: _context!,
         builder: (context) => NotificationDialog(notification: notification),
       ).then((_) {
-        
         if (NotificationConfig.enableDialogAutoDismiss) {
           Future.delayed(NotificationConfig.dialogAutoDismiss, () {
             if (_context != null && _context!.mounted) {
@@ -87,5 +86,20 @@ class NotificationHandler {
 
   void clearHistory() {
     _notificationHistory.clear();
+  }
+
+  // Método de debug para probar notificaciones
+  void testNotification() {
+    final testNotification = NotificationData(
+      title: 'Prueba de Notificación',
+      body: 'Esta es una notificación de prueba para verificar que el sistema funciona correctamente',
+      data: {'type': 'test'},
+      type: 'test',
+      receivedAt: DateTime.now(),
+      source: NotificationSource.foreground,
+    );
+
+    _addToHistory(testNotification);
+    _showNotificationDialog(testNotification);
   }
 }

@@ -4,6 +4,6 @@ export 'domain/models/notification_data.dart';
 export 'presentation/widgets/notification_dialog.dart';
 export 'presentation/widgets/notification_wrapper.dart';
 export 'infrastructure/services/notification_setup_service.dart';
-export 'infrastructure/services/firebase_notification_service.dart';
 export 'infrastructure/services/notification_api_service.dart';
 export 'notification_handler.dart';
+export '../core/services/firebase_notification_service.dart';
