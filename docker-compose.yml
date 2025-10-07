@@ -1,0 +1,69 @@
+services:
+  betty-server:
+    build:
+      context: .
+      dockerfile: apps/betty-server/Dockerfile
+    container_name: betty-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - apps/betty-server/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    networks:
+      - betty-network
+
+  betty-camera:
+    build:
+      context: .
+      dockerfile: apps/betty-camera/Dockerfile
+    image: betty-camera:final
+    container_name: betty-camera
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "8001:8001"
+    volumes:
+      # Montajes necesarios para acceso completo a la cámara Raspberry Pi
+      - /opt/vc:/opt/vc
+      - /dev:/dev
+      - /sys:/sys
+      - /proc:/proc
+      - /run/udev:/run/udev:ro
+      - /lib/firmware:/lib/firmware:ro
+      - /usr/share/libcamera:/usr/share/libcamera:ro
+    device_cgroup_rules:
+      # Reglas de dispositivos para acceso a cámara y hardware
+      - 'c 81:* rmw'   # Video devices
+      - 'c 235:* rmw'  # Media devices
+      - 'c 236:* rmw'  # Additional media devices
+    env_file:
+      - apps/betty-camera/.env
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8001
+      - LOG_LEVEL=INFO
+      - PYTHONPATH=/app/src
+    networks:
+      - betty-network
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer-data:/data
+    ports:
+      - 9000:9000
+    networks:
+      - betty-network
+
+networks:
+  betty-network:
+    driver: bridge
