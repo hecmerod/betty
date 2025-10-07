@@ -1,6 +1,6 @@
 import 'dart:convert';
 import '../../../shared/server/betty_api_service.dart';
-import '../../../shared/error/error.dart';
+import '../../../shared/error/services/error_service.dart';
 import '../../domain/entities/alarm_status.dart';
 
 class AlarmApiService {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../notification/notification_handler.dart';
-import '../../../alarm/alarm.dart';
+import '../../../alarm/presentation/providers/alarm_provider.dart';
+import '../../../alarm/presentation/widgets/alarm_control_widget.dart';
 
 class PrimaryPage extends StatelessWidget {
   const PrimaryPage({super.key});

@@ -1,3 +1,2 @@
-export 'pages/camera_page.dart';
-export 'providers/camera_provider.dart';
-export 'widgets/mjpeg_stream_widget.dart';
+// Este archivo ya no se utiliza.
+// Todas las importaciones ahora son directas para evitar barrel files.

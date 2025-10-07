@@ -1,2 +1,2 @@
-export 'datasources/camera_remote_data_source.dart';
-export 'repositories/camera_repository_impl.dart';
+// Este archivo ya no se utiliza.
+// Todas las importaciones ahora son directas para evitar barrel files.

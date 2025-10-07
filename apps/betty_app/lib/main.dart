@@ -5,9 +5,10 @@ import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/di/dependency_injection.dart';
-import 'notification/notification.dart';
-import 'bottom_navigator_bar/bottom_navigator_bar.dart';
-import 'shared/error/error.dart';
+import 'notification/infrastructure/services/notification_setup_service.dart';
+import 'bottom_navigator_bar/presentation/pages/main_navigation_page.dart';
+import 'notification/presentation/widgets/notification_wrapper.dart';
+import 'shared/error/services/error_service.dart';
 
 void main() async {
   runZonedGuarded(

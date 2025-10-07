@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import '../../notification/config/firebase_config.dart';
 import '../di/dependency_injection.dart';
 import '../../notification/notification_handler.dart';
-import '../../shared/error/error.dart';
+import '../../shared/error/services/error_service.dart';
 
 class FirebaseNotificationService {
   static final FirebaseNotificationService _instance = FirebaseNotificationService._internal();

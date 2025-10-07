@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../domain/models/navigation_item.dart';
 import '../widgets/bottom_navigation_bar_widget.dart';
-import '../../../primary/primary.dart';
-import '../../../gps/gps.dart';
-import '../../../camera/camera.dart';
+import '../../../primary/presentation/pages/primary_page.dart';
+import '../../../gps/presentation/pages/gps_page.dart';
+import '../../../camera/presentation/pages/camera_page.dart';
 
 class MainNavigationPage extends StatefulWidget {
   const MainNavigationPage({super.key});

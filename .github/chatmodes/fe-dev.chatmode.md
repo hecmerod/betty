@@ -72,8 +72,9 @@ Create a comprehensive implementation plan:
 - Use **Clean Architecture** with Domain/Infrastructure/Presentation layers
 - Apply **Hexagonal Architecture** for complex modules (GPS, Camera)
 - Implement **Provider pattern** for state management
-- Create **barrel exports** for clean imports
+- **NEVER use barrel files** - Always use direct imports for better performance and maintainability
 - Follow **Material Design 3** principles
+- Eliminate unnecessary abstraction layers when they don't add value
 
 ### Code Standards
 
@@ -82,6 +83,9 @@ Create a comprehensive implementation plan:
 - Implement **proper error handling** with user-friendly messages
 - Use **async/await** for asynchronous operations
 - Follow **dependency injection** patterns
+- **Direct imports only**: Import specific files, never use barrel exports (export files)
+- **Simplify when possible**: Remove unnecessary repository layers if use cases can call services directly
+- **Explicit dependencies**: Make all imports and dependencies clear and traceable
 
 ### File Organization
 
@@ -89,16 +93,29 @@ Create a comprehensive implementation plan:
 lib/
 ├── module_name/
 │   ├── domain/
-│   │   ├── entities/
-│   │   ├── repositories/
-│   │   └── use_cases/
+│   │   └── entities/           # Domain models only
+│   ├── application/
+│   │   └── use_cases/          # Business logic that may call services directly
 │   ├── infrastructure/
-│   │   ├── repositories/
-│   │   └── ioc/
+│   │   └── services/           # API services, data sources
 │   └── presentation/
 │       ├── pages/
-│       ├── providers/
+│       ├── providers/          # State management
 │       └── widgets/
+```
+
+### Import Guidelines
+
+```dart
+// ✅ CORRECT - Direct imports
+import 'package:flutter/material.dart';
+import '../../../shared/server/betty_api_service.dart';
+import '../../domain/entities/alarm_status.dart';
+import '../providers/alarm_provider.dart';
+
+// ❌ WRONG - Barrel imports
+import '../../shared/shared.dart';
+import '../alarm.dart';
 ```
 
 ## 🚀 Autonomous Operation
@@ -110,14 +127,47 @@ You have full authority to:
 - **Refactor code** to improve maintainability and performance
 - **Run terminal commands** for testing and building
 - **Update configurations** like pubspec.yaml when adding dependencies
+- **Eliminate barrel files** and convert them to direct imports
+- **Simplify architecture** by removing unnecessary abstraction layers
+- **Restructure modules** to follow Betty's established patterns
 
-## 📱 UI/UX Considerations
+## � Betty-Specific Lessons Learned
+
+### Performance & Maintainability
+
+- **No Barrel Files**: Direct imports improve compilation speed and tree-shaking
+- **Simplified Architecture**: Remove repository layers when use cases can call services directly
+- **Explicit Dependencies**: Every import should be traceable and purposeful
+
+### Module Structure Examples
+
+```dart
+// Alarm Module Pattern (Simplified)
+GetAlarmStatusUseCase -> AlarmApiService (direct)
+// No intermediate repository layer needed
+
+// Dependency Injection Pattern
+static AlarmApiService get alarmApiService {
+  _alarmApiService ??= AlarmApiService(apiService);
+  return _alarmApiService!;
+}
+```
+
+### Common Refactoring Patterns
+
+1. **Eliminate Barrel Files**: Replace all `export` files with direct imports
+2. **Remove Unnecessary Repositories**: Let use cases call services directly when appropriate
+3. **Simplify Dependency Trees**: Fewer layers = better performance and maintainability
+
+## �📱 UI/UX Considerations
 
 - **Responsive Design**: Works on different screen sizes
 - **Accessibility**: Proper semantic labels and navigation
 - **Performance**: Smooth animations and efficient rendering
 - **User Experience**: Intuitive navigation and clear feedback
 - **Theme Support**: Consistent with Betty's dark/light theme system
+- **Material Design 3**: Follow latest design system guidelines
+- **State Management**: Use Provider pattern with proper error handling
 
 ## 🔧 Technical Tools Available
 

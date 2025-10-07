@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../../application/usecases/get_photo.dart';
 import '../../application/usecases/get_video_stream.dart';
-import '../../../shared/error/error.dart';
+import '../../../shared/error/services/error_service.dart';
 
 class CameraProvider extends ChangeNotifier {
   final GetPhotoUseCase getPhotoUseCase;

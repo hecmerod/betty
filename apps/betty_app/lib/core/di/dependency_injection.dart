@@ -1,8 +1,16 @@
 import '../config/app_config.dart';
-import '../../shared/shared.dart';
-import '../../camera/camera.dart';
-import '../../notification/notification.dart';
-import '../../alarm/alarm.dart';
+import '../../shared/server/betty_api_service.dart';
+import '../../camera/infrastructure/datasources/camera_remote_data_source.dart';
+import '../../camera/infrastructure/repositories/camera_repository_impl.dart';
+import '../../camera/domain/repositories/camera_repository.dart';
+import '../../camera/application/usecases/get_photo.dart';
+import '../../camera/application/usecases/get_video_stream.dart';
+import '../../camera/presentation/providers/camera_provider.dart';
+import '../../notification/infrastructure/services/notification_api_service.dart';
+import '../../alarm/infrastructure/services/alarm_api_service.dart';
+import '../../alarm/application/use_cases/get_alarm_status_use_case.dart';
+import '../../alarm/application/use_cases/toggle_alarm_use_case.dart';
+import '../../alarm/presentation/providers/alarm_provider.dart';
 
 class DependencyInjection {
   static BettyApiService? _apiService;
