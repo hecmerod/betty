@@ -52,6 +52,27 @@
           "command": "node dist/src/main.js"
         }
       }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/betty-server",
+        "command": "npm test"
+      }
+    },
+    "test:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/betty-server",
+        "command": "npm run test:watch"
+      }
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/betty-server",
+        "command": "npm run test:coverage"
+      }
     }
   }
 }

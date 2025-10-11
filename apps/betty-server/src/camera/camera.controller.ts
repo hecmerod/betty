@@ -17,8 +17,6 @@ export class CameraController {
   @Get('photo')
   async capturePhoto(@Res() res: Response): Promise<void> {
     try {
-      this.logger.debug('Photo capture request received');
-
       this.cameraService.capturePhoto().subscribe({
         next: (photoBuffer: Buffer) => {
           res.set({
@@ -27,10 +25,8 @@ export class CameraController {
             'Cache-Control': 'no-cache',
           });
           res.end(photoBuffer);
-          this.logger.debug('Photo response sent successfully');
         },
-        error: (error) => {
-          this.logger.error('Error in photo capture', error.message);
+        error: () => {
           if (!res.headersSent) {
             res.status(500).json({
               error: 'Failed to capture photo',
@@ -39,8 +35,7 @@ export class CameraController {
           }
         },
       });
-    } catch (error) {
-      this.logger.error('Unexpected error in photo capture', error);
+    } catch {
       throw new InternalServerErrorException('Failed to capture photo');
     }
   }
@@ -59,8 +54,7 @@ export class CameraController {
         next: (stream: NodeJS.ReadableStream) => {
           stream.pipe(res);
         },
-        error: (error) => {
-          this.logger.error('Error in video stream', error.message);
+        error: () => {
           if (!res.headersSent) {
             res.status(500).json({
               error: 'Failed to start video stream',
@@ -69,25 +63,8 @@ export class CameraController {
           }
         },
       });
-
-      res.on('close', () => {
-        this.logger.debug('Client disconnected from video stream');
-      });
-    } catch (error) {
-      this.logger.error('Unexpected error in video stream', error);
+    } catch {
       throw new InternalServerErrorException('Failed to start video stream');
     }
-  }
-
-  @Get('health')
-  async checkHealth(): Promise<{ status: string; camera: boolean }> {
-    this.logger.debug('Camera health check requested');
-
-    const cameraAvailable = await this.cameraService.checkCameraHealth();
-
-    return {
-      status: cameraAvailable ? 'ok' : 'degraded',
-      camera: cameraAvailable,
-    };
   }
 }

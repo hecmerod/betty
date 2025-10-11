@@ -21,40 +21,30 @@ export class NotificationsService {
     success: boolean;
     message: string;
   } {
-    try {
-      const deviceToken: DeviceToken = {
-        token: registerTokenDto.token,
-        userId: registerTokenDto.userId,
-        platform: registerTokenDto.platform || 'unknown',
-        registeredAt: new Date(),
-        lastUsed: new Date(),
-      };
+    const deviceToken: DeviceToken = {
+      token: registerTokenDto.token,
+      userId: registerTokenDto.userId,
+      platform: registerTokenDto.platform || 'unknown',
+      registeredAt: new Date(),
+      lastUsed: new Date(),
+    };
 
-      this.deviceTokens.set(registerTokenDto.token, deviceToken);
-      this.logger.log(
-        `📱 Token registrado: ${registerTokenDto.token.substring(0, 20)}...`
-      );
+    this.deviceTokens.set(registerTokenDto.token, deviceToken);
+    this.logger.log(
+      `📱 Token registrado: ${registerTokenDto.token.substring(0, 20)}...`
+    );
 
-      return { success: true, message: 'Token registrado correctamente' };
-    } catch (error) {
-      this.logger.error('❌ Error registrando token:', error);
-      return { success: false, message: 'Error registrando token' };
-    }
+    return { success: true, message: 'Token registrado correctamente' };
   }
 
   async sendNotification(sendNotificationDto: SendNotificationDto) {
-    try {
-      for (const deviceToken of this.deviceTokens.values()) {
-        await this.firebaseService.sendToDevice(
-          deviceToken.token,
-          sendNotificationDto.notification,
-          sendNotificationDto.data
-        );
-      }
-      return { success: true };
-    } catch (error) {
-      this.logger.error('❌ Error enviando notificación:', error);
-      throw error;
+    for (const deviceToken of this.deviceTokens.values()) {
+      await this.firebaseService.sendToDevice(
+        deviceToken.token,
+        sendNotificationDto.notification,
+        sendNotificationDto.data
+      );
     }
+    return { success: true };
   }
 }
