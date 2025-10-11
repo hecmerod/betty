@@ -1,11 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FirebaseService } from './firebase.service';
 import { SendNotificationDto, RegisterTokenDto } from './dto/notification.dto';
+import { TestingAvailable } from '../shared/decorators/testing-available.decorator';
 
 interface DeviceToken {
   token: string;
-  userId?: string;
-  platform?: string;
   registeredAt: Date;
   lastUsed: Date;
 }
@@ -23,28 +22,31 @@ export class NotificationsService {
   } {
     const deviceToken: DeviceToken = {
       token: registerTokenDto.token,
-      userId: registerTokenDto.userId,
-      platform: registerTokenDto.platform || 'unknown',
       registeredAt: new Date(),
       lastUsed: new Date(),
     };
 
     this.deviceTokens.set(registerTokenDto.token, deviceToken);
-    this.logger.log(
-      `📱 Token registrado: ${registerTokenDto.token.substring(0, 20)}...`
-    );
 
     return { success: true, message: 'Token registrado correctamente' };
   }
 
-  async sendNotification(sendNotificationDto: SendNotificationDto) {
-    for (const deviceToken of this.deviceTokens.values()) {
-      await this.firebaseService.sendToDevice(
-        deviceToken.token,
+  async notifyAllDevices(sendNotificationDto: SendNotificationDto) {
+    const tokens = [];
+    this.deviceTokens.forEach((token) => tokens.push(token.token));
+
+    if (tokens.length > 0)
+      await this.firebaseService.sendToMultipleDevices(
+        tokens,
         sendNotificationDto.notification,
         sendNotificationDto.data
       );
-    }
+
     return { success: true };
+  }
+
+  @TestingAvailable
+  get _deviceTokens(): Map<string, DeviceToken> {
+    return this.deviceTokens;
   }
 }

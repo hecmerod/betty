@@ -70,11 +70,11 @@ describe('NotificationsController', () => {
         success: true,
         messageId: 'msg-123',
       };
-      mockNotificationsService.sendNotification.mockResolvedValue(mockResponse);
+      mockNotificationsService.notifyAllDevices.mockResolvedValue(mockResponse);
 
       const result = await controller.sendNotification(sendNotificationDto);
 
-      expect(mockNotificationsService.sendNotification).toHaveBeenCalledWith(
+      expect(mockNotificationsService.notifyAllDevices).toHaveBeenCalledWith(
         sendNotificationDto
       );
       expect(result).toBe(mockResponse);
@@ -88,7 +88,7 @@ describe('NotificationsController', () => {
           body: 'Test Body',
         },
       };
-      mockNotificationsService.sendNotification.mockRejectedValue(
+      mockNotificationsService.notifyAllDevices.mockRejectedValue(
         new Error('Service error')
       );
 
@@ -108,7 +108,7 @@ describe('NotificationsController', () => {
           body: 'Test Body',
         },
       };
-      mockNotificationsService.sendNotification.mockRejectedValue(
+      mockNotificationsService.notifyAllDevices.mockRejectedValue(
         new Error('Service error')
       );
 
@@ -130,13 +130,13 @@ describe('NotificationsController', () => {
           body: 'Test Body',
         },
       };
-      mockNotificationsService.sendNotification.mockResolvedValue({
+      mockNotificationsService.notifyAllDevices.mockResolvedValue({
         success: true,
       });
 
       await controller.sendNotification(sendNotificationDto);
 
-      expect(mockNotificationsService.sendNotification).toHaveBeenCalledTimes(
+      expect(mockNotificationsService.notifyAllDevices).toHaveBeenCalledTimes(
         1
       );
     });

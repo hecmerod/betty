@@ -20,7 +20,7 @@ export class NotificationsController {
   @Post('send')
   async sendNotification(@Body() sendNotificationDto: SendNotificationDto) {
     try {
-      return await this.notificationsService.sendNotification(
+      return await this.notificationsService.notifyAllDevices(
         sendNotificationDto
       );
     } catch {
