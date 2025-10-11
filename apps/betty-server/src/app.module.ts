@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
 import { ThrottlerConfigModule } from './config/throttler/throttler-config.module';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CameraModule } from './camera/camera.module';
 import { AlarmModule } from './alarm/alarm.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { HealthModule } from './shared/health/health.module';
 
 @Module({
   imports: [
@@ -19,8 +18,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     CameraModule,
     AlarmModule,
     NotificationsModule,
+    HealthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
