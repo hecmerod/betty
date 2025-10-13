@@ -11,11 +11,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Modelo inicial de ejemplo (ajustar según necesidades reales)
-model CameraPhoto {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  path       String
-  format     String
-  sizeBytes  Int
+// Modelo Alarm - solo puede haber un registro (singleton)
+model Alarm {
+  id                  Int       @id @default(1) // Forzamos siempre id = 1
+  isActive            Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  lastActivatedAt     DateTime?
+  lastDeactivatedAt   DateTime?
+  lastTriggeredAt     DateTime?
+
+  @@map("alarms")
 }
+
+

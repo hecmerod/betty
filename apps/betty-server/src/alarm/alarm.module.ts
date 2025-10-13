@@ -4,7 +4,7 @@ import { ActivateAlarmUseCase } from './application/use-cases/activate-alarm/act
 import { DeactivateAlarmUseCase } from './application/use-cases/deactivate-alarm/deactivate-alarm.use-case';
 import { TriggerAlarmUseCase } from './application/use-cases/trigger-alarm/trigger-alarm.use-case';
 import { GetAlarmStatusUseCase } from './application/use-cases/get-alarm-status/get-alarm-status.use-case';
-import { InMemoryAlarmRepository } from './infrastructure/repositories/in-memory-alarm.repository';
+import { PrismaAlarmRepository } from './infrastructure/repositories/prisma-alarm.repository';
 import { ALARM_REPOSITORY } from './infrastructure/ioc/symbols';
 import { NotificationsModule } from '../notifications/notifications.module';
 
@@ -18,7 +18,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     GetAlarmStatusUseCase,
     {
       provide: ALARM_REPOSITORY,
-      useClass: InMemoryAlarmRepository,
+      useClass: PrismaAlarmRepository,
     },
   ],
   exports: [
