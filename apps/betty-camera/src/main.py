@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.join(current_dir, 'camera'))
 
 from camera.camera_manager import CameraManager
 from camera.routes import camera_router, init_camera_routes
+from health import health_router
 from logger import setup_logging, get_logger
 
 def load_env():
@@ -59,6 +60,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.include_router(health_router)
 app.include_router(camera_router, prefix="/camera")
 
 if __name__ == "__main__":

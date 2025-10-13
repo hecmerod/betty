@@ -93,5 +93,9 @@ ENV HOST=0.0.0.0 \
     LOG_LEVEL=INFO \
     PYTHONPATH=/app/src
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
 # Comando para ejecutar la aplicación
 CMD ["python3", "src/main.py", "--host", "0.0.0.0", "--port", "8001"]

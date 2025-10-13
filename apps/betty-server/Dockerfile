@@ -26,8 +26,8 @@ COPY --from=builder /app/dist ./dist
 RUN echo "=== Contenido final de dist ===" && ls -la dist/
 RUN echo "=== Archivos JS disponibles ===" && find dist -name "*.js" -type f
 
-RUN groupadd -g 1001 betty && \
-    useradd -u 1001 -g betty -s /bin/bash -m betty && \
+RUN addgroup -g 1001 betty && \
+    adduser -u 1001 -G betty -s /bin/sh -D betty && \
     chown -R betty:betty /app
 
 USER betty
@@ -36,5 +36,9 @@ EXPOSE 3000
 
 ENV NODE_ENV=production
 ENV PORT=3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/api/health || exit 1
 
 CMD ["node", "dist/out-tsc/apps/betty-server/src/main.js"]
