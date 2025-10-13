@@ -9,8 +9,7 @@ export class HttpCameraAdapter {
   private readonly cameraBaseUrl: string;
 
   constructor(private readonly httpService: HttpService) {
-    this.cameraBaseUrl =
-      process.env.CAMERA_SERVICE_URL || 'http://localhost:8001/camera';
+    this.cameraBaseUrl = process.env.CAMERA_SERVICE_URL;
   }
 
   requestPhoto(): Observable<Buffer> {

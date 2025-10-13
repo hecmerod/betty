@@ -12,6 +12,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - CAMERA_SERVICE_URL=http://betty-camera:8001/camera
     networks:
       - betty-network
 
