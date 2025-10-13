@@ -5,8 +5,12 @@ WORKDIR /app
 COPY tsconfig.base.json ./
 COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
 COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+COPY apps/betty-server/prisma ./apps/betty-server/prisma
 
-RUN cd apps/betty-server && npm ci && npm cache clean --force
+RUN cd apps/betty-server \
+    && npm ci \
+    && npx prisma generate --schema=prisma/schema.prisma \
+    && npm cache clean --force
 
 COPY apps/betty-server/src/ ./apps/betty-server/src/
 
@@ -17,10 +21,9 @@ FROM node:20-alpine AS production
 WORKDIR /app
 
 COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
-
-RUN npm ci --only=production && npm cache clean --force
-
+COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
+COPY apps/betty-server/prisma ./prisma
 
 # Debug: verificar qué se copió
 RUN echo "=== Contenido final de dist ===" && ls -la dist/

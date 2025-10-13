@@ -4,6 +4,9 @@ services:
       context: .
       dockerfile: apps/betty-server/Dockerfile
     container_name: betty-server
+    depends_on:
+      betty-db:
+        condition: service_healthy
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -13,6 +16,7 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - CAMERA_SERVICE_URL=http://betty-camera:8001/camera
+      - DATABASE_URL=postgresql://betty:${POSTGRES_PASSWORD}@betty-db:5432/betty
     networks:
       - betty-network
 
@@ -61,6 +65,8 @@ services:
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
     volumes:
       - betty-db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U betty -d betty"]
       interval: 10s
@@ -69,7 +75,6 @@ services:
       start_period: 30s
     networks:
       - betty-network
-    # No exponemos puertos para que solo sea accesible internamente
 
   betty-db-backup:
     image: postgres:16-alpine

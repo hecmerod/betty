@@ -6,6 +6,7 @@ import { CameraModule } from './camera/camera.module';
 import { AlarmModule } from './alarm/alarm.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { HealthModule } from './shared/health/health.module';
+import { PrismaModule } from './shared/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { HealthModule } from './shared/health/health.module';
     AlarmModule,
     NotificationsModule,
     HealthModule,
+    PrismaModule,
   ],
 })
 export class AppModule {}

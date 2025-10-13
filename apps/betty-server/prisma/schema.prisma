@@ -1,0 +1,21 @@
+// Prisma schema para betty-server
+// Fuente de datos PostgreSQL
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Generador del cliente
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Modelo inicial de ejemplo (ajustar según necesidades reales)
+model CameraPhoto {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  path       String
+  format     String
+  sizeBytes  Int
+}
