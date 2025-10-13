@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.app.json",
     "start": "node dist/src/main.js",
+    "start:dev": "nodemon --watch src --ext ts --exec 'npx tsx --tsconfig tsconfig.app.json' src/main.ts",
     "test": "NODE_ENV=test NODE_OPTIONS='--no-deprecation' jest",
     "test:watch": "NODE_ENV=test NODE_OPTIONS='--no-deprecation' jest --watch"
   },
@@ -35,7 +36,8 @@
     "@types/node": "20.19.9",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.7.0"
   },
   "peerDependencies": {
     "typescript": "~5.9.2"

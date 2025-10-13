@@ -14,26 +14,37 @@ export class FirebaseService implements OnModuleInit {
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
-    const firebaseConfig = {
-      projectId: this.configService.get<string>('FIREBASE_PROJECT_ID'),
-      privateKey: this.configService
-        .get<string>('FIREBASE_PRIVATE_KEY')
-        ?.replace(/\\n/g, '\n'),
-      clientEmail: this.configService.get<string>('FIREBASE_CLIENT_EMAIL'),
-    };
+    try {
+      const firebaseConfig = {
+        projectId: this.configService.get<string>('FIREBASE_PROJECT_ID'),
+        privateKey: this.configService
+          .get<string>('FIREBASE_PRIVATE_KEY')
+          ?.replace(/\\n/g, '\n'),
+        clientEmail: this.configService.get<string>('FIREBASE_CLIENT_EMAIL'),
+      };
 
-    if (!admin.apps.length) {
-      admin.initializeApp({
-        credential: admin.credential.cert({
+      if (!firebaseConfig.projectId || !firebaseConfig.privateKey || !firebaseConfig.clientEmail) {
+        console.warn('[FirebaseService] Configuración de credenciales incompleta. Notificaciones deshabilitadas.');
+        return;
+      }
+
+      if (!admin.apps.length) {
+        admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId: firebaseConfig.projectId,
+            privateKey: firebaseConfig.privateKey,
+            clientEmail: firebaseConfig.clientEmail,
+          }),
           projectId: firebaseConfig.projectId,
-          privateKey: firebaseConfig.privateKey,
-          clientEmail: firebaseConfig.clientEmail,
-        }),
-        projectId: firebaseConfig.projectId,
-      });
-    }
+        });
+      }
 
-    this.messaging = admin.messaging();
+      this.messaging = admin.messaging();
+      console.log('[FirebaseService] Inicialización exitosa de Firebase');
+    } catch (error) {
+      console.error('[FirebaseService] Error al inicializar Firebase:', error);
+      // No lanzar excepción, solo loguear y continuar
+    }
   }
 
   async sendToDevice(
@@ -47,7 +58,6 @@ export class FirebaseService implements OnModuleInit {
         title: notification.title,
         body: notification.body,
       },
-      data: data || {},
       android: {
         priority: 'high' as const,
         notification: {

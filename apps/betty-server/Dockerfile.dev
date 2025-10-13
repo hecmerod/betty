@@ -1,0 +1,27 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instalar dependencias de desarrollo
+COPY tsconfig.base.json ./
+COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+
+# Instalar TODAS las dependencias (incluyendo devDependencies para ts-node, nodemon, etc.)
+RUN cd apps/betty-server && npm ci && npm cache clean --force
+
+# NO copiar el código aquí - se montará como volumen para hot-reload
+
+WORKDIR /app/apps/betty-server
+
+EXPOSE 3000
+
+ENV NODE_ENV=development
+ENV PORT=3000
+
+# Health check más tolerante para desarrollo
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/api/health || exit 1
+
+# Usar el comando start:dev de NestJS que tiene hot-reload integrado
+CMD ["npm", "run", "start:dev"]

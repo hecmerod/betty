@@ -44,4 +44,7 @@ async function bootstrap() {
   Logger.log(`📊 Health check: http://0.0.0.0:${port}/${globalPrefix}/health`);
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  Logger.error('❌ Error during bootstrap:', err);
+  process.exit(1);
+});

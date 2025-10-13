@@ -9,3 +9,5 @@ health_router = APIRouter()
 async def health_check():
     """Endpoint de health check para Docker"""
     return {"status": "healthy", "service": "betty-camera"}
+
+

@@ -1,0 +1,98 @@
+services:
+  # Base de datos PostgreSQL para desarrollo
+  postgres-dev:
+    image: postgres:16-alpine
+    container_name: betty-postgres-dev
+    environment:
+      POSTGRES_DB: betty_dev
+      POSTGRES_USER: betty
+      POSTGRES_PASSWORD: betty_dev_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U betty -d betty_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - betty-dev-network
+
+  # Servidor NestJS en modo desarrollo con hot-reload
+  betty-server-dev:
+    build:
+      context: .
+      dockerfile: apps/betty-server/Dockerfile.dev
+    container_name: betty-server-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Montar el código fuente para hot-reload
+      - ./apps/betty-server/src:/app/apps/betty-server/src:rw
+      - ./apps/betty-server/.env:/app/apps/betty-server/.env:ro
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: postgres-dev
+      DB_PORT: 5432
+      DB_NAME: betty_dev
+      DB_USER: betty
+      DB_PASSWORD: betty_dev_password
+    env_file:
+      - apps/betty-server/.env
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+    networks:
+      - betty-dev-network
+    restart: unless-stopped
+
+  # Cámara Python con hot-reload
+  betty-camera-dev:
+    build:
+      context: .
+      dockerfile: apps/betty-camera/Dockerfile.dev
+    container_name: betty-camera-dev
+    privileged: true  # Necesario para acceso completo a la cámara
+    ports:
+      - "8000:8001"
+    volumes:
+      # Montar el código fuente para hot-reload
+      - ./apps/betty-camera/src:/app/src:rw
+      - ./apps/betty-camera/.env:/app/.env:ro
+      # Montajes necesarios para acceso completo a la cámara Raspberry Pi
+      - /opt/vc:/opt/vc:ro
+      - /dev:/dev
+      - /sys:/sys:ro
+      - /run/udev:/run/udev:ro
+      - /lib/firmware:/lib/firmware:ro
+      - /usr/share/libcamera:/usr/share/libcamera:ro
+    device_cgroup_rules:
+      # Reglas de dispositivos para acceso a cámara y hardware de Raspberry Pi
+      - 'c 81:* rmw'   # Video devices (/dev/video*)
+      - 'c 235:* rmw'  # Media devices
+      - 'c 236:* rmw'  # Additional media devices
+    environment:
+      ENVIRONMENT: development
+      HOST: 0.0.0.0
+      PORT: 8001
+      LOG_LEVEL: DEBUG
+      PYTHONPATH: /app/src
+      BETTY_SERVER_URL: http://betty-server-dev:3000/api
+    env_file:
+      - apps/betty-camera/.env
+    depends_on:
+      - betty-server-dev
+    networks:
+      - betty-dev-network
+    restart: unless-stopped
+
+networks:
+  betty-dev-network:
+    driver: bridge
+
+volumes:
+  postgres-dev-data:
+    driver: local
