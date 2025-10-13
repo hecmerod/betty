@@ -1,20 +1,19 @@
-import {
-  Injectable,
-  Logger,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Observable, catchError, map } from 'rxjs';
 import { AxiosResponse } from 'axios';
+import { Readable } from 'stream';
 
 @Injectable()
-export class CameraService {
-  private readonly logger = new Logger(CameraService.name);
-  private readonly cameraBaseUrl = 'http://localhost:8001/camera';
+export class HttpCameraAdapter {
+  private readonly cameraBaseUrl: string;
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) {
+    this.cameraBaseUrl =
+      process.env.CAMERA_SERVICE_URL || 'http://localhost:8001/camera';
+  }
 
-  capturePhoto(): Observable<Buffer> {
+  requestPhoto(): Observable<Buffer> {
     return this.httpService
       .get(`${this.cameraBaseUrl}/photo`, {
         responseType: 'arraybuffer',
@@ -22,14 +21,9 @@ export class CameraService {
       })
       .pipe(
         map((response: AxiosResponse<ArrayBuffer>) => {
-          this.logger.debug('Photo captured successfully from betty-camera');
           return Buffer.from(response.data);
         }),
-        catchError((error) => {
-          this.logger.error(
-            'Error capturing photo from betty-camera',
-            error.message
-          );
+        catchError(() => {
           throw new InternalServerErrorException(
             'Failed to capture photo from camera'
           );
@@ -37,20 +31,35 @@ export class CameraService {
       );
   }
 
-  getVideoStream(): Observable<NodeJS.ReadableStream> {
+  requestVideoStream(): Observable<Readable> {
     return this.httpService
       .get(`${this.cameraBaseUrl}/video`, {
         responseType: 'stream',
         timeout: 0,
       })
       .pipe(
-        map((response: AxiosResponse<NodeJS.ReadableStream>) => {
+        map((response: AxiosResponse<Readable>) => {
           return response.data;
         }),
         catchError(() => {
           throw new InternalServerErrorException(
             'Failed to start video stream from camera'
           );
+        })
+      );
+  }
+
+  checkAvailability(): Observable<boolean> {
+    return this.httpService
+      .get(`${this.cameraBaseUrl}/health`, {
+        timeout: 5000,
+      })
+      .pipe(
+        map(() => {
+          return true;
+        }),
+        catchError(() => {
+          return [false];
         })
       );
   }
