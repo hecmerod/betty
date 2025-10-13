@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { GetSystemHealthUseCase } from '../../application/use-cases/get-system-health.use-case';
-import { Public } from '../../../../auth/decorators/public.decorator';
+import { Public } from '../../../auth/decorators/public.decorator';
 
 @Controller()
 export class HealthController {
