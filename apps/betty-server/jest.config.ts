@@ -7,8 +7,9 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/betty',
-  // Suprimir logs durante tests
   silent: true,
-  // Setup para configurar el logger de NestJS
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  maxWorkers: '75%',
+  testTimeout: 10000,
+  cache: true,
 };
