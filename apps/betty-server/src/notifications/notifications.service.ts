@@ -1,9 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FirebaseService } from './firebase.service';
 import { SendNotificationDto, RegisterTokenDto } from './dto/notification.dto';
-import { TestingAvailable } from '../shared/decorators/testing-available.decorator';
 
-interface DeviceToken {
+export interface DeviceToken {
   token: string;
   registeredAt: Date;
   lastUsed: Date;
@@ -43,10 +42,5 @@ export class NotificationsService {
       );
 
     return { success: true };
-  }
-
-  @TestingAvailable
-  get _deviceTokens(): Map<string, DeviceToken> {
-    return this.deviceTokens;
   }
 }

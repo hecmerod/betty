@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { NotificationsService } from '../notifications/notifications.service';
-import { TestingAvailable } from '../shared/decorators/testing-available.decorator';
 
 @Injectable()
 export class AlarmService {
@@ -52,10 +51,5 @@ export class AlarmService {
       status: this.isActive ? 'active' : 'inactive',
       timestamp: new Date().toISOString(),
     };
-  }
-
-  @TestingAvailable
-  get _isActive(): boolean {
-    return this.isActive;
   }
 }

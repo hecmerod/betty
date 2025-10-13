@@ -1,9 +1,9 @@
-import { NotificationsService } from '../notifications.service';
+import { NotificationsTestingService } from './notifications-testing.service';
 import { FirebaseService } from '../firebase.service';
 import { RegisterTokenDto, SendNotificationDto } from '../dto/notification.dto';
 
 describe('NotificationsService', () => {
-  let service: NotificationsService;
+  let service: NotificationsTestingService;
   let mockFirebaseService: jest.Mocked<FirebaseService>;
 
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe('NotificationsService', () => {
       sendToMultipleDevices: jest.fn(),
     } as unknown as jest.Mocked<FirebaseService>;
 
-    service = new NotificationsService(mockFirebaseService);
+    service = new NotificationsTestingService(mockFirebaseService);
   });
 
   it('should be defined', () => {

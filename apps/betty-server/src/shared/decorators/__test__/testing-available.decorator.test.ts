@@ -1,4 +1,7 @@
-import { TestingAvailable } from '../testing-available.decorator';
+import {
+  TestingAvailable,
+  TestingAvailableClass,
+} from '../testing-available.decorator';
 
 describe('TestingAvailable decorator', () => {
   const originalNodeEnv = process.env.NODE_ENV;
@@ -72,6 +75,42 @@ describe('TestingAvailable decorator', () => {
       const instance = new TestClass();
 
       expect(instance.methodWithParams(42, 'hello')).toBe('42-hello');
+    });
+  });
+
+  describe('when applied to a class using TestingAvailableClass', () => {
+    it('should allow class instantiation in test environment', () => {
+      process.env.NODE_ENV = 'test';
+
+      @TestingAvailableClass
+      class TestClassDecorated {
+        private _value = 'test value';
+
+        getValue(): string {
+          return this._value;
+        }
+      }
+
+      expect(() => new TestClassDecorated()).not.toThrow();
+      const instance = new TestClassDecorated();
+      expect(instance.getValue()).toBe('test value');
+    });
+
+    it('should throw error when instantiated outside test environment', () => {
+      process.env.NODE_ENV = 'production';
+
+      @TestingAvailableClass
+      class TestClassDecorated {
+        private _value = 'test value';
+
+        getValue(): string {
+          return this._value;
+        }
+      }
+
+      expect(() => new TestClassDecorated()).toThrow(
+        'TestClassDecorated is only available in TEST environment'
+      );
     });
   });
 });

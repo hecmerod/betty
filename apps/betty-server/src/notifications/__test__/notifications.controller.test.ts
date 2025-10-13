@@ -10,7 +10,7 @@ describe('NotificationsController', () => {
   beforeEach(() => {
     mockNotificationsService = {
       registerToken: jest.fn(),
-      sendNotification: jest.fn(),
+      notifyAllDevices: jest.fn(),
     } as unknown as jest.Mocked<NotificationsService>;
 
     controller = new NotificationsController(mockNotificationsService);

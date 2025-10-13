@@ -1,8 +1,8 @@
-import { AlarmService } from '../alarm.service';
+import { AlarmTestingService } from './alarm-testing.service';
 import { NotificationsService } from '../../notifications/notifications.service';
 
 describe('AlarmService', () => {
-  let service: AlarmService;
+  let service: AlarmTestingService;
   let mockNotificationsService: jest.Mocked<NotificationsService>;
 
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('AlarmService', () => {
       notifyAllDevices: jest.fn(),
     } as unknown as jest.Mocked<NotificationsService>;
 
-    service = new AlarmService(mockNotificationsService);
+    service = new AlarmTestingService(mockNotificationsService);
   });
 
   it('should be defined', () => {
