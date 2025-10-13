@@ -1,0 +1,1 @@
+export const ALARM_REPOSITORY = Symbol('ALARM_REPOSITORY');

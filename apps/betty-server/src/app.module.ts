@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerConfigModule } from './config/throttler/throttler-config.module';
+import { ThrottlerConfigModule } from './shared/config/throttler/throttler-config.module';
 import { AuthModule } from './shared/auth/auth.module';
 import { CameraModule } from './camera/camera.module';
 import { AlarmModule } from './alarm/alarm.module';
