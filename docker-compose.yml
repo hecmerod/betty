@@ -51,6 +51,53 @@ services:
     networks:
       - betty-network
 
+  betty-db:
+    image: postgres:16-alpine
+    container_name: betty-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - betty-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U betty -d betty"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - betty-network
+    # No exponemos puertos para que solo sea accesible internamente
+
+  betty-db-backup:
+    image: postgres:16-alpine
+    container_name: betty-db-backup
+    restart: unless-stopped
+    user: "0:0"  # Ejecutar como root para tener permisos de escritura
+    depends_on:
+      betty-db:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - ./backups/db:/backups
+      - ./scripts/backup-db.sh:/backup-db.sh:ro
+    entrypoint: /bin/sh
+    command: 
+      - -c
+      - |
+        chmod 777 /backups
+        echo "0 3 * * * /backup-db.sh >> /var/log/backup.log 2>&1" | crontab -
+        crond -f -l 2
+    networks:
+      - betty-network
+
 networks:
   betty-network:
     driver: bridge
+
+volumes:
+  betty-db-data:
+    driver: local
