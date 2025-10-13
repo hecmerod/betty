@@ -9,7 +9,14 @@ export default {
   coverageDirectory: '../../coverage/apps/betty',
   silent: true,
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  maxWorkers: '75%',
+  maxWorkers: '75%', // Restaurar paralelismo ahora que las advertencias están resueltas
   testTimeout: 10000,
-  cache: true,
+  cache: true, // Restaurar cache para mejor rendimiento
+  // Limpiar mocks y globales entre tests para evitar memory leaks
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
+  // Configuración optimizada para evitar handles abiertos
+  detectOpenHandles: false,
+  forceExit: false, // Permitir salida natural
 };

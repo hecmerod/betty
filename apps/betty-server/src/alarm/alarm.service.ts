@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { NotificationsService } from '../notifications/notifications.service';
+import { SendNotificationUseCase } from '../notifications/application/use-cases/send-notification/send-notification.use-case';
 
 @Injectable()
 export class AlarmService {
   private isActive = false;
 
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(
+    private readonly sendNotificationUseCase: SendNotificationUseCase
+  ) {}
 
   async trigger(data: Record<string, unknown>): Promise<void> {
     if (this.isActive) {
-      await this.notificationsService.notifyAllDevices({
+      await this.sendNotificationUseCase.execute({
         token: '',
         notification: {
           title: '🚨 BETTY ALARM',

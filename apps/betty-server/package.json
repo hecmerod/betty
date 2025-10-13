@@ -7,8 +7,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.app.json",
     "start": "node dist/src/main.js",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=test jest --watch"
+    "test": "NODE_ENV=test NODE_OPTIONS='--no-deprecation' jest",
+    "test:watch": "NODE_ENV=test NODE_OPTIONS='--no-deprecation' jest --watch"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",

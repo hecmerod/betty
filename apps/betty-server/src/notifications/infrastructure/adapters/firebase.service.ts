@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
 import {
@@ -9,7 +9,6 @@ import {
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
-  private readonly logger = new Logger(FirebaseService.name);
   private messaging: admin.messaging.Messaging;
 
   constructor(private configService: ConfigService) {}

@@ -1,16 +1,16 @@
 import { AlarmTestingService } from './alarm-testing.service';
-import { NotificationsService } from '../../notifications/notifications.service';
+import { SendNotificationUseCase } from '../../notifications/application/use-cases/send-notification/send-notification.use-case';
 
 describe('AlarmService', () => {
   let service: AlarmTestingService;
-  let mockNotificationsService: jest.Mocked<NotificationsService>;
+  let mockSendNotificationUseCase: jest.Mocked<SendNotificationUseCase>;
 
   beforeEach(() => {
-    mockNotificationsService = {
-      notifyAllDevices: jest.fn(),
-    } as unknown as jest.Mocked<NotificationsService>;
+    mockSendNotificationUseCase = {
+      execute: jest.fn(),
+    } as unknown as jest.Mocked<SendNotificationUseCase>;
 
-    service = new AlarmTestingService(mockNotificationsService);
+    service = new AlarmTestingService(mockSendNotificationUseCase);
   });
 
   it('should be defined', () => {
@@ -80,8 +80,9 @@ describe('AlarmService', () => {
   describe('trigger', () => {
     it('should send notification when alarm is active', async () => {
       const mockData = { event_type: 'person' };
-      mockNotificationsService.notifyAllDevices.mockResolvedValue({
+      mockSendNotificationUseCase.execute.mockResolvedValue({
         success: true,
+        tokensUsed: 2,
       });
 
       service.activate();
@@ -89,7 +90,7 @@ describe('AlarmService', () => {
 
       await service.trigger(mockData);
 
-      expect(mockNotificationsService.notifyAllDevices).toHaveBeenCalledWith({
+      expect(mockSendNotificationUseCase.execute).toHaveBeenCalledWith({
         token: '',
         notification: {
           title: '🚨 BETTY ALARM',
@@ -111,19 +112,20 @@ describe('AlarmService', () => {
 
       await service.trigger(mockData);
 
-      expect(mockNotificationsService.notifyAllDevices).not.toHaveBeenCalled();
+      expect(mockSendNotificationUseCase.execute).not.toHaveBeenCalled();
     });
 
     it('should use default detection type when event_type is not provided', async () => {
       const mockData = {};
-      mockNotificationsService.notifyAllDevices.mockResolvedValue({
+      mockSendNotificationUseCase.execute.mockResolvedValue({
         success: true,
+        tokensUsed: 1,
       });
 
       service.activate();
       await service.trigger(mockData);
 
-      expect(mockNotificationsService.notifyAllDevices).toHaveBeenCalledWith(
+      expect(mockSendNotificationUseCase.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
             detectionType: 'person',
@@ -136,7 +138,7 @@ describe('AlarmService', () => {
       const mockData = { event_type: 'person' };
       const error = new Error('Firebase error');
 
-      mockNotificationsService.notifyAllDevices.mockRejectedValue(error);
+      mockSendNotificationUseCase.execute.mockRejectedValue(error);
 
       service.activate();
 
@@ -145,15 +147,15 @@ describe('AlarmService', () => {
 
     it('should generate valid timestamp in trigger data', async () => {
       const mockData = { event_type: 'person' };
-      mockNotificationsService.notifyAllDevices.mockResolvedValue({
+      mockSendNotificationUseCase.execute.mockResolvedValue({
         success: true,
+        tokensUsed: 1,
       });
 
       service.activate();
       await service.trigger(mockData);
 
-      const callArgs =
-        mockNotificationsService.notifyAllDevices.mock.calls[0][0];
+      const callArgs = mockSendNotificationUseCase.execute.mock.calls[0][0];
       expect(callArgs.data.timestamp).toMatch(
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
       );

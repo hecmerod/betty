@@ -1,19 +1,30 @@
 import { NotificationsController } from '../notifications.controller';
-import { NotificationsService } from '../notifications.service';
-import { SendNotificationDto, RegisterTokenDto } from '../dto/notification.dto';
+import { RegisterTokenUseCase } from '../../../application/use-cases/register-token/register-token.use-case';
+import { SendNotificationUseCase } from '../../../application/use-cases/send-notification/send-notification.use-case';
+import {
+  SendNotificationDto,
+  RegisterTokenDto,
+} from '../../../presentation/dto/notification.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('NotificationsController', () => {
   let controller: NotificationsController;
-  let mockNotificationsService: jest.Mocked<NotificationsService>;
+  let mockRegisterTokenUseCase: jest.Mocked<RegisterTokenUseCase>;
+  let mockSendNotificationUseCase: jest.Mocked<SendNotificationUseCase>;
 
   beforeEach(() => {
-    mockNotificationsService = {
-      registerToken: jest.fn(),
-      notifyAllDevices: jest.fn(),
-    } as unknown as jest.Mocked<NotificationsService>;
+    mockRegisterTokenUseCase = {
+      execute: jest.fn(),
+    } as unknown as jest.Mocked<RegisterTokenUseCase>;
 
-    controller = new NotificationsController(mockNotificationsService);
+    mockSendNotificationUseCase = {
+      execute: jest.fn(),
+    } as unknown as jest.Mocked<SendNotificationUseCase>;
+
+    controller = new NotificationsController(
+      mockRegisterTokenUseCase,
+      mockSendNotificationUseCase
+    );
   });
 
   it('should be defined', () => {
@@ -21,7 +32,7 @@ describe('NotificationsController', () => {
   });
 
   describe('registerToken', () => {
-    it('should register token successfully', () => {
+    it('should register token successfully', async () => {
       const registerTokenDto: RegisterTokenDto = {
         token: 'test-token',
         userId: 'user-123',
@@ -31,25 +42,30 @@ describe('NotificationsController', () => {
         success: true,
         message: 'Token registered successfully',
       };
-      mockNotificationsService.registerToken.mockReturnValue(mockResponse);
+      mockRegisterTokenUseCase.execute.mockResolvedValue(mockResponse);
 
-      const result = controller.registerToken(registerTokenDto);
+      const result = await controller.registerToken(registerTokenDto);
 
-      expect(mockNotificationsService.registerToken).toHaveBeenCalledWith(
+      expect(mockRegisterTokenUseCase.execute).toHaveBeenCalledWith(
         registerTokenDto
       );
       expect(result).toBe(mockResponse);
     });
 
-    it('should call notifications service registerToken once', () => {
+    it('should call register token use case execute once', async () => {
       const registerTokenDto: RegisterTokenDto = {
         token: 'test-token',
         userId: 'user-123',
       };
 
-      controller.registerToken(registerTokenDto);
+      mockRegisterTokenUseCase.execute.mockResolvedValue({
+        success: true,
+        message: 'Token registered',
+      });
 
-      expect(mockNotificationsService.registerToken).toHaveBeenCalledTimes(1);
+      await controller.registerToken(registerTokenDto);
+
+      expect(mockRegisterTokenUseCase.execute).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -68,13 +84,13 @@ describe('NotificationsController', () => {
       };
       const mockResponse = {
         success: true,
-        messageId: 'msg-123',
+        tokensUsed: 2,
       };
-      mockNotificationsService.notifyAllDevices.mockResolvedValue(mockResponse);
+      mockSendNotificationUseCase.execute.mockResolvedValue(mockResponse);
 
       const result = await controller.sendNotification(sendNotificationDto);
 
-      expect(mockNotificationsService.notifyAllDevices).toHaveBeenCalledWith(
+      expect(mockSendNotificationUseCase.execute).toHaveBeenCalledWith(
         sendNotificationDto
       );
       expect(result).toBe(mockResponse);
@@ -88,7 +104,7 @@ describe('NotificationsController', () => {
           body: 'Test Body',
         },
       };
-      mockNotificationsService.notifyAllDevices.mockRejectedValue(
+      mockSendNotificationUseCase.execute.mockRejectedValue(
         new Error('Service error')
       );
 
@@ -108,7 +124,7 @@ describe('NotificationsController', () => {
           body: 'Test Body',
         },
       };
-      mockNotificationsService.notifyAllDevices.mockRejectedValue(
+      mockSendNotificationUseCase.execute.mockRejectedValue(
         new Error('Service error')
       );
 
@@ -122,7 +138,7 @@ describe('NotificationsController', () => {
       }
     });
 
-    it('should call notifications service sendNotification once', async () => {
+    it('should call send notification use case execute once', async () => {
       const sendNotificationDto: SendNotificationDto = {
         token: 'test-token',
         notification: {
@@ -130,15 +146,14 @@ describe('NotificationsController', () => {
           body: 'Test Body',
         },
       };
-      mockNotificationsService.notifyAllDevices.mockResolvedValue({
+      mockSendNotificationUseCase.execute.mockResolvedValue({
         success: true,
+        tokensUsed: 1,
       });
 
       await controller.sendNotification(sendNotificationDto);
 
-      expect(mockNotificationsService.notifyAllDevices).toHaveBeenCalledTimes(
-        1
-      );
+      expect(mockSendNotificationUseCase.execute).toHaveBeenCalledTimes(1);
     });
   });
 });
