@@ -4,7 +4,7 @@ import { RegisterTokenUseCase } from './application/use-cases/register-token/reg
 import { SendNotificationUseCase } from './application/use-cases/send-notification/send-notification.use-case';
 import { NotificationsController } from './presentation/controllers/notifications.controller';
 import { FirebaseService } from './infrastructure/adapters/firebase.service';
-import { InMemoryDeviceTokenRepository } from './infrastructure/repositories/in-memory-device-token.repository';
+import { PrismaDeviceTokenRepository } from './infrastructure/repositories/prisma-device-token.repository';
 import { DEVICE_TOKEN_REPOSITORY } from './infrastructure/ioc/symbols';
 
 @Module({
@@ -13,7 +13,7 @@ import { DEVICE_TOKEN_REPOSITORY } from './infrastructure/ioc/symbols';
   providers: [
     {
       provide: DEVICE_TOKEN_REPOSITORY,
-      useClass: InMemoryDeviceTokenRepository,
+      useClass: PrismaDeviceTokenRepository,
     },
     RegisterTokenUseCase,
     SendNotificationUseCase,

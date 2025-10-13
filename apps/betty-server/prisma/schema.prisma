@@ -23,4 +23,15 @@ model Alarm {
   @@map("alarms")
 }
 
+// Modelo DeviceToken - tokens de dispositivos para notificaciones push
+model DeviceToken {
+  token        String   @id // El token es único, lo usamos como PK
+  registeredAt DateTime @default(now())
+  lastUsed     DateTime @default(now())
+  userId       String?  // Opcional - para asociar con usuario
+  platform     String?  // Opcional - iOS, Android, etc.
+
+  @@map("device_tokens")
+}
+
 
