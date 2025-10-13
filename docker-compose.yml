@@ -46,6 +46,7 @@ services:
       - PORT=8001
       - LOG_LEVEL=INFO
       - PYTHONPATH=/app/src
+      - BETTY_SERVER_URL=http://betty-server:3000/api
     networks:
       - betty-network
 
