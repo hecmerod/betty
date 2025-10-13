@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class HealthService {
-  getHealth() {
+export class GetSystemHealthUseCase {
+  async execute(): Promise<SystemHealthResponse> {
     const memoryUsage = process.memoryUsage();
+
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -15,4 +16,15 @@ export class HealthService {
       },
     };
   }
+}
+
+export interface SystemHealthResponse {
+  status: string;
+  timestamp: string;
+  uptime: number;
+  memory: {
+    used: number;
+    total: number;
+    rss: number;
+  };
 }

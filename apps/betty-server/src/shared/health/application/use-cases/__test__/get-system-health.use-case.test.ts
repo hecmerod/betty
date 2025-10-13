@@ -1,15 +1,15 @@
-import { HealthService } from '../health.service';
+import { GetSystemHealthUseCase } from '../get-system-health.use-case';
 
-describe('HealthService', () => {
-  let service: HealthService;
+describe('GetSystemHealthUseCase', () => {
+  let useCase: GetSystemHealthUseCase;
 
   beforeEach(() => {
-    service = new HealthService();
+    useCase = new GetSystemHealthUseCase();
   });
 
-  describe('getHealth', () => {
-    it('should return health status with correct structure', () => {
-      const result = service.getHealth();
+  describe('execute', () => {
+    it('should return health status with correct structure', async () => {
+      const result = await useCase.execute();
 
       expect(result).toHaveProperty('status', 'ok');
       expect(result).toHaveProperty('timestamp');
@@ -20,8 +20,8 @@ describe('HealthService', () => {
       expect(result.memory).toHaveProperty('rss');
     });
 
-    it('should return valid timestamp in ISO format', () => {
-      const result = service.getHealth();
+    it('should return valid timestamp in ISO format', async () => {
+      const result = await useCase.execute();
 
       expect(result.timestamp).toMatch(
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
@@ -29,15 +29,15 @@ describe('HealthService', () => {
       expect(new Date(result.timestamp).getTime()).toBeGreaterThan(0);
     });
 
-    it('should return positive uptime', () => {
-      const result = service.getHealth();
+    it('should return positive uptime', async () => {
+      const result = await useCase.execute();
 
       expect(result.uptime).toBeGreaterThan(0);
       expect(typeof result.uptime).toBe('number');
     });
 
-    it('should return memory usage as positive numbers in MB', () => {
-      const result = service.getHealth();
+    it('should return memory usage as positive numbers in MB', async () => {
+      const result = await useCase.execute();
 
       expect(result.memory.used).toBeGreaterThan(0);
       expect(result.memory.total).toBeGreaterThan(0);
@@ -47,9 +47,9 @@ describe('HealthService', () => {
       expect(Number.isInteger(result.memory.rss)).toBe(true);
     });
 
-    it('should return consistent data structure on multiple calls', () => {
-      const result1 = service.getHealth();
-      const result2 = service.getHealth();
+    it('should return consistent data structure on multiple calls', async () => {
+      const result1 = await useCase.execute();
+      const result2 = await useCase.execute();
 
       expect(Object.keys(result1)).toEqual(Object.keys(result2));
       expect(Object.keys(result1.memory)).toEqual(Object.keys(result2.memory));
