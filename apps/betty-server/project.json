@@ -73,6 +73,30 @@
         "cwd": "apps/betty-server",
         "command": "npm run test:coverage"
       }
+    },
+    "prisma:generate": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/prisma/schema.prisma"],
+      "outputs": ["{projectRoot}/node_modules/@prisma/client"],
+      "options": {
+        "cwd": "apps/betty-server",
+        "command": "npm run prisma:generate"
+      }
+    },
+    "prisma:migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/betty-server",
+        "command": "npm run prisma:migrate"
+      }
+    },
+    "prisma:migrate:dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/betty-server",
+        "command": "npm run prisma:migrate:dev"
+      }
     }
   }
 }

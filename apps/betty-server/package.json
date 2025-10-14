@@ -9,8 +9,12 @@
     "start": "node dist/src/main.js",
     "test": "NODE_ENV=test NODE_OPTIONS='--no-deprecation' jest",
     "test:watch": "NODE_ENV=test NODE_OPTIONS='--no-deprecation' jest --watch",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate deploy"
+    "test:coverage": "NODE_ENV=test NODE_OPTIONS='--no-deprecation' jest --coverage",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate deploy",
+    "prisma:migrate:dev": "npx prisma migrate dev",
+    "prisma:reset": "npx prisma migrate reset",
+    "prisma:studio": "npx prisma studio"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
@@ -20,7 +24,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/throttler": "^6.4.0",
-    "@prisma/client": "6.17.1",
+    "@prisma/client": "^6.17.1",
     "axios": "^1.7.9",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
@@ -37,11 +41,10 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "20.19.9",
     "nodemon": "^3.0.2",
+    "prisma": "^6.17.1",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
-    "prisma": "6.17.1"
+    "tsconfig-paths": "^4.2.0"
   },
-  "optionalDependencies": {},
   "peerDependencies": {
     "typescript": "~5.9.2"
   },

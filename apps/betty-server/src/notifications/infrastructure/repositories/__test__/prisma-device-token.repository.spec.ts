@@ -1,6 +1,5 @@
-import { PrismaDeviceTokenRepository } from './prisma-device-token.repository';
-import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { DeviceToken } from '../../domain/entities/device-token.entity';
+import { DeviceToken } from '../../../domain/entities/device-token.entity';
+import { PrismaDeviceTokenRepository } from '../prisma-device-token.repository';
 
 describe('PrismaDeviceTokenRepository', () => {
   let repository: PrismaDeviceTokenRepository;
