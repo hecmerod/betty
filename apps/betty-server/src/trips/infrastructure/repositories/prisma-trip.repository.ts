@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { TripRepository } from '../../domain/repositories/trip.repository';
-import { Trip } from '../../domain/entities/trip.entity';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
+import { Trip } from '../../domain/entities/trip.entity';
+import {
+  TripRepository,
+  TripWithLocations,
+} from '../../domain/repositories/trip.repository';
+import { TripMapper } from '../mappers/trip.mapper';
 
 @Injectable()
 export class PrismaTripRepository extends TripRepository {
@@ -19,71 +23,68 @@ export class PrismaTripRepository extends TripRepository {
       },
     });
 
-    return new Trip(
-      record.id,
-      record.name,
-      record.startedAt,
-      record.endedAt ?? undefined,
-      record.createdAt,
-      record.updatedAt
-    );
+    return TripMapper.toTripEntity(record);
   }
 
-  async findById(id: string): Promise<Trip | null> {
+  async findById(
+    id: string,
+    includeLocations = false
+  ): Promise<Trip | TripWithLocations | null> {
     const record = await this.prisma.trip.findUnique({
       where: { id },
+      include: includeLocations
+        ? {
+            locations: {
+              orderBy: { recordedAt: 'asc' },
+            },
+          }
+        : undefined,
     });
 
     if (!record) {
       return null;
     }
 
-    return new Trip(
-      record.id,
-      record.name,
-      record.startedAt,
-      record.endedAt ?? undefined,
-      record.createdAt,
-      record.updatedAt
-    );
+    return TripMapper.toDomainEntity(record, includeLocations);
   }
 
-  async findAll(): Promise<Trip[]> {
+  async findAll(includeLocations = false): Promise<Trip[]> {
     const records = await this.prisma.trip.findMany({
       orderBy: { startedAt: 'desc' },
+      include: includeLocations
+        ? {
+            locations: {
+              orderBy: { recordedAt: 'asc' },
+            },
+          }
+        : undefined,
     });
 
-    return records.map(
-      (record) =>
-        new Trip(
-          record.id,
-          record.name,
-          record.startedAt,
-          record.endedAt ?? undefined,
-          record.createdAt,
-          record.updatedAt
-        )
+    return records.map((record) =>
+      TripMapper.toDomainEntity(record, includeLocations)
     );
   }
 
-  async findCurrent(): Promise<Trip | null> {
+  async findCurrent(
+    includeLocations = false
+  ): Promise<Trip | TripWithLocations | null> {
     const record = await this.prisma.trip.findFirst({
       where: { endedAt: null },
       orderBy: { startedAt: 'desc' },
+      include: includeLocations
+        ? {
+            locations: {
+              orderBy: { recordedAt: 'asc' },
+            },
+          }
+        : undefined,
     });
 
     if (!record) {
       return null;
     }
 
-    return new Trip(
-      record.id,
-      record.name,
-      record.startedAt,
-      record.endedAt ?? undefined,
-      record.createdAt,
-      record.updatedAt
-    );
+    return TripMapper.toDomainEntity(record, includeLocations);
   }
 
   async hasInProgress(): Promise<boolean> {
@@ -100,14 +101,7 @@ export class PrismaTripRepository extends TripRepository {
       data: {},
     });
 
-    return new Trip(
-      record.id,
-      record.name,
-      record.startedAt,
-      record.endedAt ?? undefined,
-      record.createdAt,
-      record.updatedAt
-    );
+    return TripMapper.toTripEntity(record);
   }
 
   async end(id: string): Promise<Trip> {
@@ -118,13 +112,6 @@ export class PrismaTripRepository extends TripRepository {
       },
     });
 
-    return new Trip(
-      record.id,
-      record.name,
-      record.startedAt,
-      record.endedAt ?? undefined,
-      record.createdAt,
-      record.updatedAt
-    );
+    return TripMapper.toTripEntity(record);
   }
 }

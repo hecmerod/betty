@@ -1,16 +1,16 @@
 import {
-  Controller,
-  Post,
-  Get,
-  Param,
   Body,
+  Controller,
+  Get,
   HttpException,
   HttpStatus,
+  Param,
+  Post,
 } from '@nestjs/common';
 import { CreateTripUseCase } from '../../application/use-cases/create-trip/create-trip.use-case';
 import { EndTripUseCase } from '../../application/use-cases/end-trip/end-trip.use-case';
-import { GetCurrentTripUseCase } from '../../application/use-cases/get-current-trip/get-current-trip.use-case';
 import { GetAllTripsUseCase } from '../../application/use-cases/get-all-trips/get-all-trips.use-case';
+import { GetCurrentTripUseCase } from '../../application/use-cases/get-current-trip/get-current-trip.use-case';
 import { GetTripByIdUseCase } from '../../application/use-cases/get-trip-by-id/get-trip-by-id.use-case';
 import { HasTripInProgressUseCase } from '../../application/use-cases/has-trip-in-progress/has-trip-in-progress.use-case';
 import { CreateTripDto } from '../dto/create-trip.dto';
@@ -34,7 +34,7 @@ export class TripsController {
 
   @Get('current')
   async getCurrentTrip() {
-    const trip = await this.getCurrentTripUseCase.execute();
+    const trip = await this.getCurrentTripUseCase.execute(true);
 
     if (!trip)
       throw new HttpException('No trip in progress', HttpStatus.NOT_FOUND);
@@ -49,7 +49,7 @@ export class TripsController {
 
   @Get(':id')
   async getTripById(@Param('id') id: string) {
-    const trip = await this.getTripByIdUseCase.execute(id);
+    const trip = await this.getTripByIdUseCase.execute(id, true);
 
     if (!trip) throw new HttpException('Trip not found', HttpStatus.NOT_FOUND);
 

@@ -1,15 +1,11 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { Location } from '../../../domain/entities/location.entity';
 import { GpsRepository } from '../../../domain/repositories/gps.repository';
 import { GPS_REPOSITORY } from '../../../infrastructure/ioc/symbols';
 
 export interface GetLocationResponse {
   success: boolean;
-  location?: {
-    latitude: number;
-    longitude: number;
-    timestamp: string;
-    altitude?: number;
-  };
+  location?: Location;
   error?: string;
 }
 
@@ -26,12 +22,7 @@ export class GetLocationUseCase {
 
       return {
         success: true,
-        location: {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          timestamp: location.timestamp.toISOString(),
-          altitude: location.altitude,
-        },
+        location: location,
       };
     } catch (error) {
       return {
