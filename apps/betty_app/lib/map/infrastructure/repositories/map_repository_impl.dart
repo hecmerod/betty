@@ -1,18 +1,18 @@
 import 'package:geolocator/geolocator.dart';
-import '../../domain/entities/gps_location.dart';
+import '../../domain/entities/map_location.dart';
 import '../../domain/entities/map_type.dart';
-import '../../domain/repositories/i_gps_repository.dart';
+import '../../domain/repositories/i_map_repository.dart';
 
-class GpsRepositoryImpl implements IGpsRepository {
+class MapRepositoryImpl implements IMapRepository {
   MapType _currentMapType = MapType.standard;
 
   @override
-  Future<GpsLocation> getCurrentLocation() async {
+  Future<MapLocation> getCurrentLocation() async {
     final position = await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10),
     );
 
-    return GpsLocation(
+    return MapLocation(
       latitude: position.latitude,
       longitude: position.longitude,
       accuracy: position.accuracy,
@@ -21,11 +21,11 @@ class GpsRepositoryImpl implements IGpsRepository {
   }
 
   @override
-  Stream<GpsLocation> getLocationStream() {
+  Stream<MapLocation> getLocationStream() {
     const locationSettings = LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
     return Geolocator.getPositionStream(locationSettings: locationSettings).map(
-      (position) => GpsLocation(
+      (position) => MapLocation(
         latitude: position.latitude,
         longitude: position.longitude,
         accuracy: position.accuracy,

@@ -1,21 +1,21 @@
 import 'package:flutter/foundation.dart';
-import '../../domain/entities/gps_location.dart';
+import '../../domain/entities/map_location.dart';
 import '../../domain/entities/map_type.dart';
 import '../../domain/use_cases/get_current_location_use_case.dart';
 import '../../domain/use_cases/stream_location_updates_use_case.dart';
 import '../../domain/use_cases/toggle_map_view_use_case.dart';
 
-class GpsProvider extends ChangeNotifier {
+class MapProvider extends ChangeNotifier {
   final GetCurrentLocationUseCase _getCurrentLocationUseCase;
   final StreamLocationUpdatesUseCase _streamLocationUpdatesUseCase;
   final ToggleMapViewUseCase _toggleMapViewUseCase;
 
-  GpsLocation? _currentLocation;
+  MapLocation? _currentLocation;
   MapType _mapType = MapType.standard;
   bool _isLoading = false;
   String? _errorMessage;
 
-  GpsProvider({
+  MapProvider({
     required GetCurrentLocationUseCase getCurrentLocationUseCase,
     required StreamLocationUpdatesUseCase streamLocationUpdatesUseCase,
     required ToggleMapViewUseCase toggleMapViewUseCase,
@@ -24,7 +24,7 @@ class GpsProvider extends ChangeNotifier {
        _toggleMapViewUseCase = toggleMapViewUseCase;
 
   // Getters
-  GpsLocation? get currentLocation => _currentLocation;
+  MapLocation? get currentLocation => _currentLocation;
   MapType get mapType => _mapType;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;

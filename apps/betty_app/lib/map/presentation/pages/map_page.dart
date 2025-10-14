@@ -2,28 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import '../../domain/entities/gps_location.dart';
-import '../../gps_module.dart';
-import '../providers/gps_provider.dart';
+import '../../domain/entities/map_location.dart';
+import '../../map_module.dart';
+import '../providers/map_provider.dart';
 import '../widgets/widgets.dart';
 
-class GpsPage extends StatelessWidget {
-  const GpsPage({super.key});
+class MapPage extends StatelessWidget {
+  const MapPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: GpsModule.providers, child: const _GpsPageContent());
+    return MultiProvider(providers: MapModule.providers, child: const _MapPageContent());
   }
 }
 
-class _GpsPageContent extends StatefulWidget {
-  const _GpsPageContent();
+class _MapPageContent extends StatefulWidget {
+  const _MapPageContent();
 
   @override
-  State<_GpsPageContent> createState() => _GpsPageContentState();
+  State<_MapPageContent> createState() => _MapPageContentState();
 }
 
-class _GpsPageContentState extends State<_GpsPageContent> {
+class _MapPageContentState extends State<_MapPageContent> {
   final MapController _mapController = MapController();
   List<Marker> _markers = [];
   bool _isFirstLocation = true;
@@ -37,15 +37,15 @@ class _GpsPageContentState extends State<_GpsPageContent> {
   }
 
   Future<void> _initializeLocation() async {
-    final gpsProvider = Provider.of<GpsProvider>(context, listen: false);
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
 
-    await gpsProvider.getCurrentLocation();
+    await mapProvider.getCurrentLocation();
 
-    gpsProvider.startLocationStream();
+    mapProvider.startLocationStream();
   }
 
-  void _updateMarker(GpsLocation location) {
-    final marker = GpsMarkerWidget.createMarker(location);
+  void _updateMarker(MapLocation location) {
+    final marker = MapMarkerWidget.createMarker(location);
 
     setState(() {
       _markers = [marker];
@@ -61,13 +61,13 @@ class _GpsPageContentState extends State<_GpsPageContent> {
   }
 
   void _toggleMapType() {
-    final gpsProvider = Provider.of<GpsProvider>(context, listen: false);
-    gpsProvider.toggleMapView();
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
+    mapProvider.toggleMapView();
   }
 
   void _centerOnCurrentLocation() {
-    final gpsProvider = Provider.of<GpsProvider>(context, listen: false);
-    final location = gpsProvider.currentLocation;
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
+    final location = mapProvider.currentLocation;
 
     if (location != null) {
       _mapController.move(LatLng(location.latitude, location.longitude), 16.0);
@@ -78,19 +78,19 @@ class _GpsPageContentState extends State<_GpsPageContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
-      body: Consumer<GpsProvider>(
-        builder: (context, gpsProvider, child) {
-          if (gpsProvider.currentLocation != null) {
+      body: Consumer<MapProvider>(
+        builder: (context, mapProvider, child) {
+          if (mapProvider.currentLocation != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              _updateMarker(gpsProvider.currentLocation!);
+              _updateMarker(mapProvider.currentLocation!);
             });
           }
 
-          if (gpsProvider.errorMessage != null) {
+          if (mapProvider.errorMessage != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(gpsProvider.errorMessage!),
+                  content: Text(mapProvider.errorMessage!),
                   backgroundColor: Colors.red,
                   duration: const Duration(seconds: 3),
                 ),
@@ -100,17 +100,17 @@ class _GpsPageContentState extends State<_GpsPageContent> {
 
           return Stack(
             children: [
-              GpsMapWidget(
+              MapViewWidget(
                 mapController: _mapController,
-                currentLocation: gpsProvider.currentLocation,
-                mapType: gpsProvider.mapType,
+                currentLocation: mapProvider.currentLocation,
+                mapType: mapProvider.mapType,
                 markers: _markers,
               ),
 
-              if (gpsProvider.isLoading) const GpsLoadingWidget(),
+              if (mapProvider.isLoading) const MapLoadingWidget(),
 
-              GpsMapControlsWidget(
-                currentMapType: gpsProvider.mapType,
+              MapControlsWidget(
+                currentMapType: mapProvider.mapType,
                 onToggleMapType: _toggleMapType,
                 onCenterLocation: _centerOnCurrentLocation,
               ),

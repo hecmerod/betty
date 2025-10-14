@@ -1,12 +1,12 @@
-import '../entities/gps_location.dart';
+import '../entities/map_location.dart';
 import '../entities/map_type.dart';
 
-abstract interface class IGpsRepository {
+abstract interface class IMapRepository {
   /// Obtiene la ubicación actual del dispositivo
-  Future<GpsLocation> getCurrentLocation();
+  Future<MapLocation> getCurrentLocation();
 
   /// Stream de ubicaciones en tiempo real
-  Stream<GpsLocation> getLocationStream();
+  Stream<MapLocation> getLocationStream();
 
   /// Verifica si los permisos de ubicación están concedidos
   Future<bool> hasLocationPermission();

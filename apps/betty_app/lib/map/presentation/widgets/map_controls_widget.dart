@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/map_type.dart';
 
-class GpsMapControlsWidget extends StatelessWidget {
+class MapControlsWidget extends StatelessWidget {
   final MapType currentMapType;
   final VoidCallback onToggleMapType;
   final VoidCallback onCenterLocation;
 
-  const GpsMapControlsWidget({
+  const MapControlsWidget({
     super.key,
     required this.currentMapType,
     required this.onToggleMapType,

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import '../../domain/entities/gps_location.dart';
+import '../../domain/entities/map_location.dart';
 import '../../domain/entities/map_type.dart';
 
-class GpsMapWidget extends StatelessWidget {
+class MapViewWidget extends StatelessWidget {
   final MapController mapController;
-  final GpsLocation? currentLocation;
+  final MapLocation? currentLocation;
   final MapType mapType;
   final List<Marker> markers;
 
-  const GpsMapWidget({
+  const MapViewWidget({
     super.key,
     required this.mapController,
     required this.currentLocation,

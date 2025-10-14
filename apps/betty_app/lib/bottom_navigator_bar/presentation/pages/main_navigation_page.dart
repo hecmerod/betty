@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../domain/models/navigation_item.dart';
 import '../widgets/bottom_navigation_bar_widget.dart';
 import '../../../primary/presentation/pages/primary_page.dart';
-import '../../../gps/presentation/pages/gps_page.dart';
+import '../../../map/presentation/pages/map_page.dart';
 import '../../../camera/presentation/pages/camera_page.dart';
 
 class MainNavigationPage extends StatefulWidget {
@@ -23,10 +23,10 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     _navigationItems = [
       const NavigationItem(label: 'Principal', icon: Icons.home_outlined, activeIcon: Icons.home, page: PrimaryPage()),
       const NavigationItem(
-        label: 'GPS',
+        label: 'Mapa',
         icon: Icons.location_on_outlined,
         activeIcon: Icons.location_on,
-        page: GpsPage(),
+        page: MapPage(),
       ),
       const NavigationItem(
         label: 'Cámara',

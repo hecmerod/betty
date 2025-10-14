@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class GpsLoadingWidget extends StatelessWidget {
-  const GpsLoadingWidget({super.key});
+class MapLoadingWidget extends StatelessWidget {
+  const MapLoadingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
