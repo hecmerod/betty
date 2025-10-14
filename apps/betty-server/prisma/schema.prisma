@@ -34,4 +34,16 @@ model DeviceToken {
   @@map("device_tokens")
 }
 
+// Modelo Trip - viajes
+model Trip {
+  id        String    @id // UUID
+  name      String    // Nombre del viaje
+  startedAt DateTime  // Fecha y hora de inicio
+  endedAt   DateTime? // Fecha y hora de finalización (null si está en progreso)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
+  @@map("trips")
+  @@index([startedAt])
+  @@index([endedAt])
+}
