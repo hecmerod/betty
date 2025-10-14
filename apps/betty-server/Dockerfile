@@ -25,16 +25,6 @@ COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY apps/betty-server/prisma ./prisma
 
-# Debug: verificar qué se copió
-RUN echo "=== Contenido final de dist ===" && ls -la dist/
-RUN echo "=== Archivos JS disponibles ===" && find dist -name "*.js" -type f
-
-RUN addgroup -g 1001 betty && \
-    adduser -u 1001 -G betty -s /bin/sh -D betty && \
-    chown -R betty:betty /app
-
-USER betty
-
 EXPOSE 3000
 
 ENV NODE_ENV=production
