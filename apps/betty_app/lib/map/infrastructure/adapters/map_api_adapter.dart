@@ -11,7 +11,7 @@ class MapApiAdapter {
   Future<MapLocation> getVehicleLocation() async {
     try {
       final response = await _apiService.get('/location');
-      print('asd');
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 

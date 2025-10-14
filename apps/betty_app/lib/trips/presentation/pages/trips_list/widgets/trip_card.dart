@@ -1,83 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../providers/trip_provider.dart';
-import '../../domain/entities/trip.dart';
-import 'create_trip_page.dart';
-import 'trip_detail_page.dart';
+import '../../../../domain/entities/trip.dart';
 
-class TripsListPage extends StatelessWidget {
-  const TripsListPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Viajes'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<TripProvider>().loadAllTrips();
-            },
-          ),
-        ],
-      ),
-      body: Consumer<TripProvider>(
-        builder: (context, tripProvider, child) {
-          if (tripProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (tripProvider.trips.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.directions_car_outlined, size: 64, color: Colors.grey),
-                  const SizedBox(height: 16),
-                  Text('No hay viajes registrados', style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Crea tu primer viaje para comenzar',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: tripProvider.trips.length,
-            itemBuilder: (context, index) {
-              final trip = tripProvider.trips[index];
-              return _TripCard(
-                trip: trip,
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TripDetailPage(tripId: trip.id)));
-                },
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateTripPage()));
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Nuevo Viaje'),
-      ),
-    );
-  }
-}
-
-class _TripCard extends StatelessWidget {
+class TripCard extends StatelessWidget {
   final Trip trip;
   final VoidCallback onTap;
 
-  const _TripCard({required this.trip, required this.onTap});
+  const TripCard({super.key, required this.trip, required this.onTap});
 
   String _formatDuration(Duration duration) {
     final hours = duration.inHours;

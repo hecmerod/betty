@@ -36,8 +36,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: Consumer<TripProvider>(
-        builder: (context, tripProvider, child) {
+      bottomNavigationBar: Selector<TripProvider, bool>(
+        selector: (context, provider) => provider.hasTripInProgress,
+        builder: (context, hasTripInProgress, child) {
           return BottomNavigationBarWidget(
             currentIndex: _currentIndex,
             items: [
@@ -46,8 +47,8 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
               const NavigationItem(label: 'Cámara', icon: Icons.camera_alt_outlined, activeIcon: Icons.camera_alt),
               NavigationItem(
                 label: 'Viajes',
-                icon: tripProvider.hasTripInProgress ? Icons.play_circle_outlined : Icons.list_outlined,
-                activeIcon: tripProvider.hasTripInProgress ? Icons.play_circle : Icons.list,
+                icon: hasTripInProgress ? Icons.play_circle_outlined : Icons.list_outlined,
+                activeIcon: hasTripInProgress ? Icons.play_circle : Icons.list,
               ),
             ],
             onTap: _onItemTapped,

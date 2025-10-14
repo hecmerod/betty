@@ -33,12 +33,14 @@ class TripProvider with ChangeNotifier {
   Trip? _currentTrip;
   bool _hasTripInProgress = false;
   bool _isLoading = false;
+  bool _isInitialized = false;
   String? _error;
 
   List<Trip> get trips => _trips;
   Trip? get currentTrip => _currentTrip;
   bool get hasTripInProgress => _hasTripInProgress;
   bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
   String? get error => _error;
 
   Future<void> loadAllTrips() async {
@@ -79,10 +81,17 @@ class TripProvider with ChangeNotifier {
 
   Future<void> checkTripInProgress() async {
     try {
-      _hasTripInProgress = await _hasTripInProgressUseCase.execute();
-      // No llamar notifyListeners aquí para evitar rebuild durante build
+      final hasTrip = await _hasTripInProgressUseCase.execute();
+      // Solo notificar si el estado cambió
+      if (_hasTripInProgress != hasTrip) {
+        _hasTripInProgress = hasTrip;
+        notifyListeners();
+      }
     } catch (e) {
-      _hasTripInProgress = false;
+      if (_hasTripInProgress != false) {
+        _hasTripInProgress = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -114,17 +123,21 @@ class TripProvider with ChangeNotifier {
       _currentTrip = trip;
       _hasTripInProgress = true;
       _error = null;
+      _isLoading = false;
+      notifyListeners();
 
-      // Recargar lista de trips
-      await loadAllTrips();
+      // Marcar como no inicializado para forzar recarga
+      _isInitialized = false;
+
+      // Recargar lista de trips en segundo plano sin bloquear
+      loadAllTrips();
 
       return trip;
     } catch (e) {
       _error = e.toString();
-      return null;
-    } finally {
       _isLoading = false;
       notifyListeners();
+      return null;
     }
   }
 
@@ -138,26 +151,33 @@ class TripProvider with ChangeNotifier {
       _currentTrip = null;
       _hasTripInProgress = false;
       _error = null;
+      _isLoading = false;
+      notifyListeners();
 
-      // Recargar lista de trips
-      await loadAllTrips();
+      // Marcar como no inicializado para forzar recarga
+      _isInitialized = false;
+
+      // Recargar lista de trips en segundo plano sin bloquear
+      loadAllTrips();
 
       return trip;
     } catch (e) {
       _error = e.toString();
-      return null;
-    } finally {
       _isLoading = false;
       notifyListeners();
+      return null;
     }
   }
 
   /// Método optimizado para inicializar el estado de trips
   /// Reduce las notificaciones a una sola al final
   Future<void> initializeTripsState() async {
+    // Si ya está inicializado, no hacer nada
+    if (_isInitialized) return;
+
+    // No notificar al inicio para evitar setState durante build
     _isLoading = true;
     _error = null;
-    notifyListeners();
 
     try {
       // Verificar si hay trip en progreso
@@ -172,13 +192,16 @@ class TripProvider with ChangeNotifier {
       }
 
       _error = null;
+      _isInitialized = true;
     } catch (e) {
       _error = e.toString();
       _hasTripInProgress = false;
       _currentTrip = null;
       _trips = [];
+      _isInitialized = true;
     } finally {
       _isLoading = false;
+      // Solo notificar una vez al final con todos los datos cargados
       notifyListeners();
     }
   }

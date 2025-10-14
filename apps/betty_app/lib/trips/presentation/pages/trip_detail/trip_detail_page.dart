@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../providers/trip_provider.dart';
-import '../../domain/entities/trip.dart';
+import '../../providers/trip_provider.dart';
+import '../../../domain/entities/trip.dart';
+import '../shared_widgets/info_card.dart';
 
 class TripDetailPage extends StatefulWidget {
   final String tripId;
@@ -129,7 +130,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
 
                   // Duración
                   if (_trip!.duration != null)
-                    _InfoCard(
+                    InfoCard(
                       icon: Icons.timer,
                       title: 'Duración Total',
                       value: _formatDuration(_trip!.duration!),
@@ -138,7 +139,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
                   if (_trip!.duration != null) const SizedBox(height: 12),
 
                   // Fecha de inicio
-                  _InfoCard(
+                  InfoCard(
                     icon: Icons.play_circle_outline,
                     title: 'Inicio del Viaje',
                     value: _formatDate(_trip!.startedAt),
@@ -148,7 +149,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
 
                   // Fecha de finalización
                   if (_trip!.endedAt != null) ...[
-                    _InfoCard(
+                    InfoCard(
                       icon: Icons.stop_circle_outlined,
                       title: 'Fin del Viaje',
                       value: _formatDate(_trip!.endedAt!),
@@ -158,7 +159,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
                   ],
 
                   // Fecha de creación
-                  _InfoCard(
+                  InfoCard(
                     icon: Icons.calendar_today,
                     title: 'Fecha de Creación',
                     value: _formatDate(_trip!.createdAt),
@@ -166,52 +167,10 @@ class _TripDetailPageState extends State<TripDetailPage> {
                   const SizedBox(height: 12),
 
                   // Última actualización
-                  _InfoCard(icon: Icons.update, title: 'Última Actualización', value: _formatDate(_trip!.updatedAt)),
+                  InfoCard(icon: Icons.update, title: 'Última Actualización', value: _formatDate(_trip!.updatedAt)),
                 ],
               ),
             ),
-    );
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String value;
-  final String? subtitle;
-  final Color? color;
-
-  const _InfoCard({required this.icon, required this.title, required this.value, this.subtitle, this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(icon, color: color ?? Colors.grey, size: 32),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey)),
-                  const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: color),
-                  ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 2),
-                    Text(subtitle!, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
