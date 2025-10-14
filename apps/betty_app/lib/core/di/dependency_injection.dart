@@ -11,6 +11,14 @@ import '../../alarm/infrastructure/services/alarm_api_service.dart';
 import '../../alarm/application/use_cases/get_alarm_status_use_case.dart';
 import '../../alarm/application/use_cases/toggle_alarm_use_case.dart';
 import '../../alarm/presentation/providers/alarm_provider.dart';
+import '../../trips/infrastructure/services/trip_api_service.dart';
+import '../../trips/application/use_cases/get_all_trips_use_case.dart';
+import '../../trips/application/use_cases/get_current_trip_use_case.dart';
+import '../../trips/application/use_cases/has_trip_in_progress_use_case.dart';
+import '../../trips/application/use_cases/get_trip_by_id_use_case.dart';
+import '../../trips/application/use_cases/create_trip_use_case.dart';
+import '../../trips/application/use_cases/end_trip_use_case.dart';
+import '../../trips/presentation/providers/trip_provider.dart';
 
 class DependencyInjection {
   static BettyApiService? _apiService;
@@ -24,6 +32,15 @@ class DependencyInjection {
   static AlarmApiService? _alarmApiService;
   static GetAlarmStatusUseCase? _getAlarmStatusUseCase;
   static ToggleAlarmUseCase? _toggleAlarmUseCase;
+
+  // Trip dependencies
+  static TripApiService? _tripApiService;
+  static GetAllTripsUseCase? _getAllTripsUseCase;
+  static GetCurrentTripUseCase? _getCurrentTripUseCase;
+  static HasTripInProgressUseCase? _hasTripInProgressUseCase;
+  static GetTripByIdUseCase? _getTripByIdUseCase;
+  static CreateTripUseCase? _createTripUseCase;
+  static EndTripUseCase? _endTripUseCase;
 
   static BettyApiService get apiService {
     _apiService ??= BettyApiService(baseUrl: AppConfig.baseUrl);
@@ -79,6 +96,53 @@ class DependencyInjection {
     return AlarmProvider(getAlarmStatusUseCase, toggleAlarmUseCase);
   }
 
+  // Trip getters
+  static TripApiService get tripApiService {
+    _tripApiService ??= TripApiService(apiService);
+    return _tripApiService!;
+  }
+
+  static GetAllTripsUseCase get getAllTripsUseCase {
+    _getAllTripsUseCase ??= GetAllTripsUseCase(tripApiService);
+    return _getAllTripsUseCase!;
+  }
+
+  static GetCurrentTripUseCase get getCurrentTripUseCase {
+    _getCurrentTripUseCase ??= GetCurrentTripUseCase(tripApiService);
+    return _getCurrentTripUseCase!;
+  }
+
+  static HasTripInProgressUseCase get hasTripInProgressUseCase {
+    _hasTripInProgressUseCase ??= HasTripInProgressUseCase(tripApiService);
+    return _hasTripInProgressUseCase!;
+  }
+
+  static GetTripByIdUseCase get getTripByIdUseCase {
+    _getTripByIdUseCase ??= GetTripByIdUseCase(tripApiService);
+    return _getTripByIdUseCase!;
+  }
+
+  static CreateTripUseCase get createTripUseCase {
+    _createTripUseCase ??= CreateTripUseCase(tripApiService);
+    return _createTripUseCase!;
+  }
+
+  static EndTripUseCase get endTripUseCase {
+    _endTripUseCase ??= EndTripUseCase(tripApiService);
+    return _endTripUseCase!;
+  }
+
+  static TripProvider createTripProvider() {
+    return TripProvider(
+      getAllTripsUseCase: getAllTripsUseCase,
+      getCurrentTripUseCase: getCurrentTripUseCase,
+      hasTripInProgressUseCase: hasTripInProgressUseCase,
+      getTripByIdUseCase: getTripByIdUseCase,
+      createTripUseCase: createTripUseCase,
+      endTripUseCase: endTripUseCase,
+    );
+  }
+
   static void reset() {
     _apiService = null;
     _notificationApiService = null;
@@ -91,5 +155,14 @@ class DependencyInjection {
     _alarmApiService = null;
     _getAlarmStatusUseCase = null;
     _toggleAlarmUseCase = null;
+
+    // Reset trip dependencies
+    _tripApiService = null;
+    _getAllTripsUseCase = null;
+    _getCurrentTripUseCase = null;
+    _hasTripInProgressUseCase = null;
+    _getTripByIdUseCase = null;
+    _createTripUseCase = null;
+    _endTripUseCase = null;
   }
 }

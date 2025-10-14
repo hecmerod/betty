@@ -41,6 +41,7 @@ class BettyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => DependencyInjection.createCameraProvider()),
         ChangeNotifierProvider(create: (_) => DependencyInjection.createAlarmProvider()),
+        ChangeNotifierProvider(create: (_) => DependencyInjection.createTripProvider()),
       ],
       child: MaterialApp(
         title: 'Betty Camera Control',

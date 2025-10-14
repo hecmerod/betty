@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../domain/models/navigation_item.dart';
 import '../widgets/bottom_navigation_bar_widget.dart';
 import '../../../primary/presentation/pages/primary_page.dart';
 import '../../../map/presentation/pages/map_page.dart';
 import '../../../camera/presentation/pages/camera_page.dart';
+import '../../../trips/presentation/pages/trips_page.dart';
+import '../../../trips/presentation/providers/trip_provider.dart';
 
 class MainNavigationPage extends StatefulWidget {
   const MainNavigationPage({super.key});
@@ -15,26 +18,12 @@ class MainNavigationPage extends StatefulWidget {
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int _currentIndex = 0;
 
-  late final List<NavigationItem> _navigationItems;
+  late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-    _navigationItems = [
-      const NavigationItem(label: 'Principal', icon: Icons.home_outlined, activeIcon: Icons.home, page: PrimaryPage()),
-      const NavigationItem(
-        label: 'Mapa',
-        icon: Icons.location_on_outlined,
-        activeIcon: Icons.location_on,
-        page: MapPage(),
-      ),
-      const NavigationItem(
-        label: 'Cámara',
-        icon: Icons.camera_alt_outlined,
-        activeIcon: Icons.camera_alt,
-        page: CameraPage(),
-      ),
-    ];
+    _pages = [const PrimaryPage(), const MapPage(), const CameraPage(), const TripsPage()];
   }
 
   void _onItemTapped(int index) {
@@ -46,11 +35,24 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _navigationItems[_currentIndex].page,
-      bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: _currentIndex,
-        items: _navigationItems,
-        onTap: _onItemTapped,
+      body: IndexedStack(index: _currentIndex, children: _pages),
+      bottomNavigationBar: Consumer<TripProvider>(
+        builder: (context, tripProvider, child) {
+          return BottomNavigationBarWidget(
+            currentIndex: _currentIndex,
+            items: [
+              const NavigationItem(label: 'Principal', icon: Icons.home_outlined, activeIcon: Icons.home),
+              const NavigationItem(label: 'Mapa', icon: Icons.location_on_outlined, activeIcon: Icons.location_on),
+              const NavigationItem(label: 'Cámara', icon: Icons.camera_alt_outlined, activeIcon: Icons.camera_alt),
+              NavigationItem(
+                label: 'Viajes',
+                icon: tripProvider.hasTripInProgress ? Icons.play_circle_outlined : Icons.list_outlined,
+                activeIcon: tripProvider.hasTripInProgress ? Icons.play_circle : Icons.list,
+              ),
+            ],
+            onTap: _onItemTapped,
+          );
+        },
       ),
     );
   }
