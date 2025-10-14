@@ -27,6 +27,7 @@ class _MapPageContentState extends State<_MapPageContent> {
   final MapController _mapController = MapController();
   List<Marker> _markers = [];
   bool _isFirstLocation = true;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -37,24 +38,41 @@ class _MapPageContentState extends State<_MapPageContent> {
   }
 
   Future<void> _initializeLocation() async {
+    if (_isInitialized) {
+      return;
+    }
+
+    _isInitialized = true;
+
     final mapProvider = Provider.of<MapProvider>(context, listen: false);
 
     await mapProvider.getCurrentLocation();
+    await mapProvider.getVehicleLocation();
 
     mapProvider.startLocationStream();
   }
 
-  void _updateMarker(MapLocation location) {
-    final marker = MapMarkerWidget.createMarker(location);
+  void _updateMarkers(MapLocation? userLocation, MapLocation? vehicleLocation) {
+    final List<Marker> newMarkers = [];
+
+    // Agregar marcador del usuario
+    if (userLocation != null) {
+      newMarkers.add(MapMarkerWidget.createMarker(userLocation));
+    }
+
+    // Agregar marcador del vehículo
+    if (vehicleLocation != null) {
+      newMarkers.add(VehicleMarkerWidget.createMarker(vehicleLocation));
+    }
 
     setState(() {
-      _markers = [marker];
+      _markers = newMarkers;
 
-      if (_isFirstLocation) {
+      if (_isFirstLocation && userLocation != null) {
         _isFirstLocation = false;
 
         Future.delayed(const Duration(milliseconds: 100), () {
-          _mapController.move(LatLng(location.latitude, location.longitude), 15.0);
+          _mapController.move(LatLng(userLocation.latitude, userLocation.longitude), 15.0);
         });
       }
     });
@@ -74,15 +92,25 @@ class _MapPageContentState extends State<_MapPageContent> {
     }
   }
 
+  void _centerOnVehicle() {
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
+    final vehicleLocation = mapProvider.vehicleLocation;
+
+    if (vehicleLocation != null) {
+      _mapController.move(LatLng(vehicleLocation.latitude, vehicleLocation.longitude), 16.0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       body: Consumer<MapProvider>(
         builder: (context, mapProvider, child) {
-          if (mapProvider.currentLocation != null) {
+          // Actualizar marcadores cuando cambien las ubicaciones
+          if (mapProvider.currentLocation != null || mapProvider.vehicleLocation != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              _updateMarker(mapProvider.currentLocation!);
+              _updateMarkers(mapProvider.currentLocation, mapProvider.vehicleLocation);
             });
           }
 
@@ -107,12 +135,13 @@ class _MapPageContentState extends State<_MapPageContent> {
                 markers: _markers,
               ),
 
-              if (mapProvider.isLoading) const MapLoadingWidget(),
+              if (mapProvider.isLoading || mapProvider.isLoadingVehicle) const MapLoadingWidget(),
 
               MapControlsWidget(
                 currentMapType: mapProvider.mapType,
                 onToggleMapType: _toggleMapType,
                 onCenterLocation: _centerOnCurrentLocation,
+                onCenterVehicle: _centerOnVehicle,
               ),
             ],
           );

@@ -2,9 +2,13 @@ import 'package:geolocator/geolocator.dart';
 import '../../domain/entities/map_location.dart';
 import '../../domain/entities/map_type.dart';
 import '../../domain/repositories/i_map_repository.dart';
+import '../adapters/map_api_adapter.dart';
 
 class MapRepositoryImpl implements IMapRepository {
-  MapType _currentMapType = MapType.standard;
+  final MapApiAdapter _apiAdapter;
+  MapType _currentMapType = MapType.satellite;
+
+  MapRepositoryImpl({required MapApiAdapter apiAdapter}) : _apiAdapter = apiAdapter;
 
   @override
   Future<MapLocation> getCurrentLocation() async {
@@ -32,6 +36,11 @@ class MapRepositoryImpl implements IMapRepository {
         timestamp: position.timestamp,
       ),
     );
+  }
+
+  @override
+  Future<MapLocation> getVehicleLocation() {
+    return _apiAdapter.getVehicleLocation();
   }
 
   @override

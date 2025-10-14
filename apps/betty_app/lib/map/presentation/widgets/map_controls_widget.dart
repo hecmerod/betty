@@ -5,12 +5,14 @@ class MapControlsWidget extends StatelessWidget {
   final MapType currentMapType;
   final VoidCallback onToggleMapType;
   final VoidCallback onCenterLocation;
+  final VoidCallback onCenterVehicle;
 
   const MapControlsWidget({
     super.key,
     required this.currentMapType,
     required this.onToggleMapType,
     required this.onCenterLocation,
+    required this.onCenterVehicle,
   });
 
   @override
@@ -26,7 +28,9 @@ class MapControlsWidget extends StatelessWidget {
             label: currentMapType == MapType.satellite ? 'Estándar' : 'Satélite',
           ),
           const SizedBox(height: 12),
-          _MapControlButton(onTap: onCenterLocation, icon: Icons.my_location),
+          _MapControlButton(onTap: onCenterLocation, icon: Icons.my_location, label: 'Mi posición'),
+          const SizedBox(height: 12),
+          _MapControlButton(onTap: onCenterVehicle, icon: Icons.local_shipping, label: 'Vehículo'),
         ],
       ),
     );

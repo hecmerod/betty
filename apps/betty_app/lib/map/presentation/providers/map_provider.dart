@@ -2,31 +2,39 @@ import 'package:flutter/foundation.dart';
 import '../../domain/entities/map_location.dart';
 import '../../domain/entities/map_type.dart';
 import '../../domain/use_cases/get_current_location_use_case.dart';
+import '../../domain/use_cases/get_vehicle_location_use_case.dart';
 import '../../domain/use_cases/stream_location_updates_use_case.dart';
 import '../../domain/use_cases/toggle_map_view_use_case.dart';
 
 class MapProvider extends ChangeNotifier {
   final GetCurrentLocationUseCase _getCurrentLocationUseCase;
+  final GetVehicleLocationUseCase _getVehicleLocationUseCase;
   final StreamLocationUpdatesUseCase _streamLocationUpdatesUseCase;
   final ToggleMapViewUseCase _toggleMapViewUseCase;
 
   MapLocation? _currentLocation;
-  MapType _mapType = MapType.standard;
+  MapLocation? _vehicleLocation;
+  MapType _mapType = MapType.satellite;
   bool _isLoading = false;
+  bool _isLoadingVehicle = false;
   String? _errorMessage;
 
   MapProvider({
     required GetCurrentLocationUseCase getCurrentLocationUseCase,
+    required GetVehicleLocationUseCase getVehicleLocationUseCase,
     required StreamLocationUpdatesUseCase streamLocationUpdatesUseCase,
     required ToggleMapViewUseCase toggleMapViewUseCase,
   }) : _getCurrentLocationUseCase = getCurrentLocationUseCase,
+       _getVehicleLocationUseCase = getVehicleLocationUseCase,
        _streamLocationUpdatesUseCase = streamLocationUpdatesUseCase,
        _toggleMapViewUseCase = toggleMapViewUseCase;
 
   // Getters
   MapLocation? get currentLocation => _currentLocation;
+  MapLocation? get vehicleLocation => _vehicleLocation;
   MapType get mapType => _mapType;
   bool get isLoading => _isLoading;
+  bool get isLoadingVehicle => _isLoadingVehicle;
   String? get errorMessage => _errorMessage;
 
   /// Obtiene la ubicación actual del usuario
@@ -41,6 +49,22 @@ class MapProvider extends ChangeNotifier {
       _setError('Error al obtener la ubicación: $e');
     } finally {
       _setLoading(false);
+    }
+  }
+
+  /// Obtiene la ubicación del vehículo desde el servidor
+  Future<void> getVehicleLocation() async {
+    _isLoadingVehicle = true;
+    notifyListeners();
+
+    try {
+      _vehicleLocation = await _getVehicleLocationUseCase.execute();
+      notifyListeners();
+    } catch (e) {
+      _setError('Error al obtener la ubicación del vehículo: $e');
+    } finally {
+      _isLoadingVehicle = false;
+      notifyListeners();
     }
   }
 

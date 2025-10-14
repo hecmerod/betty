@@ -8,6 +8,9 @@ abstract interface class IMapRepository {
   /// Stream de ubicaciones en tiempo real
   Stream<MapLocation> getLocationStream();
 
+  /// Obtiene la ubicación del vehículo desde el servidor
+  Future<MapLocation> getVehicleLocation();
+
   /// Verifica si los permisos de ubicación están concedidos
   Future<bool> hasLocationPermission();
 
