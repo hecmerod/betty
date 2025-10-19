@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../providers/trip_provider.dart';
 import '../shared_widgets/info_card.dart';
+import '../shared_widgets/trip_map_widget.dart';
 
 class CurrentTripPage extends StatefulWidget {
   const CurrentTripPage({super.key});
@@ -126,6 +127,17 @@ class _CurrentTripPageState extends State<CurrentTripPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
+
+                // Mapa con las ubicaciones del viaje
+                if (currentTrip.locations != null && currentTrip.locations!.isNotEmpty) ...[
+                  Text(
+                    'Ruta del Viaje',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  TripMapWidget(locations: currentTrip.locations!, tripName: currentTrip.name),
+                  const SizedBox(height: 24),
+                ],
 
                 // Información adicional
                 InfoCard(

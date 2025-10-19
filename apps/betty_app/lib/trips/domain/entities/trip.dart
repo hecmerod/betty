@@ -1,3 +1,5 @@
+import 'location.dart';
+
 enum TripStatus {
   inProgress('in_progress'),
   completed('completed');
@@ -17,6 +19,7 @@ class Trip {
   final DateTime? endedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<Location>? locations;
 
   const Trip({
     required this.id,
@@ -25,6 +28,7 @@ class Trip {
     this.endedAt,
     required this.createdAt,
     required this.updatedAt,
+    this.locations,
   });
 
   TripStatus get status => endedAt != null ? TripStatus.completed : TripStatus.inProgress;
@@ -45,6 +49,9 @@ class Trip {
       endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt'] as String) : null,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      locations: json['locations'] != null
+          ? (json['locations'] as List).map((loc) => Location.fromJson(loc as Map<String, dynamic>)).toList()
+          : null,
     );
   }
 
@@ -56,6 +63,7 @@ class Trip {
       'endedAt': endedAt?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      if (locations != null) 'locations': locations!.map((loc) => loc.toJson()).toList(),
     };
   }
 
@@ -66,6 +74,7 @@ class Trip {
     DateTime? endedAt,
     DateTime? createdAt,
     DateTime? updatedAt,
+    List<Location>? locations,
   }) {
     return Trip(
       id: id ?? this.id,
@@ -74,6 +83,7 @@ class Trip {
       endedAt: endedAt ?? this.endedAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      locations: locations ?? this.locations,
     );
   }
 

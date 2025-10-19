@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../providers/trip_provider.dart';
 import '../../../domain/entities/trip.dart';
 import '../shared_widgets/info_card.dart';
+import '../shared_widgets/trip_map_widget.dart';
 
 class TripDetailPage extends StatefulWidget {
   final String tripId;
@@ -127,6 +128,17 @@ class _TripDetailPageState extends State<TripDetailPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
+
+                  // Mapa con las ubicaciones del viaje
+                  if (_trip!.locations != null && _trip!.locations!.isNotEmpty) ...[
+                    Text(
+                      'Ruta del Viaje',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    TripMapWidget(locations: _trip!.locations!, tripName: _trip!.name),
+                    const SizedBox(height: 24),
+                  ],
 
                   // Duración
                   if (_trip!.duration != null)
