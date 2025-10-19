@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Location } from '../../../gps/domain/entities/location.entity';
+
+import { TripLocationRepository } from '../../domain/repositories/trip-location.repository';
+import { TripRepository } from '../../domain/repositories/trip.repository';
 import {
   TRIP_LOCATION_REPOSITORY,
   TRIP_REPOSITORY,
-} from '../../domain/repositories/symbols';
-import { TripLocationRepository } from '../../domain/repositories/trip-location.repository';
-import { TripRepository } from '../../domain/repositories/trip.repository';
+} from '../../infrastructure/ioc/symbols';
 
 export interface AddLocationResult {
   saved: boolean;
