@@ -8,15 +8,20 @@ services:
       betty-db:
         condition: service_healthy
     restart: unless-stopped
+    privileged: true
     ports:
       - "3000:3000"
+    volumes:
+      - /sys/class/gpio:/sys/class/gpio
     env_file:
       - apps/betty-server/.env
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - CAMERA_SERVICE_URL=http://betty-camera:8001/camera
+      - CAMERA_SERVICE_URL=http://host.docker.internal:8001
       - DATABASE_URL=postgresql://betty:${POSTGRES_PASSWORD}@betty-db:5432/betty
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - betty-network
 

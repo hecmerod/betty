@@ -7,6 +7,7 @@ import { AlarmModule } from './alarm/alarm.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { GpsModule } from './gps/gps.module';
 import { TripsModule } from './trips/trips.module';
+import { GpioModule } from './gpio/gpio.module';
 import { HealthModule } from './shared/health/health.module';
 import { PrismaModule } from './shared/prisma/prisma.module';
 
@@ -23,6 +24,7 @@ import { PrismaModule } from './shared/prisma/prisma.module';
     NotificationsModule,
     GpsModule,
     TripsModule,
+    GpioModule,
     HealthModule,
     PrismaModule,
   ],

@@ -2,6 +2,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Instalar dependencias de compilación para módulos nativos de Node.js
+RUN apk add --no-cache python3 make g++
+
 COPY tsconfig.base.json ./
 COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
 COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
@@ -20,10 +23,14 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
+# Instalar Python 3 y libgpiod para control de GPIO
+RUN apk add --no-cache python3 py3-libgpiod
+
 COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
 COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY apps/betty-server/prisma ./prisma
+COPY apps/betty-server/scripts ./scripts
 
 EXPOSE 3000
 
