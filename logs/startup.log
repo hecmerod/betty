@@ -1,0 +1,1745 @@
+[2025-10-20 19:04:20] 🚀 Iniciando servicios de Betty...
+[2025-10-20 19:04:20] ⏳ Esperando conexión de red...
+[2025-10-20 19:04:21] ✅ Red disponible
+[2025-10-20 19:04:21] 🐳 Iniciando contenedores Docker...
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.01kB done
+#1 DONE 0.0s
+
+#2 [betty-camera internal] load build definition from Dockerfile
+#2 transferring dockerfile: 4.55kB done
+#2 DONE 0.0s
+
+#3 [betty-server internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.15kB done
+#3 DONE 0.0s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 ...
+
+#5 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#5 DONE 0.9s
+
+#6 [betty-camera internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [betty-camera  1/54] FROM docker.io/balenalib/raspberrypi4-64-debian:bookworm@sha256:575d2cde58bc4a69f86c3793a838d0ada04133725ae71c6f7659468794f39dcd
+#7 DONE 0.0s
+
+#8 [betty-camera internal] load build context
+#8 transferring context: 3.08kB done
+#8 DONE 0.1s
+
+#6 [betty-server internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 DONE 1.0s
+
+#9 [betty-server builder 1/9] FROM docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48
+#9 DONE 0.0s
+
+#10 [betty-camera 13/54] RUN apt-get install -y build-essential
+#10 CACHED
+
+#11 [betty-camera  4/54] RUN apt-get install -y python3-pip
+#11 CACHED
+
+#12 [betty-camera 17/54] RUN apt-get install -y libpng-dev
+#12 CACHED
+
+#13 [betty-camera 36/54] RUN python3 -m pip install --no-cache-dir --break-system-packages -r requirements-basic.txt
+#13 CACHED
+
+#14 [betty-camera 40/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall numpy
+#14 CACHED
+
+#15 [betty-camera 20/54] RUN apt-get install -y libavcodec-dev
+#15 CACHED
+
+#16 [betty-camera 21/54] RUN apt-get install -y libavdevice-dev
+#16 CACHED
+
+#17 [betty-camera 37/54] RUN python3 -m pip install --no-cache-dir --break-system-packages ultralytics
+#17 CACHED
+
+#18 [betty-camera 16/54] RUN apt-get install -y libjpeg-dev
+#18 CACHED
+
+#19 [betty-camera 47/54] RUN python3 -c "import fastapi; print('✓ fastapi disponible')"
+#19 CACHED
+
+#20 [betty-camera  3/54] RUN apt-get install -y python3
+#20 CACHED
+
+#21 [betty-camera  9/54] RUN apt-get install -y git
+#21 CACHED
+
+#22 [betty-camera 50/54] RUN python3 -c "import av; print('✓ PyAV disponible')"
+#22 CACHED
+
+#23 [betty-camera 44/54] RUN python3 -m pip install --no-cache-dir --break-system-packages av>=10.0.0
+#23 CACHED
+
+#24 [betty-camera  6/54] RUN apt-get install -y curl
+#24 CACHED
+
+#25 [betty-camera  2/54] RUN apt-get update
+#25 CACHED
+
+#26 [betty-camera 38/54] RUN python3 -m pip install --no-cache-dir --break-system-packages PyJWT
+#26 CACHED
+
+#27 [betty-camera 10/54] RUN apt-get install -y gcc
+#27 CACHED
+
+#28 [betty-camera 31/54] RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add - &&     echo "deb https://archive.raspberrypi.org/debian/ bookworm main" >> /etc/apt/sources.list.d/raspi.list &&     apt-get update &&     apt-get install -y python3-picamera2 python3-libcamera libcamera-apps ||     echo "Raspberry Pi packages not available, will use pip version"
+#28 CACHED
+
+#29 [betty-camera 11/54] RUN apt-get install -y g++
+#29 CACHED
+
+#30 [betty-camera 34/54] COPY apps/betty-camera/requirements-basic.txt ./
+#30 CACHED
+
+#31 [betty-camera 42/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall simplejpeg
+#31 CACHED
+
+#32 [betty-camera 30/54] RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#32 CACHED
+
+#33 [betty-camera 41/54] RUN python3 -m pip install --no-cache-dir --break-system-packages opencv-python-headless
+#33 CACHED
+
+#34 [betty-camera 27/54] RUN apt-get install -y libvpx-dev
+#34 CACHED
+
+#35 [betty-camera 12/54] RUN apt-get install -y make
+#35 CACHED
+
+#36 [betty-camera 43/54] RUN python3 -m pip install --no-cache-dir --break-system-packages aiortc>=1.6.0
+#36 CACHED
+
+#37 [betty-camera 35/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+#37 CACHED
+
+#38 [betty-camera 14/54] RUN apt-get install -y cmake
+#38 CACHED
+
+#39 [betty-camera 26/54] RUN apt-get install -y libopus-dev
+#39 CACHED
+
+#40 [betty-camera  8/54] RUN apt-get install -y gnupg
+#40 CACHED
+
+#41 [betty-camera 28/54] RUN apt-get install -y libsrtp2-dev
+#41 CACHED
+
+#42 [betty-camera 51/54] COPY apps/betty-camera/src/ ./src/
+#42 CACHED
+
+#43 [betty-camera 15/54] RUN apt-get install -y pkg-config
+#43 CACHED
+
+#44 [betty-camera 19/54] RUN apt-get install -y libavformat-dev
+#44 CACHED
+
+#45 [betty-camera  7/54] RUN apt-get install -y wget
+#45 CACHED
+
+#46 [betty-camera 49/54] RUN python3 -c "import aiortc; print('✓ aiortc (WebRTC) disponible')"
+#46 CACHED
+
+#47 [betty-camera 18/54] RUN apt-get install -y libcap-dev
+#47 CACHED
+
+#48 [betty-camera 23/54] RUN apt-get install -y libswscale-dev
+#48 CACHED
+
+#49 [betty-camera 22/54] RUN apt-get install -y libavutil-dev
+#49 CACHED
+
+#50 [betty-camera 52/54] COPY apps/betty-camera/yolov8n_ncnn_model/ ./yolov8n_ncnn_model/
+#50 CACHED
+
+#51 [betty-camera 29/54] RUN apt-get install -y libvulkan-dev
+#51 CACHED
+
+#52 [betty-camera 53/54] COPY apps/betty-camera/yolov8n.pt ./yolov8n.pt
+#52 CACHED
+
+#53 [betty-camera 45/54] RUN python3 -c "import picamera2; print('✓ picamera2 del sistema disponible')" ||     python3 -m pip install --no-cache-dir --break-system-packages picamera2
+#53 CACHED
+
+#54 [betty-camera 24/54] RUN apt-get install -y libswresample-dev
+#54 CACHED
+
+#55 [betty-camera 48/54] RUN python3 -c "import picamera2; print('✓ picamera2 disponible')" || echo "⚠ picamera2 no disponible"
+#55 CACHED
+
+#56 [betty-camera 39/54] RUN python3 -m pip install --no-cache-dir --break-system-packages git+https://github.com/Tencent/ncnn.git
+#56 CACHED
+
+#57 [betty-camera  5/54] RUN apt-get install -y python3-dev
+#57 CACHED
+
+#58 [betty-camera 25/54] RUN apt-get install -y libavfilter-dev
+#58 CACHED
+
+#59 [betty-camera 33/54] COPY apps/betty-camera/requirements.txt ./
+#59 CACHED
+
+#60 [betty-camera 32/54] WORKDIR /app
+#60 CACHED
+
+#61 [betty-camera 46/54] RUN python3 -c "import uvicorn; print('✓ uvicorn disponible')"
+#61 CACHED
+
+#62 [betty-camera 54/54] RUN mkdir -p config output
+#62 CACHED
+
+#63 [betty-camera] exporting to image
+#63 exporting layers
+#63 exporting layers done
+#63 writing image sha256:4931983bbf19f1f4d62627d4676708a0455d2c156590bb2a01ac034efa9e59a9 0.0s done
+#63 naming to docker.io/library/betty-camera:final 0.0s done
+#63 DONE 0.1s
+
+#64 [betty-server internal] load build context
+#64 ...
+
+#65 [betty-camera] resolving provenance for metadata file
+#65 DONE 0.0s
+
+#64 [betty-server internal] load build context
+#64 transferring context: 22.32kB 2.2s done
+#64 DONE 2.3s
+
+#66 [betty-server builder 4/9] COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+#66 CACHED
+
+#67 [betty-server builder 7/9] RUN cd apps/betty-server     && npm ci     && npx prisma generate --schema=prisma/schema.prisma     && npm cache clean --force
+#67 CACHED
+
+#68 [betty-server builder 5/9] COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+#68 CACHED
+
+#69 [betty-server production 4/6] COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
+#69 CACHED
+
+#70 [betty-server builder 2/9] WORKDIR /app
+#70 CACHED
+
+#71 [betty-server builder 9/9] RUN cd apps/betty-server && npm run build
+#71 CACHED
+
+#72 [betty-server builder 8/9] COPY apps/betty-server/src/ ./apps/betty-server/src/
+#72 CACHED
+
+#73 [betty-server production 3/6] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#73 CACHED
+
+#74 [betty-server production 5/6] COPY --from=builder /app/dist ./dist
+#74 CACHED
+
+#75 [betty-server builder 6/9] COPY apps/betty-server/prisma ./apps/betty-server/prisma
+#75 CACHED
+
+#76 [betty-server builder 3/9] COPY tsconfig.base.json ./
+#76 CACHED
+
+#77 [betty-server production 6/6] COPY apps/betty-server/prisma ./prisma
+#77 CACHED
+
+#78 [betty-server] exporting to image
+#78 exporting layers done
+#78 writing image sha256:23addde698f3b465e7a08a4fe910a0167cc287454cd0d9c6f81c4140cacdf9cc 0.0s done
+#78 naming to docker.io/library/betty-betty-server done
+#78 DONE 0.0s
+
+#79 [betty-server] resolving provenance for metadata file
+#79 DONE 0.0s
+ betty-camera:final  Built
+ betty-betty-server  Built
+ Network betty_betty-network  Creating
+ Network betty_betty-network  Created
+ Network betty_default  Creating
+ Network betty_default  Created
+ Container cadvisor  Creating
+ Container betty-db  Creating
+ Container betty-camera  Creating
+ Container cadvisor  Created
+ Container betty-db  Created
+ Container betty-server  Creating
+ Container betty-db-backup  Creating
+ Container betty-camera  Created
+ Container betty-server  Created
+ Container betty-db-backup  Created
+ Container betty-db  Starting
+ Container cadvisor  Starting
+ Container betty-camera  Starting
+ Container betty-camera  Started
+ Container betty-db  Started
+ Container betty-db  Waiting
+ Container betty-db  Waiting
+ Container cadvisor  Started
+ Container betty-db  Healthy
+ Container betty-server  Starting
+ Container betty-db  Healthy
+ Container betty-db-backup  Starting
+ Container betty-db-backup  Started
+ Container betty-server  Started
+[2025-10-20 19:04:32] ✅ Contenedores Docker iniciados correctamente
+[2025-10-20 19:04:32] ⏳ Esperando a que los servicios estén listos...
+[2025-10-20 19:04:42] 🌐 Iniciando ngrok en puerto 3000...
+[2025-10-20 19:04:42] ✅ ngrok iniciado con PID: 10822
+[2025-10-20 19:04:47] 🌍 URL pública de ngrok: https://twee-importantly-omar.ngrok-free.dev
+[2025-10-20 19:04:47] ✨ Proceso de inicio completado
+[2025-10-20 19:04:47] 📊 Estado de los servicios:
+NAME              IMAGE                             COMMAND                  SERVICE           CREATED          STATUS                             PORTS
+betty-camera      betty-camera:final                "/usr/bin/entry.sh p…"   betty-camera      22 seconds ago   Up 21 seconds (healthy)            
+betty-db          postgres:16-alpine                "docker-entrypoint.s…"   betty-db          22 seconds ago   Up 21 seconds (healthy)            0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+betty-db-backup   postgres:16-alpine                "/bin/sh -c 'chmod 7…"   betty-db-backup   21 seconds ago   Up 15 seconds                      5432/tcp
+betty-server      betty-betty-server                "docker-entrypoint.s…"   betty-server      21 seconds ago   Up 15 seconds (healthy)            0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+cadvisor          gcr.io/cadvisor/cadvisor:latest   "/usr/bin/cadvisor -…"   cadvisor          22 seconds ago   Up 21 seconds (health: starting)   0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+[2025-10-20 19:08:14] 🚀 Iniciando servicios de Betty...
+[2025-10-20 19:08:14] ⏳ Esperando conexión de red...
+[2025-10-20 19:08:14] ✅ Red disponible
+[2025-10-20 19:08:14] 🐳 Iniciando contenedores Docker...
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.01kB done
+#1 DONE 0.0s
+
+#2 [betty-camera internal] load build definition from Dockerfile
+#2 transferring dockerfile: 4.55kB 0.0s done
+#2 DONE 0.1s
+
+#3 [betty-server internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.15kB 0.0s done
+#3 DONE 0.1s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 ...
+
+#5 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#5 DONE 3.4s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 DONE 3.4s
+
+#6 [betty-camera internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.1s
+
+#7 [betty-server builder 1/9] FROM docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48
+#7 DONE 0.0s
+
+#8 [betty-server internal] load build context
+#8 ...
+
+#9 [betty-camera  1/54] FROM docker.io/balenalib/raspberrypi4-64-debian:bookworm@sha256:575d2cde58bc4a69f86c3793a838d0ada04133725ae71c6f7659468794f39dcd
+#9 DONE 0.0s
+
+#8 [betty-server internal] load build context
+#8 ...
+
+#10 [betty-camera internal] load build context
+#10 transferring context: 19.47MB 0.4s done
+#10 DONE 0.5s
+
+#11 [betty-camera  7/54] RUN apt-get install -y wget
+#11 CACHED
+
+#12 [betty-camera  2/54] RUN apt-get update
+#12 CACHED
+
+#13 [betty-camera 17/54] RUN apt-get install -y libpng-dev
+#13 CACHED
+
+#14 [betty-camera 48/54] RUN python3 -c "import picamera2; print('✓ picamera2 disponible')" || echo "⚠ picamera2 no disponible"
+#14 CACHED
+
+#15 [betty-camera 24/54] RUN apt-get install -y libswresample-dev
+#15 CACHED
+
+#16 [betty-camera 28/54] RUN apt-get install -y libsrtp2-dev
+#16 CACHED
+
+#17 [betty-camera 41/54] RUN python3 -m pip install --no-cache-dir --break-system-packages opencv-python-headless
+#17 CACHED
+
+#18 [betty-camera 53/54] COPY apps/betty-camera/yolov8n.pt ./yolov8n.pt
+#18 CACHED
+
+#19 [betty-camera  5/54] RUN apt-get install -y python3-dev
+#19 CACHED
+
+#20 [betty-camera 47/54] RUN python3 -c "import fastapi; print('✓ fastapi disponible')"
+#20 CACHED
+
+#21 [betty-camera 16/54] RUN apt-get install -y libjpeg-dev
+#21 CACHED
+
+#22 [betty-camera 21/54] RUN apt-get install -y libavdevice-dev
+#22 CACHED
+
+#23 [betty-camera 25/54] RUN apt-get install -y libavfilter-dev
+#23 CACHED
+
+#24 [betty-camera 33/54] COPY apps/betty-camera/requirements.txt ./
+#24 CACHED
+
+#25 [betty-camera 34/54] COPY apps/betty-camera/requirements-basic.txt ./
+#25 CACHED
+
+#26 [betty-camera 43/54] RUN python3 -m pip install --no-cache-dir --break-system-packages aiortc>=1.6.0
+#26 CACHED
+
+#27 [betty-camera 40/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall numpy
+#27 CACHED
+
+#28 [betty-camera 27/54] RUN apt-get install -y libvpx-dev
+#28 CACHED
+
+#29 [betty-camera 45/54] RUN python3 -c "import picamera2; print('✓ picamera2 del sistema disponible')" ||     python3 -m pip install --no-cache-dir --break-system-packages picamera2
+#29 CACHED
+
+#30 [betty-camera 38/54] RUN python3 -m pip install --no-cache-dir --break-system-packages PyJWT
+#30 CACHED
+
+#31 [betty-camera 11/54] RUN apt-get install -y g++
+#31 CACHED
+
+#32 [betty-camera 51/54] COPY apps/betty-camera/src/ ./src/
+#32 CACHED
+
+#33 [betty-camera 20/54] RUN apt-get install -y libavcodec-dev
+#33 CACHED
+
+#34 [betty-camera 18/54] RUN apt-get install -y libcap-dev
+#34 CACHED
+
+#35 [betty-camera 52/54] COPY apps/betty-camera/yolov8n_ncnn_model/ ./yolov8n_ncnn_model/
+#35 CACHED
+
+#36 [betty-camera 23/54] RUN apt-get install -y libswscale-dev
+#36 CACHED
+
+#37 [betty-camera 29/54] RUN apt-get install -y libvulkan-dev
+#37 CACHED
+
+#38 [betty-camera 19/54] RUN apt-get install -y libavformat-dev
+#38 CACHED
+
+#39 [betty-camera  6/54] RUN apt-get install -y curl
+#39 CACHED
+
+#40 [betty-camera 39/54] RUN python3 -m pip install --no-cache-dir --break-system-packages git+https://github.com/Tencent/ncnn.git
+#40 CACHED
+
+#41 [betty-camera 31/54] RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add - &&     echo "deb https://archive.raspberrypi.org/debian/ bookworm main" >> /etc/apt/sources.list.d/raspi.list &&     apt-get update &&     apt-get install -y python3-picamera2 python3-libcamera libcamera-apps ||     echo "Raspberry Pi packages not available, will use pip version"
+#41 CACHED
+
+#42 [betty-camera 46/54] RUN python3 -c "import uvicorn; print('✓ uvicorn disponible')"
+#42 CACHED
+
+#43 [betty-camera 50/54] RUN python3 -c "import av; print('✓ PyAV disponible')"
+#43 CACHED
+
+#44 [betty-camera  4/54] RUN apt-get install -y python3-pip
+#44 CACHED
+
+#45 [betty-camera 26/54] RUN apt-get install -y libopus-dev
+#45 CACHED
+
+#46 [betty-camera 44/54] RUN python3 -m pip install --no-cache-dir --break-system-packages av>=10.0.0
+#46 CACHED
+
+#47 [betty-camera 10/54] RUN apt-get install -y gcc
+#47 CACHED
+
+#48 [betty-camera 15/54] RUN apt-get install -y pkg-config
+#48 CACHED
+
+#49 [betty-camera 12/54] RUN apt-get install -y make
+#49 CACHED
+
+#50 [betty-camera 14/54] RUN apt-get install -y cmake
+#50 CACHED
+
+#51 [betty-camera 32/54] WORKDIR /app
+#51 CACHED
+
+#52 [betty-camera 37/54] RUN python3 -m pip install --no-cache-dir --break-system-packages ultralytics
+#52 CACHED
+
+#53 [betty-camera 42/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall simplejpeg
+#53 CACHED
+
+#54 [betty-camera 13/54] RUN apt-get install -y build-essential
+#54 CACHED
+
+#55 [betty-camera 22/54] RUN apt-get install -y libavutil-dev
+#55 CACHED
+
+#56 [betty-camera  8/54] RUN apt-get install -y gnupg
+#56 CACHED
+
+#57 [betty-camera  9/54] RUN apt-get install -y git
+#57 CACHED
+
+#58 [betty-camera 30/54] RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#58 CACHED
+
+#59 [betty-camera  3/54] RUN apt-get install -y python3
+#59 CACHED
+
+#60 [betty-camera 35/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+#60 CACHED
+
+#61 [betty-camera 49/54] RUN python3 -c "import aiortc; print('✓ aiortc (WebRTC) disponible')"
+#61 CACHED
+
+#62 [betty-camera 36/54] RUN python3 -m pip install --no-cache-dir --break-system-packages -r requirements-basic.txt
+#62 CACHED
+
+#63 [betty-camera 54/54] RUN mkdir -p config output
+#63 CACHED
+
+#64 [betty-camera] exporting to image
+#64 exporting layers done
+#64 writing image sha256:4931983bbf19f1f4d62627d4676708a0455d2c156590bb2a01ac034efa9e59a9 0.0s done
+#64 naming to docker.io/library/betty-camera:final 0.0s done
+#64 DONE 0.1s
+
+#8 [betty-server internal] load build context
+#8 ...
+
+#65 [betty-camera] resolving provenance for metadata file
+#65 DONE 0.0s
+
+#8 [betty-server internal] load build context
+#8 transferring context: 24B 12.2s
+#8 transferring context: 398.67kB 14.4s done
+#8 DONE 14.4s
+
+#66 [betty-server builder 3/9] COPY tsconfig.base.json ./
+#66 CACHED
+
+#67 [betty-server builder 7/9] RUN cd apps/betty-server     && npm ci     && npx prisma generate --schema=prisma/schema.prisma     && npm cache clean --force
+#67 CACHED
+
+#68 [betty-server builder 5/9] COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+#68 CACHED
+
+#69 [betty-server builder 4/9] COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+#69 CACHED
+
+#70 [betty-server builder 2/9] WORKDIR /app
+#70 CACHED
+
+#71 [betty-server builder 6/9] COPY apps/betty-server/prisma ./apps/betty-server/prisma
+#71 CACHED
+
+#72 [betty-server builder 9/9] RUN cd apps/betty-server && npm run build
+#72 CACHED
+
+#73 [betty-server builder 8/9] COPY apps/betty-server/src/ ./apps/betty-server/src/
+#73 CACHED
+
+#74 [betty-server production 4/6] COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
+#74 CACHED
+
+#75 [betty-server production 3/6] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#75 CACHED
+
+#76 [betty-server production 5/6] COPY --from=builder /app/dist ./dist
+#76 CACHED
+
+#77 [betty-server production 6/6] COPY apps/betty-server/prisma ./prisma
+#77 CACHED
+
+#78 [betty-server] exporting to image
+#78 exporting layers done
+#78 writing image sha256:23addde698f3b465e7a08a4fe910a0167cc287454cd0d9c6f81c4140cacdf9cc 0.0s done
+#78 naming to docker.io/library/betty-betty-server done
+#78 DONE 0.1s
+
+#79 [betty-server] resolving provenance for metadata file
+#79 DONE 0.0s
+ betty-camera:final  Built
+ betty-betty-server  Built
+ Container cadvisor  Running
+ Container betty-camera  Running
+ Container betty-db  Running
+ Container betty-db-backup  Running
+ Container betty-server  Running
+ Container betty-db  Waiting
+ Container betty-db  Waiting
+ Container betty-db  Healthy
+ Container betty-db  Healthy
+[2025-10-20 19:08:38] ✅ Contenedores Docker iniciados correctamente
+[2025-10-20 19:08:38] ⏳ Esperando a que los servicios estén listos...
+[2025-10-20 19:08:48] 🌐 Iniciando ngrok en puerto 3000...
+[2025-10-20 19:08:48] ✅ ngrok iniciado con PID: 2801
+[2025-10-20 19:10:00] 🚀 Iniciando servicios de Betty...
+[2025-10-20 19:10:00] ⏳ Esperando conexión de red...
+[2025-10-20 19:10:00] ✅ Red disponible
+[2025-10-20 19:10:00] 🐳 Iniciando contenedores Docker...
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.01kB done
+#1 DONE 0.0s
+
+#2 [betty-camera internal] load build definition from Dockerfile
+#2 transferring dockerfile: 30B 0.0s
+#2 transferring dockerfile: 4.55kB 0.0s done
+#2 DONE 0.2s
+
+#3 [betty-server internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.15kB 0.0s done
+#3 DONE 0.3s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 DONE 2.2s
+
+#5 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#5 DONE 2.4s
+
+#6 [betty-server internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.0s
+
+#7 [betty-server builder 1/9] FROM docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48
+#7 DONE 0.0s
+
+#8 [betty-server internal] load build context
+#8 ...
+
+#6 [betty-camera internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.0s
+
+#9 [betty-camera  1/54] FROM docker.io/balenalib/raspberrypi4-64-debian:bookworm@sha256:575d2cde58bc4a69f86c3793a838d0ada04133725ae71c6f7659468794f39dcd
+#9 DONE 0.0s
+
+#10 [betty-camera internal] load build context
+#10 transferring context: 3.08kB 0.0s done
+#10 DONE 0.0s
+
+#11 [betty-camera 39/54] RUN python3 -m pip install --no-cache-dir --break-system-packages git+https://github.com/Tencent/ncnn.git
+#11 CACHED
+
+#12 [betty-camera 43/54] RUN python3 -m pip install --no-cache-dir --break-system-packages aiortc>=1.6.0
+#12 CACHED
+
+#13 [betty-camera 38/54] RUN python3 -m pip install --no-cache-dir --break-system-packages PyJWT
+#13 CACHED
+
+#14 [betty-camera 23/54] RUN apt-get install -y libswscale-dev
+#14 CACHED
+
+#15 [betty-camera  9/54] RUN apt-get install -y git
+#15 CACHED
+
+#16 [betty-camera  8/54] RUN apt-get install -y gnupg
+#16 CACHED
+
+#17 [betty-camera 30/54] RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#17 CACHED
+
+#18 [betty-camera 52/54] COPY apps/betty-camera/yolov8n_ncnn_model/ ./yolov8n_ncnn_model/
+#18 CACHED
+
+#19 [betty-camera 10/54] RUN apt-get install -y gcc
+#19 CACHED
+
+#20 [betty-camera  5/54] RUN apt-get install -y python3-dev
+#20 CACHED
+
+#21 [betty-camera 28/54] RUN apt-get install -y libsrtp2-dev
+#21 CACHED
+
+#22 [betty-camera 29/54] RUN apt-get install -y libvulkan-dev
+#22 CACHED
+
+#23 [betty-camera 35/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+#23 CACHED
+
+#24 [betty-camera  2/54] RUN apt-get update
+#24 CACHED
+
+#25 [betty-camera 49/54] RUN python3 -c "import aiortc; print('✓ aiortc (WebRTC) disponible')"
+#25 CACHED
+
+#26 [betty-camera 14/54] RUN apt-get install -y cmake
+#26 CACHED
+
+#27 [betty-camera 26/54] RUN apt-get install -y libopus-dev
+#27 CACHED
+
+#28 [betty-camera 41/54] RUN python3 -m pip install --no-cache-dir --break-system-packages opencv-python-headless
+#28 CACHED
+
+#29 [betty-camera 24/54] RUN apt-get install -y libswresample-dev
+#29 CACHED
+
+#30 [betty-camera 16/54] RUN apt-get install -y libjpeg-dev
+#30 CACHED
+
+#31 [betty-camera 32/54] WORKDIR /app
+#31 CACHED
+
+#32 [betty-camera 50/54] RUN python3 -c "import av; print('✓ PyAV disponible')"
+#32 CACHED
+
+#33 [betty-camera 19/54] RUN apt-get install -y libavformat-dev
+#33 CACHED
+
+#34 [betty-camera 22/54] RUN apt-get install -y libavutil-dev
+#34 CACHED
+
+#35 [betty-camera 20/54] RUN apt-get install -y libavcodec-dev
+#35 CACHED
+
+#36 [betty-camera 46/54] RUN python3 -c "import uvicorn; print('✓ uvicorn disponible')"
+#36 CACHED
+
+#37 [betty-camera 27/54] RUN apt-get install -y libvpx-dev
+#37 CACHED
+
+#38 [betty-camera 21/54] RUN apt-get install -y libavdevice-dev
+#38 CACHED
+
+#39 [betty-camera 18/54] RUN apt-get install -y libcap-dev
+#39 CACHED
+
+#40 [betty-camera 47/54] RUN python3 -c "import fastapi; print('✓ fastapi disponible')"
+#40 CACHED
+
+#41 [betty-camera 40/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall numpy
+#41 CACHED
+
+#42 [betty-camera  6/54] RUN apt-get install -y curl
+#42 CACHED
+
+#43 [betty-camera 12/54] RUN apt-get install -y make
+#43 CACHED
+
+#44 [betty-camera 45/54] RUN python3 -c "import picamera2; print('✓ picamera2 del sistema disponible')" ||     python3 -m pip install --no-cache-dir --break-system-packages picamera2
+#44 CACHED
+
+#45 [betty-camera  7/54] RUN apt-get install -y wget
+#45 CACHED
+
+#46 [betty-camera  4/54] RUN apt-get install -y python3-pip
+#46 CACHED
+
+#47 [betty-camera 11/54] RUN apt-get install -y g++
+#47 CACHED
+
+#48 [betty-camera 31/54] RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add - &&     echo "deb https://archive.raspberrypi.org/debian/ bookworm main" >> /etc/apt/sources.list.d/raspi.list &&     apt-get update &&     apt-get install -y python3-picamera2 python3-libcamera libcamera-apps ||     echo "Raspberry Pi packages not available, will use pip version"
+#48 CACHED
+
+#49 [betty-camera 15/54] RUN apt-get install -y pkg-config
+#49 CACHED
+
+#50 [betty-camera 17/54] RUN apt-get install -y libpng-dev
+#50 CACHED
+
+#51 [betty-camera 13/54] RUN apt-get install -y build-essential
+#51 CACHED
+
+#52 [betty-camera 25/54] RUN apt-get install -y libavfilter-dev
+#52 CACHED
+
+#53 [betty-camera 36/54] RUN python3 -m pip install --no-cache-dir --break-system-packages -r requirements-basic.txt
+#53 CACHED
+
+#54 [betty-camera  3/54] RUN apt-get install -y python3
+#54 CACHED
+
+#55 [betty-camera 48/54] RUN python3 -c "import picamera2; print('✓ picamera2 disponible')" || echo "⚠ picamera2 no disponible"
+#55 CACHED
+
+#56 [betty-camera 53/54] COPY apps/betty-camera/yolov8n.pt ./yolov8n.pt
+#56 CACHED
+
+#57 [betty-camera 33/54] COPY apps/betty-camera/requirements.txt ./
+#57 CACHED
+
+#58 [betty-camera 42/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall simplejpeg
+#58 CACHED
+
+#59 [betty-camera 37/54] RUN python3 -m pip install --no-cache-dir --break-system-packages ultralytics
+#59 CACHED
+
+#60 [betty-camera 34/54] COPY apps/betty-camera/requirements-basic.txt ./
+#60 CACHED
+
+#61 [betty-camera 44/54] RUN python3 -m pip install --no-cache-dir --break-system-packages av>=10.0.0
+#61 CACHED
+
+#62 [betty-camera 51/54] COPY apps/betty-camera/src/ ./src/
+#62 CACHED
+
+#63 [betty-camera 54/54] RUN mkdir -p config output
+#63 CACHED
+
+#64 [betty-camera] exporting to image
+#64 exporting layers done
+#64 writing image sha256:4931983bbf19f1f4d62627d4676708a0455d2c156590bb2a01ac034efa9e59a9 0.0s done
+#64 naming to docker.io/library/betty-camera:final done
+#64 DONE 0.1s
+
+#8 [betty-server internal] load build context
+#8 ...
+
+#65 [betty-camera] resolving provenance for metadata file
+#65 DONE 0.0s
+
+#8 [betty-server internal] load build context
+#8 transferring context: 24B 12.3s
+#8 transferring context: 20.84kB 14.7s done
+#8 DONE 14.8s
+
+#66 [betty-server production 5/6] COPY --from=builder /app/dist ./dist
+#66 CACHED
+
+#67 [betty-server builder 7/9] RUN cd apps/betty-server     && npm ci     && npx prisma generate --schema=prisma/schema.prisma     && npm cache clean --force
+#67 CACHED
+
+#68 [betty-server production 4/6] COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
+#68 CACHED
+
+#69 [betty-server builder 6/9] COPY apps/betty-server/prisma ./apps/betty-server/prisma
+#69 CACHED
+
+#70 [betty-server builder 3/9] COPY tsconfig.base.json ./
+#70 CACHED
+
+#71 [betty-server builder 4/9] COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+#71 CACHED
+
+#72 [betty-server builder 9/9] RUN cd apps/betty-server && npm run build
+#72 CACHED
+
+#73 [betty-server builder 2/9] WORKDIR /app
+#73 CACHED
+
+#74 [betty-server production 3/6] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#74 CACHED
+
+#75 [betty-server builder 8/9] COPY apps/betty-server/src/ ./apps/betty-server/src/
+#75 CACHED
+
+#76 [betty-server builder 5/9] COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+#76 CACHED
+
+#77 [betty-server production 6/6] COPY apps/betty-server/prisma ./prisma
+#77 CACHED
+
+#78 [betty-server] exporting to image
+#78 exporting layers done
+#78 writing image sha256:23addde698f3b465e7a08a4fe910a0167cc287454cd0d9c6f81c4140cacdf9cc 0.0s done
+#78 naming to docker.io/library/betty-betty-server 0.0s done
+#78 DONE 0.1s
+
+#79 [betty-server] resolving provenance for metadata file
+#79 DONE 0.0s
+ betty-camera:final  Built
+ betty-betty-server  Built
+ Container betty-camera  Running
+ Container cadvisor  Running
+ Container betty-db  Running
+ Container betty-server  Running
+ Container betty-db-backup  Running
+ Container betty-db  Waiting
+ Container betty-db  Waiting
+ Container betty-db  Healthy
+ Container betty-db  Healthy
+[2025-10-20 19:10:24] ✅ Contenedores Docker iniciados correctamente
+[2025-10-20 19:10:24] ⏳ Esperando a que los servicios estén listos...
+[2025-10-20 19:10:34] 🌐 Iniciando ngrok en puerto 3000...
+[2025-10-20 19:10:34] ✅ ngrok iniciado con PID: 2993
+[2025-10-20 19:10:39] 🌍 URL pública de ngrok: https://twee-importantly-omar.ngrok-free.dev
+[2025-10-20 19:10:39] ✨ Proceso de inicio completado
+[2025-10-20 19:10:39] 📊 Estado de los servicios:
+NAME              IMAGE                             COMMAND                  SERVICE           CREATED         STATUS                    PORTS
+betty-camera      betty-camera:final                "/usr/bin/entry.sh p…"   betty-camera      6 minutes ago   Up 46 seconds (healthy)   
+betty-db          postgres:16-alpine                "docker-entrypoint.s…"   betty-db          6 minutes ago   Up 46 seconds (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+betty-db-backup   postgres:16-alpine                "/bin/sh -c 'chmod 7…"   betty-db-backup   6 minutes ago   Up 46 seconds             5432/tcp
+betty-server      betty-betty-server                "docker-entrypoint.s…"   betty-server      6 minutes ago   Up 46 seconds (healthy)   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+cadvisor          gcr.io/cadvisor/cadvisor:latest   "/usr/bin/cadvisor -…"   cadvisor          6 minutes ago   Up 46 seconds (healthy)   0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+[2025-10-20 19:14:48] 🚀 Iniciando servicios de Betty...
+[2025-10-20 19:14:48] ⏳ Esperando conexión de red...
+[2025-10-20 19:14:48] ✅ Red disponible
+[2025-10-20 19:14:48] 🐳 Iniciando contenedores Docker...
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.01kB done
+#1 DONE 0.0s
+
+#2 [betty-camera internal] load build definition from Dockerfile
+#2 transferring dockerfile: 4.55kB 0.0s done
+#2 DONE 0.1s
+
+#3 [betty-server internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.15kB 0.0s done
+#3 DONE 0.1s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 ...
+
+#5 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#5 DONE 1.1s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 DONE 1.1s
+
+#6 [betty-camera internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.1s
+
+#7 [betty-server builder 1/9] FROM docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48
+#7 DONE 0.0s
+
+#8 [betty-camera  1/54] FROM docker.io/balenalib/raspberrypi4-64-debian:bookworm@sha256:575d2cde58bc4a69f86c3793a838d0ada04133725ae71c6f7659468794f39dcd
+#8 DONE 0.0s
+
+#9 [betty-camera internal] load build context
+#9 transferring context: 3.08kB 0.0s done
+#9 DONE 0.1s
+
+#10 [betty-camera 23/54] RUN apt-get install -y libswscale-dev
+#10 CACHED
+
+#11 [betty-camera  2/54] RUN apt-get update
+#11 CACHED
+
+#12 [betty-camera 50/54] RUN python3 -c "import av; print('✓ PyAV disponible')"
+#12 CACHED
+
+#13 [betty-camera  3/54] RUN apt-get install -y python3
+#13 CACHED
+
+#14 [betty-camera  6/54] RUN apt-get install -y curl
+#14 CACHED
+
+#15 [betty-camera 35/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+#15 CACHED
+
+#16 [betty-camera 15/54] RUN apt-get install -y pkg-config
+#16 CACHED
+
+#17 [betty-camera 28/54] RUN apt-get install -y libsrtp2-dev
+#17 CACHED
+
+#18 [betty-camera 10/54] RUN apt-get install -y gcc
+#18 CACHED
+
+#19 [betty-camera 21/54] RUN apt-get install -y libavdevice-dev
+#19 CACHED
+
+#20 [betty-camera  8/54] RUN apt-get install -y gnupg
+#20 CACHED
+
+#21 [betty-camera 52/54] COPY apps/betty-camera/yolov8n_ncnn_model/ ./yolov8n_ncnn_model/
+#21 CACHED
+
+#22 [betty-camera 53/54] COPY apps/betty-camera/yolov8n.pt ./yolov8n.pt
+#22 CACHED
+
+#23 [betty-camera 42/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall simplejpeg
+#23 CACHED
+
+#24 [betty-camera 24/54] RUN apt-get install -y libswresample-dev
+#24 CACHED
+
+#25 [betty-camera 39/54] RUN python3 -m pip install --no-cache-dir --break-system-packages git+https://github.com/Tencent/ncnn.git
+#25 CACHED
+
+#26 [betty-camera 13/54] RUN apt-get install -y build-essential
+#26 CACHED
+
+#27 [betty-camera 11/54] RUN apt-get install -y g++
+#27 CACHED
+
+#28 [betty-camera 43/54] RUN python3 -m pip install --no-cache-dir --break-system-packages aiortc>=1.6.0
+#28 CACHED
+
+#29 [betty-camera 41/54] RUN python3 -m pip install --no-cache-dir --break-system-packages opencv-python-headless
+#29 CACHED
+
+#30 [betty-camera 46/54] RUN python3 -c "import uvicorn; print('✓ uvicorn disponible')"
+#30 CACHED
+
+#31 [betty-camera 48/54] RUN python3 -c "import picamera2; print('✓ picamera2 disponible')" || echo "⚠ picamera2 no disponible"
+#31 CACHED
+
+#32 [betty-camera 17/54] RUN apt-get install -y libpng-dev
+#32 CACHED
+
+#33 [betty-camera 16/54] RUN apt-get install -y libjpeg-dev
+#33 CACHED
+
+#34 [betty-camera 44/54] RUN python3 -m pip install --no-cache-dir --break-system-packages av>=10.0.0
+#34 CACHED
+
+#35 [betty-camera 20/54] RUN apt-get install -y libavcodec-dev
+#35 CACHED
+
+#36 [betty-camera 36/54] RUN python3 -m pip install --no-cache-dir --break-system-packages -r requirements-basic.txt
+#36 CACHED
+
+#37 [betty-camera  4/54] RUN apt-get install -y python3-pip
+#37 CACHED
+
+#38 [betty-camera 37/54] RUN python3 -m pip install --no-cache-dir --break-system-packages ultralytics
+#38 CACHED
+
+#39 [betty-camera 49/54] RUN python3 -c "import aiortc; print('✓ aiortc (WebRTC) disponible')"
+#39 CACHED
+
+#40 [betty-camera 45/54] RUN python3 -c "import picamera2; print('✓ picamera2 del sistema disponible')" ||     python3 -m pip install --no-cache-dir --break-system-packages picamera2
+#40 CACHED
+
+#41 [betty-camera 25/54] RUN apt-get install -y libavfilter-dev
+#41 CACHED
+
+#42 [betty-camera 34/54] COPY apps/betty-camera/requirements-basic.txt ./
+#42 CACHED
+
+#43 [betty-camera 40/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall numpy
+#43 CACHED
+
+#44 [betty-camera 12/54] RUN apt-get install -y make
+#44 CACHED
+
+#45 [betty-camera 33/54] COPY apps/betty-camera/requirements.txt ./
+#45 CACHED
+
+#46 [betty-camera 29/54] RUN apt-get install -y libvulkan-dev
+#46 CACHED
+
+#47 [betty-camera 31/54] RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add - &&     echo "deb https://archive.raspberrypi.org/debian/ bookworm main" >> /etc/apt/sources.list.d/raspi.list &&     apt-get update &&     apt-get install -y python3-picamera2 python3-libcamera libcamera-apps ||     echo "Raspberry Pi packages not available, will use pip version"
+#47 CACHED
+
+#48 [betty-camera  5/54] RUN apt-get install -y python3-dev
+#48 CACHED
+
+#49 [betty-camera 26/54] RUN apt-get install -y libopus-dev
+#49 CACHED
+
+#50 [betty-camera 18/54] RUN apt-get install -y libcap-dev
+#50 CACHED
+
+#51 [betty-camera 19/54] RUN apt-get install -y libavformat-dev
+#51 CACHED
+
+#52 [betty-camera 22/54] RUN apt-get install -y libavutil-dev
+#52 CACHED
+
+#53 [betty-camera  7/54] RUN apt-get install -y wget
+#53 CACHED
+
+#54 [betty-camera  9/54] RUN apt-get install -y git
+#54 CACHED
+
+#55 [betty-camera 51/54] COPY apps/betty-camera/src/ ./src/
+#55 CACHED
+
+#56 [betty-camera 32/54] WORKDIR /app
+#56 CACHED
+
+#57 [betty-camera 27/54] RUN apt-get install -y libvpx-dev
+#57 CACHED
+
+#58 [betty-camera 38/54] RUN python3 -m pip install --no-cache-dir --break-system-packages PyJWT
+#58 CACHED
+
+#59 [betty-camera 47/54] RUN python3 -c "import fastapi; print('✓ fastapi disponible')"
+#59 CACHED
+
+#60 [betty-camera 30/54] RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#60 CACHED
+
+#61 [betty-camera 14/54] RUN apt-get install -y cmake
+#61 CACHED
+
+#62 [betty-camera 54/54] RUN mkdir -p config output
+#62 CACHED
+
+#63 [betty-server internal] load build context
+#63 ...
+
+#64 [betty-camera] exporting to image
+#64 exporting layers done
+#64 writing image sha256:4931983bbf19f1f4d62627d4676708a0455d2c156590bb2a01ac034efa9e59a9 0.0s done
+#64 naming to docker.io/library/betty-camera:final done
+#64 DONE 0.1s
+
+#65 [betty-camera] resolving provenance for metadata file
+#65 DONE 0.0s
+
+#63 [betty-server internal] load build context
+#63 transferring context: 24B 10.2s
+#63 transferring context: 20.84kB 12.9s done
+#63 DONE 12.9s
+
+#66 [betty-server builder 5/9] COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+#66 CACHED
+
+#67 [betty-server builder 6/9] COPY apps/betty-server/prisma ./apps/betty-server/prisma
+#67 CACHED
+
+#68 [betty-server builder 3/9] COPY tsconfig.base.json ./
+#68 CACHED
+
+#69 [betty-server production 5/6] COPY --from=builder /app/dist ./dist
+#69 CACHED
+
+#70 [betty-server production 4/6] COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
+#70 CACHED
+
+#71 [betty-server builder 7/9] RUN cd apps/betty-server     && npm ci     && npx prisma generate --schema=prisma/schema.prisma     && npm cache clean --force
+#71 CACHED
+
+#72 [betty-server builder 4/9] COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+#72 CACHED
+
+#73 [betty-server builder 9/9] RUN cd apps/betty-server && npm run build
+#73 CACHED
+
+#74 [betty-server builder 2/9] WORKDIR /app
+#74 CACHED
+
+#75 [betty-server production 3/6] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#75 CACHED
+
+#76 [betty-server builder 8/9] COPY apps/betty-server/src/ ./apps/betty-server/src/
+#76 CACHED
+
+#77 [betty-server production 6/6] COPY apps/betty-server/prisma ./prisma
+#77 CACHED
+
+#78 [betty-server] exporting to image
+#78 exporting layers done
+#78 writing image sha256:23addde698f3b465e7a08a4fe910a0167cc287454cd0d9c6f81c4140cacdf9cc done
+#78 naming to docker.io/library/betty-betty-server done
+#78 DONE 0.0s
+
+#79 [betty-server] resolving provenance for metadata file
+#79 DONE 0.0s
+ betty-betty-server  Built
+ betty-camera:final  Built
+ Container betty-db  Starting
+ Container cadvisor  Starting
+ Container betty-camera  Starting
+ Container betty-db  Started
+ Container betty-db  Waiting
+ Container betty-db  Waiting
+ Container betty-camera  Started
+ Container cadvisor  Started
+ Container betty-db  Healthy
+ Container betty-db-backup  Starting
+ Container betty-db  Healthy
+ Container betty-server  Starting
+ Container betty-db-backup  Started
+ Container betty-server  Started
+[2025-10-20 19:15:12] ✅ Contenedores Docker iniciados correctamente
+[2025-10-20 19:15:12] ⏳ Esperando a que los servicios estén listos...
+[2025-10-20 19:15:22] 🌐 Iniciando ngrok en puerto 3000...
+[2025-10-20 19:15:22] ✅ ngrok iniciado con PID: 3408
+[2025-10-20 19:15:27] 🌍 URL pública de ngrok: https://twee-importantly-omar.ngrok-free.dev
+[2025-10-20 19:15:27] ✨ Proceso de inicio completado
+[2025-10-20 19:15:27] 📊 Estado de los servicios:
+NAME              IMAGE                             COMMAND                  SERVICE           CREATED          STATUS                             PORTS
+betty-camera      betty-camera:final                "/usr/bin/entry.sh p…"   betty-camera      11 minutes ago   Up 21 seconds (healthy)            
+betty-db          postgres:16-alpine                "docker-entrypoint.s…"   betty-db          11 minutes ago   Up 22 seconds (healthy)            0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+betty-db-backup   postgres:16-alpine                "/bin/sh -c 'chmod 7…"   betty-db-backup   11 minutes ago   Up 15 seconds                      5432/tcp
+betty-server      betty-betty-server                "docker-entrypoint.s…"   betty-server      11 minutes ago   Up 15 seconds (healthy)            0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+cadvisor          gcr.io/cadvisor/cadvisor:latest   "/usr/bin/cadvisor -…"   cadvisor          11 minutes ago   Up 22 seconds (health: starting)   0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+[2025-10-20 19:17:03] 🚀 Iniciando servicios de Betty...
+[2025-10-20 19:17:03] ⏳ Esperando conexión de red...
+[2025-10-20 19:17:03] ✅ Red disponible
+[2025-10-20 19:17:03] 🐳 Iniciando contenedores Docker...
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.01kB done
+#1 DONE 0.0s
+
+#2 [betty-camera internal] load build definition from Dockerfile
+#2 transferring dockerfile: 4.55kB 0.0s done
+#2 DONE 0.1s
+
+#3 [betty-server internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.15kB 0.0s done
+#3 DONE 0.1s
+
+#4 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#4 ...
+
+#5 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#5 DONE 1.2s
+
+#6 [betty-server internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.1s
+
+#4 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#4 DONE 1.3s
+
+#6 [betty-camera internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.1s
+
+#7 [betty-server builder 1/9] FROM docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48
+#7 DONE 0.0s
+
+#8 [betty-camera  1/54] FROM docker.io/balenalib/raspberrypi4-64-debian:bookworm@sha256:575d2cde58bc4a69f86c3793a838d0ada04133725ae71c6f7659468794f39dcd
+#8 DONE 0.0s
+
+#9 [betty-camera internal] load build context
+#9 transferring context: 3.08kB 0.0s done
+#9 DONE 0.1s
+
+#10 [betty-server internal] load build context
+#10 ...
+
+#11 [betty-camera 38/54] RUN python3 -m pip install --no-cache-dir --break-system-packages PyJWT
+#11 CACHED
+
+#12 [betty-camera 33/54] COPY apps/betty-camera/requirements.txt ./
+#12 CACHED
+
+#13 [betty-camera 51/54] COPY apps/betty-camera/src/ ./src/
+#13 CACHED
+
+#14 [betty-camera 53/54] COPY apps/betty-camera/yolov8n.pt ./yolov8n.pt
+#14 CACHED
+
+#15 [betty-camera 35/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+#15 CACHED
+
+#16 [betty-camera 16/54] RUN apt-get install -y libjpeg-dev
+#16 CACHED
+
+#17 [betty-camera 10/54] RUN apt-get install -y gcc
+#17 CACHED
+
+#18 [betty-camera 30/54] RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#18 CACHED
+
+#19 [betty-camera 19/54] RUN apt-get install -y libavformat-dev
+#19 CACHED
+
+#20 [betty-camera 52/54] COPY apps/betty-camera/yolov8n_ncnn_model/ ./yolov8n_ncnn_model/
+#20 CACHED
+
+#21 [betty-camera 42/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall simplejpeg
+#21 CACHED
+
+#22 [betty-camera 41/54] RUN python3 -m pip install --no-cache-dir --break-system-packages opencv-python-headless
+#22 CACHED
+
+#23 [betty-camera 48/54] RUN python3 -c "import picamera2; print('✓ picamera2 disponible')" || echo "⚠ picamera2 no disponible"
+#23 CACHED
+
+#24 [betty-camera 31/54] RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add - &&     echo "deb https://archive.raspberrypi.org/debian/ bookworm main" >> /etc/apt/sources.list.d/raspi.list &&     apt-get update &&     apt-get install -y python3-picamera2 python3-libcamera libcamera-apps ||     echo "Raspberry Pi packages not available, will use pip version"
+#24 CACHED
+
+#25 [betty-camera  2/54] RUN apt-get update
+#25 CACHED
+
+#26 [betty-camera 22/54] RUN apt-get install -y libavutil-dev
+#26 CACHED
+
+#27 [betty-camera  5/54] RUN apt-get install -y python3-dev
+#27 CACHED
+
+#28 [betty-camera 40/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall numpy
+#28 CACHED
+
+#29 [betty-camera  4/54] RUN apt-get install -y python3-pip
+#29 CACHED
+
+#30 [betty-camera 34/54] COPY apps/betty-camera/requirements-basic.txt ./
+#30 CACHED
+
+#31 [betty-camera  9/54] RUN apt-get install -y git
+#31 CACHED
+
+#32 [betty-camera 39/54] RUN python3 -m pip install --no-cache-dir --break-system-packages git+https://github.com/Tencent/ncnn.git
+#32 CACHED
+
+#33 [betty-camera 46/54] RUN python3 -c "import uvicorn; print('✓ uvicorn disponible')"
+#33 CACHED
+
+#34 [betty-camera 49/54] RUN python3 -c "import aiortc; print('✓ aiortc (WebRTC) disponible')"
+#34 CACHED
+
+#35 [betty-camera 37/54] RUN python3 -m pip install --no-cache-dir --break-system-packages ultralytics
+#35 CACHED
+
+#36 [betty-camera 15/54] RUN apt-get install -y pkg-config
+#36 CACHED
+
+#37 [betty-camera 18/54] RUN apt-get install -y libcap-dev
+#37 CACHED
+
+#38 [betty-camera 26/54] RUN apt-get install -y libopus-dev
+#38 CACHED
+
+#39 [betty-camera 17/54] RUN apt-get install -y libpng-dev
+#39 CACHED
+
+#40 [betty-camera 12/54] RUN apt-get install -y make
+#40 CACHED
+
+#41 [betty-camera 13/54] RUN apt-get install -y build-essential
+#41 CACHED
+
+#42 [betty-camera 20/54] RUN apt-get install -y libavcodec-dev
+#42 CACHED
+
+#43 [betty-camera 50/54] RUN python3 -c "import av; print('✓ PyAV disponible')"
+#43 CACHED
+
+#44 [betty-camera 23/54] RUN apt-get install -y libswscale-dev
+#44 CACHED
+
+#45 [betty-camera 25/54] RUN apt-get install -y libavfilter-dev
+#45 CACHED
+
+#46 [betty-camera  3/54] RUN apt-get install -y python3
+#46 CACHED
+
+#47 [betty-camera 21/54] RUN apt-get install -y libavdevice-dev
+#47 CACHED
+
+#48 [betty-camera 32/54] WORKDIR /app
+#48 CACHED
+
+#49 [betty-camera 43/54] RUN python3 -m pip install --no-cache-dir --break-system-packages aiortc>=1.6.0
+#49 CACHED
+
+#50 [betty-camera  6/54] RUN apt-get install -y curl
+#50 CACHED
+
+#51 [betty-camera 29/54] RUN apt-get install -y libvulkan-dev
+#51 CACHED
+
+#52 [betty-camera 27/54] RUN apt-get install -y libvpx-dev
+#52 CACHED
+
+#53 [betty-camera 11/54] RUN apt-get install -y g++
+#53 CACHED
+
+#54 [betty-camera 14/54] RUN apt-get install -y cmake
+#54 CACHED
+
+#55 [betty-camera 44/54] RUN python3 -m pip install --no-cache-dir --break-system-packages av>=10.0.0
+#55 CACHED
+
+#56 [betty-camera  7/54] RUN apt-get install -y wget
+#56 CACHED
+
+#57 [betty-camera 36/54] RUN python3 -m pip install --no-cache-dir --break-system-packages -r requirements-basic.txt
+#57 CACHED
+
+#58 [betty-camera 45/54] RUN python3 -c "import picamera2; print('✓ picamera2 del sistema disponible')" ||     python3 -m pip install --no-cache-dir --break-system-packages picamera2
+#58 CACHED
+
+#59 [betty-camera 28/54] RUN apt-get install -y libsrtp2-dev
+#59 CACHED
+
+#60 [betty-camera  8/54] RUN apt-get install -y gnupg
+#60 CACHED
+
+#61 [betty-camera 47/54] RUN python3 -c "import fastapi; print('✓ fastapi disponible')"
+#61 CACHED
+
+#62 [betty-camera 24/54] RUN apt-get install -y libswresample-dev
+#62 CACHED
+
+#63 [betty-camera 54/54] RUN mkdir -p config output
+#63 CACHED
+
+#64 [betty-camera] exporting to image
+#64 exporting layers done
+#64 writing image sha256:4931983bbf19f1f4d62627d4676708a0455d2c156590bb2a01ac034efa9e59a9 0.0s done
+#64 naming to docker.io/library/betty-camera:final 0.0s done
+#64 DONE 0.1s
+
+#10 [betty-server internal] load build context
+#10 ...
+
+#65 [betty-camera] resolving provenance for metadata file
+#65 DONE 0.0s
+
+#10 [betty-server internal] load build context
+#10 transferring context: 24B 10.0s
+#10 transferring context: 20.84kB 12.1s done
+#10 DONE 12.1s
+
+#66 [betty-server builder 5/9] COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+#66 CACHED
+
+#67 [betty-server builder 8/9] COPY apps/betty-server/src/ ./apps/betty-server/src/
+#67 CACHED
+
+#68 [betty-server builder 4/9] COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+#68 CACHED
+
+#69 [betty-server builder 7/9] RUN cd apps/betty-server     && npm ci     && npx prisma generate --schema=prisma/schema.prisma     && npm cache clean --force
+#69 CACHED
+
+#70 [betty-server builder 2/9] WORKDIR /app
+#70 CACHED
+
+#71 [betty-server production 5/6] COPY --from=builder /app/dist ./dist
+#71 CACHED
+
+#72 [betty-server builder 9/9] RUN cd apps/betty-server && npm run build
+#72 CACHED
+
+#73 [betty-server builder 6/9] COPY apps/betty-server/prisma ./apps/betty-server/prisma
+#73 CACHED
+
+#74 [betty-server builder 3/9] COPY tsconfig.base.json ./
+#74 CACHED
+
+#75 [betty-server production 4/6] COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
+#75 CACHED
+
+#76 [betty-server production 3/6] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#76 CACHED
+
+#77 [betty-server production 6/6] COPY apps/betty-server/prisma ./prisma
+#77 CACHED
+
+#78 [betty-server] exporting to image
+#78 exporting layers done
+#78 writing image sha256:23addde698f3b465e7a08a4fe910a0167cc287454cd0d9c6f81c4140cacdf9cc done
+#78 naming to docker.io/library/betty-betty-server done
+#78 DONE 0.0s
+
+#79 [betty-server] resolving provenance for metadata file
+#79 DONE 0.0s
+ betty-camera:final  Built
+ betty-betty-server  Built
+ Container cadvisor  Running
+ Container betty-db  Running
+ Container betty-camera  Running
+ Container betty-db-backup  Running
+ Container betty-server  Running
+ Container betty-db  Waiting
+ Container betty-db  Waiting
+ Container betty-db  Healthy
+ Container betty-db  Healthy
+[2025-10-20 19:17:21] ✅ Contenedores Docker iniciados correctamente
+[2025-10-20 19:17:21] ⏳ Esperando a que los servicios estén listos...
+[2025-10-20 19:17:31] 🌐 Iniciando ngrok en puerto 3000...
+[2025-10-20 19:17:31] ✅ ngrok iniciado con PID: 2702
+[2025-10-20 19:17:36] 🌍 URL pública de ngrok: https://twee-importantly-omar.ngrok-free.dev
+[2025-10-20 19:17:36] ✨ Proceso de inicio completado
+[2025-10-20 19:17:36] 📊 Estado de los servicios:
+NAME              IMAGE                             COMMAND                  SERVICE           CREATED          STATUS                    PORTS
+betty-camera      betty-camera:final                "/usr/bin/entry.sh p…"   betty-camera      13 minutes ago   Up 40 seconds (healthy)   
+betty-db          postgres:16-alpine                "docker-entrypoint.s…"   betty-db          13 minutes ago   Up 40 seconds (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+betty-db-backup   postgres:16-alpine                "/bin/sh -c 'chmod 7…"   betty-db-backup   13 minutes ago   Up 40 seconds             5432/tcp
+betty-server      betty-betty-server                "docker-entrypoint.s…"   betty-server      13 minutes ago   Up 40 seconds (healthy)   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+cadvisor          gcr.io/cadvisor/cadvisor:latest   "/usr/bin/cadvisor -…"   cadvisor          13 minutes ago   Up 40 seconds (healthy)   0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+[2025-10-20 19:39:44] 🚀 Iniciando servicios de Betty...
+[2025-10-20 19:39:44] ⏳ Esperando conexión de red...
+[2025-10-20 19:39:44] ✅ Red disponible
+[2025-10-20 19:39:44] 🐳 Iniciando contenedores Docker...
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.01kB done
+#1 DONE 0.0s
+
+#2 [betty-camera internal] load build definition from Dockerfile
+#2 transferring dockerfile: 4.55kB 0.0s done
+#2 DONE 0.1s
+
+#3 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#3 ...
+
+#4 [betty-server internal] load build definition from Dockerfile
+#4 transferring dockerfile: 1.15kB 0.0s done
+#4 DONE 0.1s
+
+#5 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#5 DONE 1.3s
+
+#3 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#3 ...
+
+#6 [betty-server internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.1s
+
+#6 [betty-camera internal] load .dockerignore
+#6 transferring context: 2B 0.0s done
+#6 DONE 0.1s
+
+#3 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#3 DONE 1.4s
+
+#7 [betty-server builder 1/9] FROM docker.io/library/node:20-alpine@sha256:1ab6fc5a31d515dc7b6b25f6acfda2001821f2c2400252b6cb61044bd9f9ad48
+#7 DONE 0.0s
+
+#8 [betty-camera  1/54] FROM docker.io/balenalib/raspberrypi4-64-debian:bookworm@sha256:575d2cde58bc4a69f86c3793a838d0ada04133725ae71c6f7659468794f39dcd
+#8 DONE 0.0s
+
+#9 [betty-camera internal] load build context
+#9 transferring context: 3.08kB 0.1s done
+#9 DONE 0.1s
+
+#10 [betty-camera 42/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall simplejpeg
+#10 CACHED
+
+#11 [betty-camera 14/54] RUN apt-get install -y cmake
+#11 CACHED
+
+#12 [betty-camera 45/54] RUN python3 -c "import picamera2; print('✓ picamera2 del sistema disponible')" ||     python3 -m pip install --no-cache-dir --break-system-packages picamera2
+#12 CACHED
+
+#13 [betty-camera 18/54] RUN apt-get install -y libcap-dev
+#13 CACHED
+
+#14 [betty-camera  3/54] RUN apt-get install -y python3
+#14 CACHED
+
+#15 [betty-camera 31/54] RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add - &&     echo "deb https://archive.raspberrypi.org/debian/ bookworm main" >> /etc/apt/sources.list.d/raspi.list &&     apt-get update &&     apt-get install -y python3-picamera2 python3-libcamera libcamera-apps ||     echo "Raspberry Pi packages not available, will use pip version"
+#15 CACHED
+
+#16 [betty-camera 41/54] RUN python3 -m pip install --no-cache-dir --break-system-packages opencv-python-headless
+#16 CACHED
+
+#17 [betty-camera 43/54] RUN python3 -m pip install --no-cache-dir --break-system-packages aiortc>=1.6.0
+#17 CACHED
+
+#18 [betty-camera 49/54] RUN python3 -c "import aiortc; print('✓ aiortc (WebRTC) disponible')"
+#18 CACHED
+
+#19 [betty-camera 50/54] RUN python3 -c "import av; print('✓ PyAV disponible')"
+#19 CACHED
+
+#20 [betty-camera 27/54] RUN apt-get install -y libvpx-dev
+#20 CACHED
+
+#21 [betty-camera 48/54] RUN python3 -c "import picamera2; print('✓ picamera2 disponible')" || echo "⚠ picamera2 no disponible"
+#21 CACHED
+
+#22 [betty-camera 25/54] RUN apt-get install -y libavfilter-dev
+#22 CACHED
+
+#23 [betty-camera 32/54] WORKDIR /app
+#23 CACHED
+
+#24 [betty-camera 40/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall numpy
+#24 CACHED
+
+#25 [betty-camera  9/54] RUN apt-get install -y git
+#25 CACHED
+
+#26 [betty-camera  5/54] RUN apt-get install -y python3-dev
+#26 CACHED
+
+#27 [betty-camera 17/54] RUN apt-get install -y libpng-dev
+#27 CACHED
+
+#28 [betty-camera 37/54] RUN python3 -m pip install --no-cache-dir --break-system-packages ultralytics
+#28 CACHED
+
+#29 [betty-camera  4/54] RUN apt-get install -y python3-pip
+#29 CACHED
+
+#30 [betty-camera  8/54] RUN apt-get install -y gnupg
+#30 CACHED
+
+#31 [betty-camera 12/54] RUN apt-get install -y make
+#31 CACHED
+
+#32 [betty-camera 38/54] RUN python3 -m pip install --no-cache-dir --break-system-packages PyJWT
+#32 CACHED
+
+#33 [betty-camera 46/54] RUN python3 -c "import uvicorn; print('✓ uvicorn disponible')"
+#33 CACHED
+
+#34 [betty-camera 53/54] COPY apps/betty-camera/yolov8n.pt ./yolov8n.pt
+#34 CACHED
+
+#35 [betty-camera 10/54] RUN apt-get install -y gcc
+#35 CACHED
+
+#36 [betty-camera 34/54] COPY apps/betty-camera/requirements-basic.txt ./
+#36 CACHED
+
+#37 [betty-camera 11/54] RUN apt-get install -y g++
+#37 CACHED
+
+#38 [betty-camera 26/54] RUN apt-get install -y libopus-dev
+#38 CACHED
+
+#39 [betty-camera 29/54] RUN apt-get install -y libvulkan-dev
+#39 CACHED
+
+#40 [betty-camera 24/54] RUN apt-get install -y libswresample-dev
+#40 CACHED
+
+#41 [betty-camera 36/54] RUN python3 -m pip install --no-cache-dir --break-system-packages -r requirements-basic.txt
+#41 CACHED
+
+#42 [betty-camera  2/54] RUN apt-get update
+#42 CACHED
+
+#43 [betty-camera 22/54] RUN apt-get install -y libavutil-dev
+#43 CACHED
+
+#44 [betty-camera  7/54] RUN apt-get install -y wget
+#44 CACHED
+
+#45 [betty-camera 23/54] RUN apt-get install -y libswscale-dev
+#45 CACHED
+
+#46 [betty-camera 30/54] RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#46 CACHED
+
+#47 [betty-camera 28/54] RUN apt-get install -y libsrtp2-dev
+#47 CACHED
+
+#48 [betty-camera 33/54] COPY apps/betty-camera/requirements.txt ./
+#48 CACHED
+
+#49 [betty-camera 20/54] RUN apt-get install -y libavcodec-dev
+#49 CACHED
+
+#50 [betty-camera 39/54] RUN python3 -m pip install --no-cache-dir --break-system-packages git+https://github.com/Tencent/ncnn.git
+#50 CACHED
+
+#51 [betty-camera 13/54] RUN apt-get install -y build-essential
+#51 CACHED
+
+#52 [betty-camera  6/54] RUN apt-get install -y curl
+#52 CACHED
+
+#53 [betty-camera 44/54] RUN python3 -m pip install --no-cache-dir --break-system-packages av>=10.0.0
+#53 CACHED
+
+#54 [betty-camera 15/54] RUN apt-get install -y pkg-config
+#54 CACHED
+
+#55 [betty-camera 52/54] COPY apps/betty-camera/yolov8n_ncnn_model/ ./yolov8n_ncnn_model/
+#55 CACHED
+
+#56 [betty-camera 47/54] RUN python3 -c "import fastapi; print('✓ fastapi disponible')"
+#56 CACHED
+
+#57 [betty-camera 51/54] COPY apps/betty-camera/src/ ./src/
+#57 CACHED
+
+#58 [betty-camera 16/54] RUN apt-get install -y libjpeg-dev
+#58 CACHED
+
+#59 [betty-camera 19/54] RUN apt-get install -y libavformat-dev
+#59 CACHED
+
+#60 [betty-camera 35/54] RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+#60 CACHED
+
+#61 [betty-camera 21/54] RUN apt-get install -y libavdevice-dev
+#61 CACHED
+
+#62 [betty-camera 54/54] RUN mkdir -p config output
+#62 CACHED
+
+#63 [betty-server internal] load build context
+#63 ...
+
+#64 [betty-camera] exporting to image
+#64 exporting layers done
+#64 writing image sha256:4931983bbf19f1f4d62627d4676708a0455d2c156590bb2a01ac034efa9e59a9 0.0s done
+#64 naming to docker.io/library/betty-camera:final 0.0s done
+#64 DONE 0.1s
+
+#63 [betty-server internal] load build context
+#63 ...
+
+#65 [betty-camera] resolving provenance for metadata file
+#65 DONE 0.0s
+
+#63 [betty-server internal] load build context
+#63 transferring context: 24B 12.7s
+#63 transferring context: 20.84kB 15.8s done
+#63 DONE 15.8s
+
+#66 [betty-server builder 2/9] WORKDIR /app
+#66 CACHED
+
+#67 [betty-server builder 3/9] COPY tsconfig.base.json ./
+#67 CACHED
+
+#68 [betty-server builder 4/9] COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+#68 CACHED
+
+#69 [betty-server builder 7/9] RUN cd apps/betty-server     && npm ci     && npx prisma generate --schema=prisma/schema.prisma     && npm cache clean --force
+#69 CACHED
+
+#70 [betty-server production 5/6] COPY --from=builder /app/dist ./dist
+#70 CACHED
+
+#71 [betty-server builder 8/9] COPY apps/betty-server/src/ ./apps/betty-server/src/
+#71 CACHED
+
+#72 [betty-server production 4/6] COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
+#72 CACHED
+
+#73 [betty-server builder 6/9] COPY apps/betty-server/prisma ./apps/betty-server/prisma
+#73 CACHED
+
+#74 [betty-server builder 9/9] RUN cd apps/betty-server && npm run build
+#74 CACHED
+
+#75 [betty-server production 3/6] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#75 CACHED
+
+#76 [betty-server builder 5/9] COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+#76 CACHED
+
+#77 [betty-server production 6/6] COPY apps/betty-server/prisma ./prisma
+#77 CACHED
+
+#78 [betty-server] exporting to image
+#78 exporting layers done
+#78 writing image sha256:23addde698f3b465e7a08a4fe910a0167cc287454cd0d9c6f81c4140cacdf9cc done
+#78 naming to docker.io/library/betty-betty-server done
+#78 DONE 0.0s
+
+#79 [betty-server] resolving provenance for metadata file
+#79 DONE 0.0s
+ betty-betty-server  Built
+ betty-camera:final  Built
+ Container betty-db  Running
+ Container cadvisor  Running
+ Container betty-db-backup  Running
+ Container betty-server  Running
+ Container betty-camera  Running
+ Container betty-db  Waiting
+ Container betty-db  Waiting
+ Container betty-db  Healthy
+ Container betty-db  Healthy
+[2025-10-20 19:40:07] ✅ Contenedores Docker iniciados correctamente
+[2025-10-20 19:40:07] ⏳ Esperando a que los servicios estén listos...
+[2025-10-20 19:40:17] 🌐 Iniciando ngrok en puerto 3000...
+[2025-10-20 19:40:17] ✅ ngrok iniciado con PID: 3523
+[2025-10-20 19:40:22] 🌍 URL pública de ngrok: https://twee-importantly-omar.ngrok-free.dev
+[2025-10-20 19:40:22] ✨ Proceso de inicio completado
+[2025-10-20 19:40:22] 📊 Estado de los servicios:
+NAME              IMAGE                             COMMAND                  SERVICE           CREATED          STATUS                 PORTS
+betty-camera      betty-camera:final                "/usr/bin/entry.sh p…"   betty-camera      35 minutes ago   Up 5 weeks (healthy)   
+betty-db          postgres:16-alpine                "docker-entrypoint.s…"   betty-db          35 minutes ago   Up 5 weeks (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+betty-db-backup   postgres:16-alpine                "/bin/sh -c 'chmod 7…"   betty-db-backup   35 minutes ago   Up 5 weeks             5432/tcp
+betty-server      betty-betty-server                "docker-entrypoint.s…"   betty-server      35 minutes ago   Up 5 weeks (healthy)   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+cadvisor          gcr.io/cadvisor/cadvisor:latest   "/usr/bin/cadvisor -…"   cadvisor          35 minutes ago   Up 5 weeks (healthy)   0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
