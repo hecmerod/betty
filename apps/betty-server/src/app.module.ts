@@ -10,6 +10,7 @@ import { TripsModule } from './trips/trips.module';
 import { GpioModule } from './gpio/gpio.module';
 import { HealthModule } from './shared/health/health.module';
 import { PrismaModule } from './shared/prisma/prisma.module';
+import { MotionDetectionModule } from './motion-detection/motion-detection.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PrismaModule } from './shared/prisma/prisma.module';
     GpsModule,
     TripsModule,
     GpioModule,
+    MotionDetectionModule,
     HealthModule,
     PrismaModule,
   ],

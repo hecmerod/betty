@@ -19,6 +19,6 @@ import { GPIO_ADAPTER } from './infrastructure/ioc/gpio.symbols';
     SetPinUseCase,
     GetPinUseCase,
   ],
-  exports: [SetPinUseCase, GetPinUseCase],
+  exports: [SetPinUseCase, GetPinUseCase, GPIO_ADAPTER],
 })
 export class GpioModule {}
