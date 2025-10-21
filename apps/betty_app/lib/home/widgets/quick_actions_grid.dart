@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../map/map_page.dart';
 import '../../settings/settings_page.dart';
+import '../../camera/camera_page.dart';
 
 class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
@@ -15,7 +16,27 @@ class QuickActionsGrid extends StatelessWidget {
       crossAxisSpacing: 16,
       childAspectRatio: 1.1,
       children: [
-        QuickActionCard(icon: Icons.camera_alt_outlined, title: 'Cámara', color: Colors.blue, onTap: () {}),
+        QuickActionCard(
+          icon: Icons.camera_alt_outlined,
+          title: 'Cámara',
+          color: Colors.blue,
+          onTap: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                opaque: false,
+                transitionDuration: const Duration(milliseconds: 400),
+                reverseTransitionDuration: const Duration(milliseconds: 300),
+                pageBuilder: (context, animation, secondaryAnimation) => const CameraPage(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  final curvedAnimation = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
+
+                  return FadeTransition(opacity: curvedAnimation, child: child);
+                },
+              ),
+            );
+          },
+        ),
         QuickActionCard(
           icon: Icons.map_outlined,
           title: 'Mapa',
@@ -48,7 +69,9 @@ class QuickActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    final isCamera = title == 'Cámara';
+
+    final cardContent = Card(
       elevation: 1,
       shadowColor: Colors.black.withValues(alpha: 0.05),
       color: Colors.transparent,
@@ -83,5 +106,15 @@ class QuickActionCard extends StatelessWidget {
         ),
       ),
     );
+
+    // Solo envolvemos con Hero si es la cámara
+    if (isCamera) {
+      return Hero(
+        tag: 'camera-hero',
+        child: Material(color: Colors.transparent, child: cardContent),
+      );
+    }
+
+    return cardContent;
   }
 }
