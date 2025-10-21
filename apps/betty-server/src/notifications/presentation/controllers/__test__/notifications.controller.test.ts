@@ -72,7 +72,6 @@ describe('NotificationsController', () => {
   describe('sendNotification', () => {
     it('should send notification successfully', async () => {
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: {
           title: 'Test Title',
           body: 'Test Body',
@@ -98,7 +97,6 @@ describe('NotificationsController', () => {
 
     it('should handle notification service error', async () => {
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: {
           title: 'Test Title',
           body: 'Test Body',
@@ -118,7 +116,6 @@ describe('NotificationsController', () => {
 
     it('should throw HttpException with correct status on error', async () => {
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: {
           title: 'Test Title',
           body: 'Test Body',
@@ -140,7 +137,6 @@ describe('NotificationsController', () => {
 
     it('should call send notification use case execute once', async () => {
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: {
           title: 'Test Title',
           body: 'Test Body',

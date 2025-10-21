@@ -22,10 +22,6 @@ export class NotificationDto {
 }
 
 export class SendNotificationDto {
-  @IsString()
-  @IsNotEmpty()
-  token: string;
-
   @ValidateNested()
   @Type(() => NotificationDto)
   @IsNotEmpty()

@@ -45,7 +45,6 @@ export class AppModule implements OnModuleInit {
 
     try {
       await this.sendNotificationUseCase.execute({
-        token: '',
         notification: {
           title: 'Betty iniciada',
           body: 'La Raspberry Pi se ha iniciado correctamente',

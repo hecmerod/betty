@@ -38,7 +38,6 @@ export class MotionDetectionService implements OnModuleInit {
 
     if (state) {
       await this.sendNotificationUseCase.execute({
-        token: '',
         notification: {
           title: 'Movimiento detectado',
           body: 'Se ha detectado movimiento en el sensor IR',

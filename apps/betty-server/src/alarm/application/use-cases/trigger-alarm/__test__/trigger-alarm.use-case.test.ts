@@ -47,7 +47,6 @@ describe('TriggerAlarmUseCase', () => {
 
       expect(mockAlarmRepository.get).toHaveBeenCalledTimes(1);
       expect(mockSendNotificationUseCase.execute).toHaveBeenCalledWith({
-        token: '',
         notification: {
           title: '🚨 BETTY ALARM',
           body: 'Persona detectada en tu hogar',
@@ -78,7 +77,6 @@ describe('TriggerAlarmUseCase', () => {
       const result = await useCase.execute(triggerData);
 
       expect(mockSendNotificationUseCase.execute).toHaveBeenCalledWith({
-        token: '',
         notification: {
           title: '🚨 BETTY ALARM',
           body: 'Persona detectada en tu hogar',

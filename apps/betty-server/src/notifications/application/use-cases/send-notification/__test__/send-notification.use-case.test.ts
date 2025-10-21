@@ -39,7 +39,6 @@ describe('SendNotificationUseCase', () => {
       };
 
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: notificationDto,
         data: { key: 'value' },
       };
@@ -73,7 +72,6 @@ describe('SendNotificationUseCase', () => {
       };
 
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: notificationDto,
       };
 
@@ -96,7 +94,6 @@ describe('SendNotificationUseCase', () => {
       };
 
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: notificationDto,
       };
 
@@ -128,7 +125,6 @@ describe('SendNotificationUseCase', () => {
       };
 
       const sendNotificationDto: SendNotificationDto = {
-        token: 'test-token',
         notification: notificationDto,
         data: { type: 'alarm', priority: 'high' },
       };

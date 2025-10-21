@@ -19,7 +19,6 @@ export class TriggerAlarmUseCase {
     if (alarm.isActive) {
       try {
         await this.sendNotificationUseCase.execute({
-          token: '',
           notification: {
             title: '🚨 BETTY ALARM',
             body: 'Persona detectada en tu hogar',
