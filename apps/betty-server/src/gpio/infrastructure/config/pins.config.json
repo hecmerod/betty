@@ -12,32 +12,27 @@
     },
     {
       "pin": 4,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 4"
     },
     {
       "pin": 5,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 5"
     },
     {
       "pin": 6,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 6"
     },
     {
       "pin": 7,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 7 - SPI CE1"
     },
     {
       "pin": 8,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 8 - SPI CE0"
     },
     {
@@ -47,32 +42,27 @@
     },
     {
       "pin": 10,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 10 - SPI MOSI"
     },
     {
       "pin": 11,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 11 - SPI SCLK"
     },
     {
       "pin": 12,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 12 - PWM0"
     },
     {
       "pin": 13,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 13 - PWM1"
     },
     {
       "pin": 14,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 14 - UART TX"
     },
     {
@@ -82,68 +72,59 @@
     },
     {
       "pin": 16,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 16"
     },
     {
       "pin": 17,
       "direction": "OUTPUT",
-      "initialValue": 0,
+      "initialValue": 1,
       "description": "GPIO 17"
     },
     {
       "pin": 18,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 18 - PWM0"
     },
     {
       "pin": 19,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 19 - PWM1 / SPI MISO"
     },
     {
       "pin": 20,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 20"
     },
     {
       "pin": 21,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 21"
     },
     {
       "pin": 22,
-      "direction": "OUTPUT",
-      "initialValue": 0,
-      "description": "GPIO 22"
+      "direction": "INPUT",
+      "description": "GPIO 22",
+      "watch": true
     },
     {
       "pin": 23,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 23"
     },
     {
       "pin": 24,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 24"
     },
     {
       "pin": 25,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 25"
     },
     {
       "pin": 26,
-      "direction": "OUTPUT",
-      "initialValue": 0,
+      "direction": "INPUT",
       "description": "GPIO 26"
     }
   ]

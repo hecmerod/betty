@@ -7,10 +7,11 @@ Usage:
   python gpio_control.py configure <pin> <input|output> [initial_value]
   python gpio_control.py info <pin>
   python gpio_control.py release <pin>
+  python gpio_control.py watch <pin>
 """
 import sys
 import gpiod
-from gpiod.line import Direction, Value
+from gpiod.line import Direction, Value, Edge, Bias
 
 CHIP_PATH = '/dev/gpiochip0'
 
@@ -78,6 +79,41 @@ def release_pin(pin: int):
     else:
         print(f"Pin {pin} is already free (not in use)")
 
+def watch_pin(pin: int):
+    """Watch for changes on a GPIO input pin"""
+    with gpiod.request_lines(
+        CHIP_PATH,
+        consumer="betty-server-watch",
+        config={
+            pin: gpiod.LineSettings(
+                direction=Direction.INPUT,
+                edge_detection=Edge.BOTH,  # Detectar tanto rising como falling edges
+                bias=Bias.PULL_UP  # Activar pull-up resistor interno
+            )
+        }
+    ) as request:
+        # Leer el valor inicial para evitar eventos falsos
+        initial_value = request.get_value(pin)
+        last_value = initial_value
+        
+        print(f"READY|Watching pin {pin} for changes (initial state: {'HIGH' if initial_value == Value.ACTIVE else 'LOW'})... (Press Ctrl+C to stop)")
+        sys.stdout.flush()
+        
+        while True:
+            # Wait for edge events (timeout en segundos, None = esperar indefinidamente)
+            if request.wait_edge_events(timeout=None):
+                for event in request.read_edge_events():
+                    # Leer el valor actual del pin para confirmar el cambio
+                    current_value = request.get_value(pin)
+                    
+                    # Solo reportar si el valor realmente cambió
+                    if current_value != last_value:
+                        event_type = "RISING" if current_value == Value.ACTIVE else "FALLING"
+                        value = 1 if current_value == Value.ACTIVE else 0
+                        print(f"EVENT|{event_type}|{value}")
+                        sys.stdout.flush()
+                        last_value = current_value
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Usage: gpio_control.py [set|get|configure|info|release] <pin> [args...]")
@@ -91,6 +127,18 @@ if __name__ == '__main__':
             sys.exit(1)
         pin = int(sys.argv[2])
         release_pin(pin)
+        sys.exit(0)
+    
+    if command == 'watch':
+        if len(sys.argv) < 3:
+            print("Usage: gpio_control.py watch <pin>")
+            sys.exit(1)
+        pin = int(sys.argv[2])
+        try:
+            watch_pin(pin)
+        except KeyboardInterrupt:
+            print("\nStopped watching pin")
+            sys.exit(0)
         sys.exit(0)
     
     if len(sys.argv) < 3:

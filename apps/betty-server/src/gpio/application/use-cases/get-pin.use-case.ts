@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { GpioAdapter } from '../../infrastructure/adapters/gpio.adapter';
+import { Inject, Injectable } from '@nestjs/common';
+import { IGpioPort } from '../../domain/ports/gpio.port';
+import { GPIO_ADAPTER } from '../../infrastructure/ioc/gpio.symbols';
 
 @Injectable()
 export class GetPinUseCase {
-  constructor(private readonly gpioAdapter: GpioAdapter) {}
+  constructor(@Inject(GPIO_ADAPTER) private readonly gpioPort: IGpioPort) {}
 
   async execute(pin: number): Promise<boolean> {
-    return await this.gpioAdapter.getPin(pin);
+    return await this.gpioPort.getPin(pin);
   }
 }
