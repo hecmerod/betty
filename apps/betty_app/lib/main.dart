@@ -29,7 +29,7 @@ class BettyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Betty App',
+      title: 'Betty',
       theme: AppTheme.lightTheme,
       navigatorKey: Navigation.instance.navigatorKey,
       scaffoldMessengerKey: Navigation.instance.scaffoldMessengerKey,
