@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../map/map_page.dart';
 
 class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
@@ -14,7 +15,14 @@ class QuickActionsGrid extends StatelessWidget {
       childAspectRatio: 1.1,
       children: [
         QuickActionCard(icon: Icons.camera_alt_outlined, title: 'Cámara', color: Colors.blue, onTap: () {}),
-        QuickActionCard(icon: Icons.map_outlined, title: 'Mapa', color: Colors.green, onTap: () {}),
+        QuickActionCard(
+          icon: Icons.map_outlined,
+          title: 'Mapa',
+          color: Colors.green,
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const MapPage()));
+          },
+        ),
         QuickActionCard(icon: Icons.alarm_outlined, title: 'Alarmas', color: Colors.orange, onTap: () {}),
         QuickActionCard(icon: Icons.settings_outlined, title: 'Ajustes', color: Colors.purple, onTap: () {}),
       ],
