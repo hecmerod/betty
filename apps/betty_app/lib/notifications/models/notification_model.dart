@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class NotificationModel {
   final String id;
   final String? title;
@@ -23,6 +25,28 @@ class NotificationModel {
       receivedAt: receivedAt ?? this.receivedAt,
       data: data ?? this.data,
       read: read ?? this.read,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+      'receivedAt': receivedAt.millisecondsSinceEpoch,
+      'data': data != null ? jsonEncode(data) : null,
+      'read': read ? 1 : 0,
+    };
+  }
+
+  factory NotificationModel.fromMap(Map<String, dynamic> map) {
+    return NotificationModel(
+      id: map['id'] as String,
+      title: map['title'] as String?,
+      body: map['body'] as String?,
+      receivedAt: DateTime.fromMillisecondsSinceEpoch(map['receivedAt'] as int),
+      data: map['data'] != null ? jsonDecode(map['data'] as String) as Map<String, dynamic> : null,
+      read: (map['read'] as int) == 1,
     );
   }
 }

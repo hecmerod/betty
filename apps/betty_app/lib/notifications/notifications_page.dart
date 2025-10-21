@@ -12,6 +12,20 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
   final _notificationService = NotificationService.instance;
+  List<NotificationModel> _notifications = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotifications();
+  }
+
+  Future<void> _loadNotifications() async {
+    setState(() => _isLoading = true);
+    _notifications = await _notificationService.getNotifications();
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +34,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
         title: const Text('Notificaciones'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
-          if (_notificationService.notifications.isNotEmpty)
+          if (_notifications.isNotEmpty)
             PopupMenuButton<String>(
-              onSelected: (value) {
+              onSelected: (value) async {
                 if (value == 'mark_all_read') {
-                  setState(() {
-                    _notificationService.markAllAsRead();
-                  });
+                  await _notificationService.markAllAsRead();
+                  await _loadNotifications();
                 } else if (value == 'clear_all') {
-                  setState(() {
-                    _notificationService.clearAllNotifications();
-                  });
+                  await _notificationService.clearAllNotifications();
+                  await _loadNotifications();
                 }
               },
               itemBuilder: (context) => [
@@ -46,59 +58,59 @@ class _NotificationsPageState extends State<NotificationsPage> {
             ),
         ],
       ),
-      body: ValueListenableBuilder<int>(
-        valueListenable: _notificationService.unreadCount,
-        builder: (context, _, __) {
-          final notifications = _notificationService.notifications;
-
-          if (notifications.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.notifications_off_outlined, size: 80, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No hay notificaciones',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: notifications.length,
-            itemBuilder: (context, index) {
-              final notification = notifications[index];
-              return _NotificationItem(
-                notification: notification,
-                onTap: () {
-                  setState(() {
-                    _notificationService.markAsRead(notification.id);
-                  });
-                },
-                onDismissed: () {
-                  setState(() {
-                    _notificationService.clearNotification(notification.id);
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Notificación eliminada'), duration: Duration(seconds: 2)),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ValueListenableBuilder<int>(
+              valueListenable: _notificationService.unreadCount,
+              builder: (context, _, __) {
+                if (_notifications.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.notifications_off_outlined, size: 80, color: Colors.grey[400]),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No hay notificaciones',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
                   );
-                },
-              );
-            },
-          );
-        },
-      ),
+                }
+
+                return ListView.builder(
+                  itemCount: _notifications.length,
+                  itemBuilder: (context, index) {
+                    final notification = _notifications[index];
+                    return _NotificationItem(
+                      notification: notification,
+                      onTap: () async {
+                        await _notificationService.markAsRead(notification.id);
+                        await _loadNotifications();
+                      },
+                      onDismissed: () async {
+                        await _notificationService.clearNotification(notification.id);
+                        await _loadNotifications();
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Notificación eliminada'), duration: Duration(seconds: 2)),
+                          );
+                        }
+                      },
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }
 
 class _NotificationItem extends StatelessWidget {
   final NotificationModel notification;
-  final VoidCallback onTap;
-  final VoidCallback onDismissed;
+  final Future<void> Function() onTap;
+  final Future<void> Function() onDismissed;
 
   const _NotificationItem({required this.notification, required this.onTap, required this.onDismissed});
 
