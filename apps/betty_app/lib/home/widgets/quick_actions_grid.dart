@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../map/map_page.dart';
+import '../../settings/settings_page.dart';
 
 class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
@@ -24,7 +25,14 @@ class QuickActionsGrid extends StatelessWidget {
           },
         ),
         QuickActionCard(icon: Icons.alarm_outlined, title: 'Alarmas', color: Colors.orange, onTap: () {}),
-        QuickActionCard(icon: Icons.settings_outlined, title: 'Ajustes', color: Colors.purple, onTap: () {}),
+        QuickActionCard(
+          icon: Icons.settings_outlined,
+          title: 'Ajustes',
+          color: Colors.purple,
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+          },
+        ),
       ],
     );
   }
