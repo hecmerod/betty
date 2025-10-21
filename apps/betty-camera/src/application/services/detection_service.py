@@ -25,10 +25,8 @@ class DetectionService:
         self.trigger_alarm = trigger_alarm_use_case
         
         self.detection_mode_active = False
-        self.last_detection_time = 0
-        self.detection_interval = 2.0
-        self.frames_without_detection = 0
-        self.max_frames_without_detection = 60
+        self.frame_count = 0
+        self.detection_frame_interval = 60
         
         self.last_alarm_time = 0
         self.alarm_interval = 10.0
@@ -57,47 +55,25 @@ class DetectionService:
     def _detection_loop(self):
         while self.running:
             try:
-                current_time = time.time()
+                self.frame_count += 1
+
+                if self.frame_count % self.detection_frame_interval != 0:
+                    continue
+                frame = self.camera.current_frame_array
+                if frame is None:
+                    continue
+
+                result = self.detect_objects.execute(frame)
                 
-                should_detect = False
-                if self.detection_mode_active:
-                    should_detect = True
-                elif current_time - self.last_detection_time >= self.detection_interval:
-                    should_detect = True
-                
-                if should_detect:
-                    frame = self.camera.capture_array()
-                    if frame is not None:
-                        result = self.detect_objects.execute(frame)
-                        self.last_detection_time = current_time
-                        
-                        if len(result.detections) > 0:
-                            persons = [d.class_name for d in result.detections]
-                            self.logger.info(f"🔍 Objetos detectados: {persons}")
-                            
-                            self._handle_detection(current_time, result)
-                            
-                            if not self.detection_mode_active:
-                                self.detection_mode_active = True
-                                self.logger.info("🚀 Modo detección CONTINUO")
-                            
-                            self.frames_without_detection = 0
-                        else:
-                            if self.detection_mode_active:
-                                self.frames_without_detection += 1
-                                
-                                if self.frames_without_detection >= self.max_frames_without_detection:
-                                    self.detection_mode_active = False
-                                    self.frames_without_detection = 0
-                                    self.logger.info("🐌 Modo detección NORMAL (cada 2s)")
-                
-                time.sleep(0.1)
-                
+                if len(result.detections) > 0:
+                    self._handle_detection(result)
+
             except Exception as e:
                 self.logger.error(f"❌ Error en loop de detección: {e}")
                 time.sleep(1)
     
-    def _handle_detection(self, current_time: float, detection_result):
+    def _handle_detection(self, detection_result):
+        current_time = time.time()
         if current_time - self.last_alarm_time >= self.alarm_interval:
             try:
                 self.logger.warning("⚡ ALARMA - Persona detectada")

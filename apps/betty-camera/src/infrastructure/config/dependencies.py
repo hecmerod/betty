@@ -45,7 +45,7 @@ class DependencyContainer:
         
         self.alarm_adapter = AlarmAdapter(self.betty_server_adapter)
         
-        self.capture_frame_use_case = CaptureFrameUseCase(self.camera_adapter)
+        self.capture_frame_use_case = CaptureFrameUseCase(self.camera_adapter, self.detector_adapter)
         self.detect_objects_use_case = DetectObjectsUseCase(self.detector_adapter)
         self.trigger_alarm_use_case = TriggerAlarmUseCase(self.alarm_adapter)
         

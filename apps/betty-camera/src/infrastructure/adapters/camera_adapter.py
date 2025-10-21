@@ -21,6 +21,7 @@ class CameraAdapter:
         self.fps = fps
         
         self.current_frame = None
+        self.current_frame_array = None
         self.capture_thread = None
         self.running = False
         
@@ -48,14 +49,7 @@ class CameraAdapter:
     def _capture_loop(self):
         while self.running and self.picam2:
             try:
-                frame_array = self.picam2.capture_array()
-                fixed_frame = cv2.cvtColor(frame_array, cv2.COLOR_RGB2BGR)
-                
-                image = Image.fromarray(fixed_frame)
-                buffer = io.BytesIO()
-                image.save(buffer, format='JPEG', quality=80)
-                
-                self.current_frame = buffer.getvalue()
+                self.current_frame_array = self.picam2.capture_array() 
                 
                 time.sleep(1.0 / self.fps)
             except Exception as e:
@@ -63,14 +57,14 @@ class CameraAdapter:
                 break
     
     def capture_frame(self) -> Optional[bytes]:
+        fixed_frame = cv2.cvtColor(self.current_frame_array, cv2.COLOR_RGB2BGR)
+        image = Image.fromarray(fixed_frame)
+        buffer = io.BytesIO()
+        image.save(buffer, format='JPEG', quality=80)
+        
+        self.current_frame = buffer.getvalue()
+
         return self.current_frame
-    
-    def capture_array(self) -> Optional[np.ndarray]:        
-        try:
-            return self.picam2.capture_array()
-        except Exception as e:
-            self.logger.error(f"❌ Error capturando array: {e}")
-            return None
     
     def stop(self):
         self.running = False

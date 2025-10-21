@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response, Query
 from fastapi.responses import StreamingResponse
 import json
 import time
+import cv2
 import sys
 import os
 
@@ -33,8 +34,8 @@ async def get_camera_stream(annotated: bool = Query(False)):
         timeout = 30
         timeout_json = json.dumps({"connectionReseted": True})
         
-        while time.time() - start_time < timeout:
-            frame = container.capture_frame_use_case.execute()
+        while time.time() - start_time < timeout:            
+            frame = container.capture_frame_use_case.execute(annotated)
             
             if frame:
                 yield (b'--frame\r\n'
