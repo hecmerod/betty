@@ -15,14 +15,12 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   final MapController _mapController = MapController();
   final _gpsService = GpsService.instance;
   final _mapApiService = MapApiService.instance;
   LatLng _currentLocation = const LatLng(39.4699, -0.3763);
   LatLng? _vehicleLocation;
-  bool _isLoading = false;
-  bool _isLoadingVehicle = false;
   bool _locationObtained = false;
   bool _vehicleLocationObtained = false;
 
@@ -30,44 +28,35 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getCurrentLocation();
+      _loadLocations();
     });
   }
 
-  Future<void> _getCurrentLocation() async {
-    if (_isLoading) return;
+  Future<void> _loadLocations() async {
+    // Cargar ambas ubicaciones al inicio
+    await Future.wait([_fetchCurrentLocation(), _fetchVehicleLocation()]);
+  }
 
-    setState(() => _isLoading = true);
-
+  Future<void> _fetchCurrentLocation() async {
     try {
       final location = await _gpsService.getCurrentLocation();
 
-      if (location == null) {
-        setState(() => _isLoading = false);
-        return;
-      }
-
-      if (mounted) {
+      if (location != null && mounted) {
         setState(() {
           _currentLocation = location;
           _locationObtained = true;
         });
 
+        // Animar a la ubicación del usuario al inicio
         await Future.delayed(const Duration(milliseconds: 100));
-        _mapController.move(_currentLocation, 15.0);
+        _animateToLocation(_currentLocation, 15.0);
       }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+    } catch (e) {
+      debugPrint('Error al obtener ubicación del usuario: $e');
     }
   }
 
-  Future<void> _getVehicleLocation() async {
-    if (_isLoadingVehicle) return;
-
-    setState(() => _isLoadingVehicle = true);
-
+  Future<void> _fetchVehicleLocation() async {
     try {
       final vehicleData = await _mapApiService.getVehicleLocation();
 
@@ -76,26 +65,50 @@ class _MapPageState extends State<MapPage> {
           _vehicleLocation = vehicleData.position;
           _vehicleLocationObtained = true;
         });
-
-        await Future.delayed(const Duration(milliseconds: 100));
-        _mapController.move(_vehicleLocation!, 15.0);
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al obtener ubicación de la furgoneta: $e'),
-            backgroundColor: Colors.red.shade400,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoadingVehicle = false);
-      }
+      debugPrint('Error al obtener ubicación de la furgoneta: $e');
     }
+  }
+
+  void _animateToCurrentLocation() {
+    if (_locationObtained) {
+      _animateToLocation(_currentLocation, 15.0);
+    }
+  }
+
+  void _animateToVehicleLocation() {
+    if (_vehicleLocationObtained && _vehicleLocation != null) {
+      _animateToLocation(_vehicleLocation!, 15.0);
+    }
+  }
+
+  void _animateToLocation(LatLng destination, double zoom) {
+    final camera = _mapController.camera;
+    final latTween = Tween<double>(begin: camera.center.latitude, end: destination.latitude);
+    final lngTween = Tween<double>(begin: camera.center.longitude, end: destination.longitude);
+    final zoomTween = Tween<double>(begin: camera.zoom, end: zoom);
+
+    final controller = AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
+
+    final Animation<double> animation = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
+
+    controller.addListener(() {
+      _mapController.move(
+        LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+        zoomTween.evaluate(animation),
+      );
+    });
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        controller.dispose();
+      }
+    });
+
+    controller.forward();
   }
 
   @override
@@ -218,9 +231,9 @@ class _MapPageState extends State<MapPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                VehicleLocationButton(isLoading: _isLoadingVehicle, onPressed: _getVehicleLocation),
+                VehicleLocationButton(isLoading: false, onPressed: _animateToVehicleLocation),
                 const SizedBox(height: 12),
-                LocationButton(isLoading: _isLoading, onPressed: _getCurrentLocation),
+                LocationButton(isLoading: false, onPressed: _animateToCurrentLocation),
               ],
             ),
           ),
