@@ -18,10 +18,8 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - CAMERA_SERVICE_URL=http://host.docker.internal:8001
       - DATABASE_URL=postgresql://betty:${POSTGRES_PASSWORD}@betty-db:5432/betty
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - CAMERA_SERVICE_URL=http://betty-camera:8001/camera
     networks:
       - betty-network
 
