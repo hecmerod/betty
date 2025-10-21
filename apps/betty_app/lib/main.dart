@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'notifications/services/notification_service.dart';
 import 'home/home_page.dart';
 import 'shared/theme/app_theme.dart';
+import 'shared/navigation/navigation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,12 @@ class BettyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Betty App', theme: AppTheme.lightTheme, home: const HomePage());
+    return MaterialApp(
+      title: 'Betty App',
+      theme: AppTheme.lightTheme,
+      navigatorKey: Navigation.instance.navigatorKey,
+      scaffoldMessengerKey: Navigation.instance.scaffoldMessengerKey,
+      home: const HomePage(),
+    );
   }
 }

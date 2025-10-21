@@ -2,6 +2,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import '../models/notification_model.dart';
 import '../repository/notification_repository.dart';
+import '../../shared/navigation/navigation.dart';
+import '../notifications_page.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -47,6 +49,7 @@ class NotificationService {
   void _setupHandlers() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _addNotification(message);
+      _showNotificationSnackBar(message);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -58,6 +61,19 @@ class NotificationService {
         _addNotification(message);
       }
     });
+  }
+
+  void _showNotificationSnackBar(RemoteMessage message) {
+    Navigation.instance.showNotificationSnackBar(
+      title: message.notification?.title,
+      body: message.notification?.body,
+      onTap: () {
+        final context = Navigation.instance.context;
+        if (context != null) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsPage()));
+        }
+      },
+    );
   }
 
   Future<void> _addNotification(RemoteMessage message) async {
