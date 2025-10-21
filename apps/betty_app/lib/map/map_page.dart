@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../shared/services/gps_service.dart';
 import 'widgets/location_button.dart';
+import 'widgets/vehicle_location_button.dart';
+import 'services/map_api_service.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -14,9 +16,13 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   final MapController _mapController = MapController();
   final _gpsService = GpsService.instance;
+  final _mapApiService = MapApiService.instance;
   LatLng _currentLocation = const LatLng(39.4699, -0.3763);
+  LatLng? _vehicleLocation;
   bool _isLoading = false;
+  bool _isLoadingVehicle = false;
   bool _locationObtained = false;
+  bool _vehicleLocationObtained = false;
 
   @override
   void initState() {
@@ -55,6 +61,36 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+  Future<void> _getVehicleLocation() async {
+    if (_isLoadingVehicle) return;
+
+    setState(() => _isLoadingVehicle = true);
+
+    try {
+      final vehicleData = await _mapApiService.getVehicleLocation();
+
+      if (mounted) {
+        setState(() {
+          _vehicleLocation = vehicleData.position;
+          _vehicleLocationObtained = true;
+        });
+
+        await Future.delayed(const Duration(milliseconds: 100));
+        _mapController.move(_vehicleLocation!, 15.0);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error al obtener ubicación de la furgoneta: $e')));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingVehicle = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +122,13 @@ class _MapPageState extends State<MapPage> {
                       height: 40,
                       child: Icon(Icons.location_on, color: Theme.of(context).colorScheme.primary, size: 40),
                     ),
+                    if (_vehicleLocationObtained && _vehicleLocation != null)
+                      Marker(
+                        point: _vehicleLocation!,
+                        width: 50,
+                        height: 50,
+                        child: Icon(Icons.local_shipping, color: Theme.of(context).colorScheme.secondary, size: 50),
+                      ),
                   ],
                 ),
             ],
@@ -93,7 +136,15 @@ class _MapPageState extends State<MapPage> {
           Positioned(
             bottom: 24,
             right: 16,
-            child: LocationButton(isLoading: _isLoading, onPressed: _getCurrentLocation),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                VehicleLocationButton(isLoading: _isLoadingVehicle, onPressed: _getVehicleLocation),
+                const SizedBox(height: 12),
+                LocationButton(isLoading: _isLoading, onPressed: _getCurrentLocation),
+              ],
+            ),
           ),
         ],
       ),
