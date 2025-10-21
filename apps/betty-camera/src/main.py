@@ -1,74 +1,57 @@
 #!/usr/bin/env python3
-"""
-Betty Camera - Aplicación FastAPI para gestión de cámara Raspberry Pi
-"""
-
-import argparse
+import os
 import uvicorn
 from contextlib import asynccontextmanager
-import os
-from pathlib import Path
-
 from fastapi import FastAPI
-
 import sys
 
 current_dir = os.path.dirname(__file__)
 sys.path.insert(0, current_dir)
-sys.path.insert(0, os.path.join(current_dir, 'camera'))
 
-from camera.camera_manager import CameraManager
-from camera.routes import camera_router, init_camera_routes
-from health import health_router
-from logger import setup_logging, get_logger
+from config.env_loader import load_env
+from config.settings import settings
+from infrastructure.config.dependencies import get_container
+from presentation.routes.health_routes import health_router
+from presentation.routes.camera_routes import camera_router
+from logger import setup_logging
 
-def load_env():
-    """Cargar variables de entorno desde archivo .env"""
-    env_path = Path(__file__).parent.parent / ".env"
-    if env_path.exists():
-        with open(env_path) as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith('#'):
-                    key, value = line.split('=', 1)
-                    os.environ[key.strip()] = value.strip()
 
 load_env()
+logger = setup_logging(level=settings.LOG_LEVEL)
 
-logger = setup_logging(level=os.getenv("LOG_LEVEL", "INFO"))
-
-camera_manager = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global camera_manager
-    
-    camera_manager = CameraManager()    
-    init_camera_routes(camera_manager)
+    container = get_container()
+    container.camera_adapter.start()
+    container.detection_service.start()
     
     logger.info("✅ Betty Camera Server iniciado correctamente")
+    logger.info(f"📍 Servidor escuchando en {settings.HOST}:{settings.PORT}")
     
     yield
     
     logger.info("🛑 Deteniendo Betty Camera Server...")
-    if camera_manager:
-        camera_manager.cleanup()
+    container.detection_service.stop()
+    container.camera_adapter.stop()
 
 
 app = FastAPI(
     title="Betty Camera API",
+    version="1.0.0",
     lifespan=lifespan,
 )
 
 app.include_router(health_router)
 app.include_router(camera_router, prefix="/camera")
 
+
 if __name__ == "__main__":
     reload = os.getenv("DEV_MODE", "False").lower() in ("true", "1", "t")
-    print(reload)
+    
     uvicorn.run(
         "main:app",
-        host=os.getenv("HOST"),
-        port=int(os.getenv("PORT")),
+        host=settings.HOST,
+        port=settings.PORT,
         reload=reload,
     )
