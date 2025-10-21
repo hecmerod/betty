@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'dart:ui';
 import '../shared/services/gps_service.dart';
 import 'widgets/location_button.dart';
 import 'widgets/vehicle_location_button.dart';
 import 'services/map_api_service.dart';
+import '../shared/theme/app_theme.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -80,9 +82,14 @@ class _MapPageState extends State<MapPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error al obtener ubicación de la furgoneta: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al obtener ubicación de la furgoneta: $e'),
+            backgroundColor: Colors.red.shade400,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
       }
     } finally {
       if (mounted) {
@@ -94,7 +101,52 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mapa'), backgroundColor: Colors.transparent, elevation: 0),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1.5),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4)),
+                ],
+              ),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_rounded, color: AppTheme.primaryGradientMiddle),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        ),
+        title: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1.5),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4)),
+                ],
+              ),
+              child: Text(
+                'Mapa',
+                style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryGradientMiddle),
+              ),
+            ),
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: Stack(
         children: [
           FlutterMap(
@@ -118,16 +170,42 @@ class _MapPageState extends State<MapPage> {
                   markers: [
                     Marker(
                       point: _currentLocation,
-                      width: 40,
-                      height: 40,
-                      child: Icon(Icons.location_on, color: Theme.of(context).colorScheme.primary, size: 40),
+                      width: 50,
+                      height: 50,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: AppTheme.cameraGradient,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF4facfe).withOpacity(0.5),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.person_pin_rounded, color: Colors.white, size: 30),
+                      ),
                     ),
                     if (_vehicleLocationObtained && _vehicleLocation != null)
                       Marker(
                         point: _vehicleLocation!,
-                        width: 50,
-                        height: 50,
-                        child: Icon(Icons.local_shipping, color: Theme.of(context).colorScheme.secondary, size: 50),
+                        width: 60,
+                        height: 60,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: AppTheme.mapGradient,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF43e97b).withOpacity(0.5),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.local_shipping_rounded, color: Colors.white, size: 35),
+                        ),
                       ),
                   ],
                 ),

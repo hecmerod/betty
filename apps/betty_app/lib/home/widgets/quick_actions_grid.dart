@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import '../../map/map_page.dart';
 import '../../settings/settings_page.dart';
 import '../../camera/camera_page.dart';
@@ -12,14 +13,18 @@ class QuickActionsGrid extends StatelessWidget {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      childAspectRatio: 1.1,
+      mainAxisSpacing: 20,
+      crossAxisSpacing: 20,
+      childAspectRatio: 1.0,
       children: [
         QuickActionCard(
-          icon: Icons.camera_alt_outlined,
+          icon: Icons.videocam_rounded,
           title: 'Cámara',
-          color: Colors.blue,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
+          ),
           onTap: () {
             Navigator.push(
               context,
@@ -30,7 +35,6 @@ class QuickActionsGrid extends StatelessWidget {
                 pageBuilder: (context, animation, secondaryAnimation) => const CameraPage(),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   final curvedAnimation = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
-
                   return FadeTransition(opacity: curvedAnimation, child: child);
                 },
               ),
@@ -38,18 +42,35 @@ class QuickActionsGrid extends StatelessWidget {
           },
         ),
         QuickActionCard(
-          icon: Icons.map_outlined,
+          icon: Icons.map_rounded,
           title: 'Mapa',
-          color: Colors.green,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
+          ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const MapPage()));
           },
         ),
-        QuickActionCard(icon: Icons.alarm_outlined, title: 'Alarmas', color: Colors.orange, onTap: () {}),
         QuickActionCard(
-          icon: Icons.settings_outlined,
+          icon: Icons.notifications_active_rounded,
+          title: 'Alarmas',
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFfa709a), Color(0xFFfee140)],
+          ),
+          onTap: () {},
+        ),
+        QuickActionCard(
+          icon: Icons.tune_rounded,
           title: 'Ajustes',
-          color: Colors.purple,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF8e2de2), Color(0xFF4a00e0)],
+          ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
           },
@@ -59,49 +80,119 @@ class QuickActionsGrid extends StatelessWidget {
   }
 }
 
-class QuickActionCard extends StatelessWidget {
+class QuickActionCard extends StatefulWidget {
   final IconData icon;
   final String title;
-  final Color color;
+  final Gradient gradient;
   final VoidCallback onTap;
 
-  const QuickActionCard({super.key, required this.icon, required this.title, required this.color, required this.onTap});
+  const QuickActionCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.gradient,
+    required this.onTap,
+  });
+
+  @override
+  State<QuickActionCard> createState() => _QuickActionCardState();
+}
+
+class _QuickActionCardState extends State<QuickActionCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    _controller.reverse();
+    widget.onTap();
+  }
+
+  void _onTapCancel() {
+    _controller.reverse();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isCamera = title == 'Cámara';
+    final isCamera = widget.title == 'Cámara';
 
-    final cardContent = Card(
-      elevation: 1,
-      shadowColor: Colors.black.withValues(alpha: 0.05),
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.7),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.grey.withValues(alpha: 0.15), width: 1),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
+    final cardContent = GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: widget.gradient,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.gradient.colors.first.withOpacity(0.4),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Container(
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(28),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.05)],
+                  ),
                 ),
-                child: Icon(icon, color: color, size: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.25),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                      ),
+                      child: Icon(widget.icon, color: Colors.white, size: 40),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      widget.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                        shadows: [Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
-              ),
-            ],
+            ),
           ),
         ),
       ),
