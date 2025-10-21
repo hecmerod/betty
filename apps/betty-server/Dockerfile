@@ -31,6 +31,7 @@ COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY apps/betty-server/prisma ./prisma
 COPY apps/betty-server/scripts ./scripts
+COPY apps/betty-server/src/gpio/infrastructure/config/pins.config.json ./dist/out-tsc/apps/betty-server/src/gpio/infrastructure/config/pins.config.json
 
 EXPOSE 3000
 

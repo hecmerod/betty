@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit, Logger } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerConfigModule } from './shared/config/throttler/throttler-config.module';
 import { AuthModule } from './shared/auth/auth.module';
@@ -11,6 +11,7 @@ import { GpioModule } from './gpio/gpio.module';
 import { HealthModule } from './shared/health/health.module';
 import { PrismaModule } from './shared/prisma/prisma.module';
 import { MotionDetectionModule } from './motion-detection/motion-detection.module';
+import { SendNotificationUseCase } from './notifications/application/use-cases/send-notification/send-notification.use-case';
 
 @Module({
   imports: [
@@ -31,4 +32,30 @@ import { MotionDetectionModule } from './motion-detection/motion-detection.modul
     PrismaModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  private readonly logger = new Logger(AppModule.name);
+  private readonly isProduction = process.env.NODE_ENV === 'production';
+
+  constructor(
+    private readonly sendNotificationUseCase: SendNotificationUseCase
+  ) {}
+
+  async onModuleInit() {
+    if (!this.isProduction) return;
+
+    try {
+      await this.sendNotificationUseCase.execute({
+        token: '',
+        notification: {
+          title: 'Betty iniciada',
+          body: 'La Raspberry Pi se ha iniciado correctamente',
+        },
+        data: { type: 'system_startup' },
+      });
+    } catch (error) {
+      this.logger.error(
+        `❌ Failed to send startup notification: ${error.message}`
+      );
+    }
+  }
+}
