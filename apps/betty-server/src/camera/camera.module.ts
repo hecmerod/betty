@@ -5,7 +5,8 @@ import { CapturePhotoUseCase } from './application/use-cases/capture-photo/captu
 import { GetVideoStreamUseCase } from './application/use-cases/get-video-stream/get-video-stream.use-case';
 import { CheckCameraAvailabilityUseCase } from './application/use-cases/check-camera-availability/check-camera-availability.use-case';
 import { HttpCameraAdapter } from './infrastructure/adapters/http-camera.adapter';
-import { HttpCameraRepository } from './infrastructure/repositories/http-camera.repository';
+import { UsbCameraAdapter } from './infrastructure/adapters/usb-camera.adapter';
+import { CameraRepositoryImpl } from './infrastructure/repositories/camera.repository';
 import { CAMERA_REPOSITORY } from './infrastructure/ioc/symbols';
 
 @Module({
@@ -17,13 +18,17 @@ import { CAMERA_REPOSITORY } from './infrastructure/ioc/symbols';
   ],
   controllers: [CameraController],
   providers: [
+    // Unified Use Cases
     CapturePhotoUseCase,
     GetVideoStreamUseCase,
     CheckCameraAvailabilityUseCase,
+    // Adapters
     HttpCameraAdapter,
+    UsbCameraAdapter,
+    // Unified Repository
     {
       provide: CAMERA_REPOSITORY,
-      useClass: HttpCameraRepository,
+      useClass: CameraRepositoryImpl,
     },
   ],
   exports: [
