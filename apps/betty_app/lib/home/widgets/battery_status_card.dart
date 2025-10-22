@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../shared/animations/wave_painter.dart';
 import 'battery_percentage_text.dart';
 import 'battery_power_consumption_badge.dart';
+import '../../battery/battery_detail_page.dart';
 
 class BatteryStatusCard extends StatefulWidget {
   const BatteryStatusCard({super.key});
@@ -30,59 +31,64 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
     const double batteryPercentage = 62;
     const double powerWatts = 0.0;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        height: 150,
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 24.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 8)),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: AnimatedBuilder(
-                  animation: _waveController,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      painter: WavePainter(
-                        animation: _waveController.value,
-                        percentage: batteryPercentage / 100,
-                        color: _getBatteryColor(batteryPercentage),
-                      ),
-                    );
-                  },
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const BatteryDetailPage()));
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          height: 150,
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(horizontal: 24.0),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 8)),
+            ],
+          ),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: AnimatedBuilder(
+                    animation: _waveController,
+                    builder: (context, child) {
+                      return CustomPaint(
+                        painter: WavePainter(
+                          animation: _waveController.value,
+                          percentage: batteryPercentage / 100,
+                          color: _getBatteryColor(batteryPercentage),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final shouldBeInside = batteryPercentage >= 40;
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final shouldBeInside = batteryPercentage >= 40;
 
-                return Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: shouldBeInside ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-                    children: [
-                      const BatteryPercentageText(percentage: batteryPercentage),
-                      const BatteryPowerConsumptionBadge(powerWatts: powerWatts),
-                      const SizedBox(height: 30),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: shouldBeInside ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                      children: [
+                        const BatteryPercentageText(percentage: batteryPercentage),
+                        const BatteryPowerConsumptionBadge(powerWatts: powerWatts),
+                        const SizedBox(height: 30),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
