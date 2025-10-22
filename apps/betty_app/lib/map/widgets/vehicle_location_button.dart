@@ -28,7 +28,8 @@ class VehicleLocationButton extends StatelessWidget {
               onTap: isLoading ? null : onPressed,
               borderRadius: BorderRadius.circular(16),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
@@ -37,32 +38,18 @@ class VehicleLocationButton extends StatelessWidget {
                     colors: [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.05)],
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (isLoading)
-                      const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                child: isLoading
+                    ? const Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
                         ),
                       )
-                    else
-                      const Icon(Icons.local_shipping_rounded, color: Colors.white, size: 24),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'Furgoneta',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ],
-                ),
+                    : const Icon(Icons.local_shipping_rounded, color: Colors.white, size: 28),
               ),
             ),
           ),

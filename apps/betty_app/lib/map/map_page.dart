@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'dart:ui';
 import '../shared/services/gps_service.dart';
 import 'widgets/location_button.dart';
 import 'widgets/vehicle_location_button.dart';
+import 'widgets/back_button_widget.dart';
 import 'services/map_api_service.dart';
 import '../shared/theme/app_theme.dart';
 
@@ -115,51 +115,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1.5),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4)),
-                ],
-              ),
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_rounded, color: AppTheme.primaryGradientMiddle),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ),
-        ),
-        title: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1.5),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4)),
-                ],
-              ),
-              child: Text(
-                'Mapa',
-                style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryGradientMiddle),
-              ),
-            ),
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: AppBar(leading: const BackButtonWidget()),
       body: Stack(
         children: [
           FlutterMap(
