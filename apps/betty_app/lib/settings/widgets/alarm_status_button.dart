@@ -96,10 +96,10 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
             decoration: BoxDecoration(
               gradient: gradient.scale(0.3),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.4), width: 2),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withOpacity(0.3),
+                  color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.3),
                   blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
@@ -115,7 +115,7 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withOpacity(0.5),
+                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.5),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -146,7 +146,7 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withOpacity(0.4),
+                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.4),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),

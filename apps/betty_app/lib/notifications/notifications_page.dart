@@ -41,9 +41,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
             child: Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
               ),
               child: IconButton(
                 icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -62,9 +62,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 child: Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
                   ),
                   child: PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
@@ -112,7 +112,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           children: [
                             Container(
                               padding: const EdgeInsets.all(32),
-                              decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
+                              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
                               child: const Icon(Icons.notifications_off_rounded, size: 80, color: Colors.white),
                             ),
                             const SizedBox(height: 24),
@@ -124,7 +124,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                             Text(
                               'Cuando recibas notificaciones\naparecerán aquí',
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.8)),
+                              style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.8)),
                             ),
                           ],
                         ),
@@ -151,7 +151,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: const Text('Notificación eliminada'),
-                                    backgroundColor: Colors.white.withOpacity(0.9),
+                                    backgroundColor: Colors.white.withValues(alpha: 0.9),
                                     behavior: SnackBarBehavior.floating,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
@@ -219,14 +219,14 @@ class _NotificationItem extends StatelessWidget {
               color: Colors.white.withOpacity(notification.read ? 0.7 : 0.9),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: notification.read ? Colors.white.withOpacity(0.3) : Colors.white,
+                color: notification.read ? Colors.white.withValues(alpha: 0.3) : Colors.white,
                 width: notification.read ? 1 : 2,
               ),
               boxShadow: [
                 BoxShadow(
                   color: notification.read
-                      ? Colors.black.withOpacity(0.05)
-                      : AppTheme.primaryGradientMiddle.withOpacity(0.2),
+                      ? Colors.black.withValues(alpha: 0.05)
+                      : AppTheme.primaryGradientMiddle.withValues(alpha: 0.2),
                   blurRadius: notification.read ? 8 : 16,
                   offset: const Offset(0, 4),
                 ),
@@ -244,7 +244,7 @@ class _NotificationItem extends StatelessWidget {
                   boxShadow: [
                     if (!notification.read)
                       BoxShadow(
-                        color: const Color(0xFFfa709a).withOpacity(0.4),
+                        color: const Color(0xFFfa709a).withValues(alpha: 0.4),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -294,7 +294,7 @@ class _NotificationItem extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFfa709a).withOpacity(0.5),
+                            color: const Color(0xFFfa709a).withValues(alpha: 0.5),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),

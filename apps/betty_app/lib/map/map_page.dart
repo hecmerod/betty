@@ -147,7 +147,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF4facfe).withOpacity(0.5),
+                              color: const Color(0xFF4facfe).withValues(alpha: 0.5),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -167,7 +167,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF43e97b).withOpacity(0.5),
+                                color: const Color(0xFF43e97b).withValues(alpha: 0.5),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),

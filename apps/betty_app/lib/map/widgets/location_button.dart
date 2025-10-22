@@ -19,7 +19,7 @@ class LocationButton extends StatelessWidget {
             gradient: AppTheme.cameraGradient,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
-              BoxShadow(color: const Color(0xFF4facfe).withOpacity(0.4), blurRadius: 16, offset: const Offset(0, 8)),
+              BoxShadow(color: const Color(0xFF4facfe).withValues(alpha: 0.4), blurRadius: 16, offset: const Offset(0, 8)),
             ],
           ),
           child: Material(
@@ -35,7 +35,7 @@ class LocationButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.05)],
+                    colors: [Colors.white.withValues(alpha: 0.2), Colors.white.withValues(alpha: 0.05)],
                   ),
                 ),
                 child: isLoading

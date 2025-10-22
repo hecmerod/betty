@@ -112,7 +112,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: (_trip!.isCompleted ? Colors.green : Colors.blue).withOpacity(0.1),
+                              color: (_trip!.isCompleted ? Colors.green : Colors.blue).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Text(

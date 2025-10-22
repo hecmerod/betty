@@ -151,7 +151,7 @@ class _QuickActionCardState extends State<QuickActionCard> with SingleTickerProv
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.gradient.colors.first.withOpacity(0.4),
+                    color: widget.gradient.colors.first.withValues(alpha: 0.4),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -163,7 +163,7 @@ class _QuickActionCardState extends State<QuickActionCard> with SingleTickerProv
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.05)],
+                    colors: [Colors.white.withValues(alpha: 0.2), Colors.white.withValues(alpha: 0.05)],
                   ),
                 ),
                 child: Column(
@@ -172,9 +172,9 @@ class _QuickActionCardState extends State<QuickActionCard> with SingleTickerProv
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.25),
+                        color: Colors.white.withValues(alpha: 0.25),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
                       ),
                       child: Icon(widget.icon, color: Colors.white, size: 40),
                     ),

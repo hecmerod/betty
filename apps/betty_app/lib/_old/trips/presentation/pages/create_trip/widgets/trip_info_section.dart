@@ -8,7 +8,7 @@ class TripInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.blue.withOpacity(0.1),
+      color: Colors.blue.withValues(alpha: 0.1),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

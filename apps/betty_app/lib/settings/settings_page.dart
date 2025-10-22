@@ -17,9 +17,9 @@ class SettingsPage extends StatelessWidget {
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
             ),
             child: IconButton(
               icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -93,7 +93,7 @@ class SettingsPage extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           letterSpacing: 1.2,
         ),
       ),
@@ -108,9 +108,9 @@ class SettingsPage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
           ),
           child: Column(
             children: [
@@ -118,7 +118,7 @@ class SettingsPage extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.3), shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.3), shape: BoxShape.circle),
                     child: const Icon(Icons.info_outline_rounded, color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 16),
@@ -133,7 +133,7 @@ class SettingsPage extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           'Sistema de Vigilancia Vehicular',
-                          style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.8)),
+                          style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.8)),
                         ),
                       ],
                     ),

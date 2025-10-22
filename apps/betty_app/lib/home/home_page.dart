@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
                               'la fragoneta',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withValues(alpha: 0.8),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -77,7 +77,7 @@ class HomePage extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 32.0),
                 child: Text(
                   'Disfruta de la betty app',
-                  style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), fontWeight: FontWeight.w400),
                 ),
               ),
             ],

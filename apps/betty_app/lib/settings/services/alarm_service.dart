@@ -7,71 +7,49 @@ class AlarmService {
 
   final _apiService = ApiService.instance;
 
-  /// Obtiene el estado actual de la alarma
   Future<bool> getAlarmStatus() async {
-    try {
-      final response = await _apiService.get('/alarm/status');
+    final response = await _apiService.get('/alarm/status');
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        // El servidor devuelve 'active' en vez de 'isActive'
-        return data['active'] ?? false;
-      } else {
-        throw Exception('Error al obtener el estado de la alarma');
-      }
-    } catch (e) {
-      print('Error en getAlarmStatus: $e');
-      rethrow;
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['active'] ?? false;
+    } else {
+      throw Exception('Error al obtener el estado de la alarma');
     }
   }
 
-  /// Activa la alarma
   Future<bool> activateAlarm() async {
-    try {
-      final response = await _apiService.post('/alarm/activate');
+    final response = await _apiService.post('/alarm/activate');
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = json.decode(response.body);
-        // Verificamos si la activación fue exitosa
-        final success = data['success'] ?? false;
-        if (success) {
-          return true;
-        } else {
-          throw Exception(data['message'] ?? 'Error al activar la alarma');
-        }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = json.decode(response.body);
+      final success = data['success'] ?? false;
+      if (success) {
+        return true;
       } else {
-        throw Exception('Error al activar la alarma');
+        throw Exception(data['message'] ?? 'Error al activar la alarma');
       }
-    } catch (e) {
-      print('Error en activateAlarm: $e');
-      rethrow;
+    } else {
+      throw Exception('Error al activar la alarma');
     }
   }
 
-  /// Desactiva la alarma
   Future<bool> deactivateAlarm() async {
-    try {
-      final response = await _apiService.post('/alarm/deactivate');
+    final response = await _apiService.post('/alarm/deactivate');
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = json.decode(response.body);
-        // Verificamos si la desactivación fue exitosa
-        final success = data['success'] ?? false;
-        if (success) {
-          return false;
-        } else {
-          throw Exception(data['message'] ?? 'Error al desactivar la alarma');
-        }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = json.decode(response.body);
+      final success = data['success'] ?? false;
+      if (success) {
+        return false;
       } else {
-        throw Exception('Error al desactivar la alarma');
+        throw Exception(data['message'] ?? 'Error al desactivar la alarma');
       }
-    } catch (e) {
-      print('Error en deactivateAlarm: $e');
-      rethrow;
+    } else {
+      throw Exception('Error al desactivar la alarma');
     }
   }
 
-  /// Cambia el estado de la alarma (activa/desactiva)
   Future<bool> toggleAlarm(bool currentStatus) async {
     if (currentStatus) {
       return await deactivateAlarm();
