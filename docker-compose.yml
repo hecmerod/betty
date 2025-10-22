@@ -13,6 +13,13 @@ services:
       - "3000:3000"
     volumes:
       - /sys/class/gpio:/sys/class/gpio
+      - /var/run/dbus:/var/run/dbus:ro
+      - /run/dbus:/run/dbus:ro
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     env_file:
       - apps/betty-server/.env
     environment:

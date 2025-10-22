@@ -23,8 +23,8 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Instalar Python 3 y libgpiod para control de GPIO
-RUN apk add --no-cache python3 py3-libgpiod
+# Instalar Python 3, libgpiod para control de GPIO y bluez para Bluetooth
+RUN apk add --no-cache python3 py3-libgpiod bluez bluez-deprecated
 
 COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
 COPY --from=builder /app/apps/betty-server/node_modules ./node_modules

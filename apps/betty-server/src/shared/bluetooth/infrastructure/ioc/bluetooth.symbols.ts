@@ -1,0 +1,1 @@
+export const BLUETOOTH_ADAPTER = Symbol('BLUETOOTH_ADAPTER');
