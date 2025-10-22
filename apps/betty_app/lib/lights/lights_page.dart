@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../shared/theme/app_theme.dart';
 import 'widgets/light_control_button.dart';
+import 'widgets/model_viewer_widget.dart';
 
 class TopCropClipper extends CustomClipper<Rect> {
   final double cropAmount;
@@ -34,6 +34,8 @@ class _LightsPageState extends State<LightsPage> with SingleTickerProviderStateM
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+
+  String _currentModel = 'assets/models/van.glb';
 
   @override
   void initState() {
@@ -90,7 +92,6 @@ class _LightsPageState extends State<LightsPage> with SingleTickerProviderStateM
         child: SafeArea(
           child: Stack(
             children: [
-              // Visor 3D de la furgoneta - Ocupa toda la pantalla
               Positioned(
                 top: 0,
                 child: AnimatedBuilder(
@@ -106,18 +107,11 @@ class _LightsPageState extends State<LightsPage> with SingleTickerProviderStateM
                     width: MediaQuery.of(context).size.width,
                     child: ClipRect(
                       clipper: TopCropClipper(cropAmount: 20),
-                      child: ModelViewer(
-                        src: 'assets/models/van.glb',
-                        alt: 'Modelo 3D de la furgoneta',
-                        disableZoom: true,
-                        disablePan: true,
-                        backgroundColor: Colors.transparent,
-                        shadowIntensity: 1.0,
-                        cameraOrbit: '325deg 75deg 105%',
-                        fieldOfView: '30deg',
-                        minCameraOrbit: 'auto 75deg 105%',
-                        maxCameraOrbit: 'auto 75deg 105%',
-                        touchAction: TouchAction.panY,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        switchInCurve: Curves.easeIn,
+                        switchOutCurve: Curves.easeOut,
+                        child: ModelViewerWidget(modelSrc: _currentModel),
                       ),
                     ),
                   ),
@@ -152,7 +146,14 @@ class _LightsPageState extends State<LightsPage> with SingleTickerProviderStateM
                               icon: Icons.lightbulb_rounded,
                               label: 'Faros',
                               isOn: _headlightsOn,
-                              onToggle: (value) => setState(() => _headlightsOn = value),
+                              onToggle: (value) {
+                                setState(() {
+                                  _headlightsOn = value;
+                                  _currentModel = value
+                                      ? 'assets/models/van-front-lights.glb'
+                                      : 'assets/models/van.glb';
+                                });
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
