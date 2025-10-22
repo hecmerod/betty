@@ -116,3 +116,6 @@ apps/betty_app/.env
 
 # Obfuscation related
 **/app.*.map.json
+
+logs/startup.log
+logs/startup.log

@@ -11,6 +11,7 @@ import { GpioModule } from './gpio/gpio.module';
 import { HealthModule } from './shared/health/health.module';
 import { PrismaModule } from './shared/prisma/prisma.module';
 import { BluetoothModule } from './shared/bluetooth/bluetooth.module';
+import { BatteriesModule } from './batteries/batteries.module';
 import { MotionDetectionModule } from './motion-detection/motion-detection.module';
 import { SendNotificationUseCase } from './notifications/application/use-cases/send-notification/send-notification.use-case';
 
@@ -32,6 +33,7 @@ import { SendNotificationUseCase } from './notifications/application/use-cases/s
     HealthModule,
     PrismaModule,
     BluetoothModule,
+    BatteriesModule,
   ],
 })
 export class AppModule implements OnModuleInit {

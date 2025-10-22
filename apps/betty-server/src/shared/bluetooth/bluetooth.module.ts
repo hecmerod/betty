@@ -1,7 +1,11 @@
 import { Module, OnModuleInit, Inject } from '@nestjs/common';
 import { BluetoothConfig } from './infrastructure/config/bluetooth.config';
 import { BluetoothAdapter } from './infrastructure/adapters/bluetooth.adapter';
-import { BLUETOOTH_ADAPTER } from './infrastructure/ioc/bluetooth.symbols';
+import { BmsBleAdapter } from './infrastructure/adapters/bms-ble.adapter';
+import {
+  BLUETOOTH_ADAPTER,
+  BMS_BLE_ADAPTER,
+} from './infrastructure/ioc/bluetooth.symbols';
 import { IBluetoothAdapter } from './domain/interfaces/bluetooth-adapter.interface';
 
 @Module({
@@ -11,8 +15,12 @@ import { IBluetoothAdapter } from './domain/interfaces/bluetooth-adapter.interfa
       provide: BLUETOOTH_ADAPTER,
       useClass: BluetoothAdapter,
     },
+    {
+      provide: BMS_BLE_ADAPTER,
+      useClass: BmsBleAdapter,
+    },
   ],
-  exports: [BLUETOOTH_ADAPTER],
+  exports: [BLUETOOTH_ADAPTER, BMS_BLE_ADAPTER],
 })
 export class BluetoothModule implements OnModuleInit {
   constructor(
