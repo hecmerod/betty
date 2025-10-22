@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/notification_icon.dart';
 import 'widgets/quick_actions_grid.dart';
+import 'widgets/battery_status_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -60,9 +61,15 @@ class HomePage extends StatelessWidget {
               ),
 
               const Spacer(),
+              // Estado de la batería
+              const BatteryStatusCard(),
+              const Spacer(),
+              const Spacer(),
 
               // Grid de acciones
               const Padding(padding: EdgeInsets.symmetric(horizontal: 24.0), child: QuickActionsGrid()),
+
+              const SizedBox(height: 24),
 
               const Spacer(),
 
