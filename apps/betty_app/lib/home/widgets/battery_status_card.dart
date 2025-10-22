@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
-import 'dart:math' as math;
+import '../../shared/animations/wave_painter.dart';
+import 'battery_percentage_text.dart';
+import 'battery_power_consumption_badge.dart';
 
 class BatteryStatusCard extends StatefulWidget {
   const BatteryStatusCard({super.key});
@@ -26,10 +27,8 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    const double batteryPercentage = 76.5;
+    const double batteryPercentage = 62;
     const double powerWatts = 0.0;
-    final bool isCharging = powerWatts > 0;
-    final bool isIdle = powerWatts == 0;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
@@ -47,7 +46,6 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
         ),
         child: Stack(
           children: [
-            // Olas animadas en el fondo
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
@@ -65,7 +63,6 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
                 ),
               ),
             ),
-            // Contenido por encima de las olas
             LayoutBuilder(
               builder: (context, constraints) {
                 final shouldBeInside = batteryPercentage >= 40;
@@ -77,40 +74,9 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: shouldBeInside ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        '${batteryPercentage.toStringAsFixed(0)}%',
-                        style: TextStyle(
-                          fontSize: 56,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 1.0,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              offset: const Offset(0, 2),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '${powerWatts.abs().toStringAsFixed(0)} W',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: isIdle
-                                ? const Color(0xFF9ca3af)
-                                : (isCharging ? const Color(0xFF4ade80) : const Color(0xFFfb923c)),
-                          ),
-                        ),
-                      ),
+                      const BatteryPercentageText(percentage: batteryPercentage),
+                      const BatteryPowerConsumptionBadge(powerWatts: powerWatts),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 );
@@ -136,71 +102,5 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
       final t = (percentage - 60) / 40;
       return Color.lerp(yellow, green, t) ?? green;
     }
-  }
-}
-
-class WavePainter extends CustomPainter {
-  final double animation;
-  final double percentage;
-  final Color color;
-
-  WavePainter({required this.animation, required this.percentage, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color.withValues(alpha: 0.3)
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-
-    final waveAmplitude = 10.0;
-    // Calcular el ancho que debe ocupar según el porcentaje (desde izquierda)
-    final waveWidth = (size.width + waveAmplitude) * percentage;
-
-    // Amplitud de la ola
-
-    // Posición del borde de la ola (vertical)
-    final centerX = waveWidth;
-
-    // Empezar desde la esquina inferior izquierda
-    path.moveTo(0, 0);
-    path.lineTo(0, size.height);
-
-    // Dibujar la ola vertical (de abajo hacia arriba)
-    for (double i = size.height; i >= 0; i--) {
-      final y = i;
-      final x = centerX + math.sin((i / 30) + (animation * 2 * math.pi)) * waveAmplitude;
-      path.lineTo(x, y);
-    }
-
-    // Cerrar el path
-    path.close();
-
-    canvas.drawPath(path, paint);
-
-    // Segunda ola con más opacidad
-    final paint2 = Paint()
-      ..color = color.withValues(alpha: 0.2)
-      ..style = PaintingStyle.fill;
-
-    final path2 = Path();
-    path2.moveTo(0, 0);
-    path2.lineTo(0, size.height);
-
-    for (double i = size.height; i >= 0; i--) {
-      final y = i;
-      final x = centerX + math.sin((i / 25) + (animation * 2 * math.pi) + 1) * (waveAmplitude * 0.8);
-      path2.lineTo(x, y);
-    }
-
-    path2.close();
-
-    canvas.drawPath(path2, paint2);
-  }
-
-  @override
-  bool shouldRepaint(WavePainter oldDelegate) {
-    return oldDelegate.animation != animation || oldDelegate.percentage != percentage || oldDelegate.color != color;
   }
 }

@@ -61,19 +61,18 @@ class HomePage extends StatelessWidget {
               ),
 
               const Spacer(),
-              // Estado de la batería
+
               const BatteryStatusCard(),
+
               const Spacer(),
               const Spacer(),
 
-              // Grid de acciones
               const Padding(padding: EdgeInsets.symmetric(horizontal: 24.0), child: QuickActionsGrid()),
 
               const SizedBox(height: 24),
 
               const Spacer(),
 
-              // Footer info
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
                 child: Text(
