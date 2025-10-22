@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/notification_model.dart';
 import '../repository/notification_repository.dart';
 import '../../shared/navigation/navigation.dart';
+import '../../shared/services/api_service.dart';
 import '../notifications_page.dart';
 
 @pragma('vm:entry-point')
@@ -25,6 +26,7 @@ class NotificationService {
 
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final _repository = NotificationRepository();
+  final _apiService = ApiService.instance;
   String? _token;
   final ValueNotifier<int> unreadCount = ValueNotifier<int>(0);
 
@@ -36,10 +38,16 @@ class NotificationService {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       _token = await _messaging.getToken();
 
+      await _registerToken(_token!);
+
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
       _setupHandlers();
     }
+  }
+
+  Future<void> _registerToken(String fcmToken) async {
+    await _apiService.post('/notifications/register', body: {'token': fcmToken, 'platform': 'flutter'});
   }
 
   Future<void> _loadUnreadCount() async {
