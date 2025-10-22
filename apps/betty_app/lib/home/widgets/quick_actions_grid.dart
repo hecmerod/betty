@@ -3,6 +3,7 @@ import 'dart:ui';
 import '../../map/map_page.dart';
 import '../../settings/settings_page.dart';
 import '../../camera/camera_page.dart';
+import '../../lights/lights_page.dart';
 
 class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
@@ -54,14 +55,16 @@ class QuickActionsGrid extends StatelessWidget {
           },
         ),
         QuickActionCard(
-          icon: Icons.notifications_active_rounded,
-          title: 'Alarmas',
+          icon: Icons.lightbulb_rounded,
+          title: 'Luces',
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [Color(0xFFfa709a), Color(0xFFfee140)],
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const LightsPage()));
+          },
         ),
         QuickActionCard(
           icon: Icons.tune_rounded,
