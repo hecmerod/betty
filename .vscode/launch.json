@@ -49,17 +49,15 @@
         "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
       }
     },
+
     {
       "name": "🚀 App Debug ",
-      "type": "node",
+      "type": "dart",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "betty-app:dev"],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
-      }
+      "program": "${workspaceFolder}/apps/betty_app/lib/main.dart",
+      "cwd": "${workspaceFolder}/apps/betty_app",
+      "flutterMode": "debug",
+      "deviceId": "192.168.1.166:5555"
     },
     {
       "name": "🔨 App Betty ",
