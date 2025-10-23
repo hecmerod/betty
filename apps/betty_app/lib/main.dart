@@ -1,3 +1,4 @@
+import 'package:betty_app/shared/navigation/navigation_root.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,9 +34,8 @@ class BettyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       navigatorKey: Navigation.instance.navigatorKey,
       scaffoldMessengerKey: Navigation.instance.scaffoldMessengerKey,
-      builder: (context, child) {
-        return Navigation.instance.buildNavigatorWithBackground(child ?? const SizedBox());
-      },
+      builder: (context, child) =>
+          NavigationRoot(navigatorKey: Navigation.instance.navigatorKey, child: child ?? const SizedBox()),
       home: const HomePage(),
     );
   }

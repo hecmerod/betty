@@ -1,8 +1,11 @@
+import 'package:betty_app/shared/navigation/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../shared/animations/wave_painter.dart';
+import '../../shared/navigation/bloc/navigation_bloc.dart';
+import '../../shared/navigation/bloc/navigation_event.dart';
 import 'battery_percentage_text.dart';
 import 'battery_power_consumption_badge.dart';
-import '../../battery/battery_detail_page.dart';
 
 class BatteryStatusCard extends StatefulWidget {
   const BatteryStatusCard({super.key});
@@ -33,7 +36,7 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const BatteryDetailPage()));
+        context.read<NavigationBloc>().add(const NavigateToPage(Routes.batteryDetail));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),

@@ -1,9 +1,9 @@
+import 'package:betty_app/shared/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import '../../map/map_page.dart';
-import '../../settings/settings_page.dart';
-import '../../camera/camera_page.dart';
-import '../../lights/lights_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../shared/navigation/bloc/navigation_bloc.dart';
+import '../../shared/navigation/bloc/navigation_event.dart';
 
 class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
@@ -27,19 +27,7 @@ class QuickActionsGrid extends StatelessWidget {
             colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
           ),
           onTap: () {
-            Navigator.push(
-              context,
-              PageRouteBuilder(
-                opaque: false,
-                transitionDuration: const Duration(milliseconds: 400),
-                reverseTransitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (context, animation, secondaryAnimation) => const CameraPage(),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  final curvedAnimation = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
-                  return FadeTransition(opacity: curvedAnimation, child: child);
-                },
-              ),
-            );
+            context.read<NavigationBloc>().add(const NavigateToPage(Routes.camera));
           },
         ),
         QuickActionCard(
@@ -51,7 +39,7 @@ class QuickActionsGrid extends StatelessWidget {
             colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
           ),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const MapPage()));
+            context.read<NavigationBloc>().add(const NavigateToPage(Routes.map));
           },
         ),
         QuickActionCard(
@@ -63,7 +51,7 @@ class QuickActionsGrid extends StatelessWidget {
             colors: [Color(0xFFfa709a), Color(0xFFfee140)],
           ),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const LightsPage()));
+            context.read<NavigationBloc>().add(const NavigateToPage(Routes.lights));
           },
         ),
         QuickActionCard(
@@ -75,7 +63,7 @@ class QuickActionsGrid extends StatelessWidget {
             colors: [Color(0xFF8e2de2), Color(0xFF4a00e0)],
           ),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+            context.read<NavigationBloc>().add(const NavigateToPage(Routes.settings));
           },
         ),
       ],

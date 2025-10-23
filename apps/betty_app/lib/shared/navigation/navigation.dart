@@ -1,4 +1,3 @@
-import 'package:betty_app/shared/widgets/background.dart';
 import 'package:flutter/material.dart';
 import '../../notifications/widgets/notification_snackbar.dart';
 
@@ -10,15 +9,6 @@ class Navigation {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   BuildContext? get context => navigatorKey.currentContext;
-
-  Widget buildNavigatorWithBackground(Widget navigator) {
-    return Stack(
-      children: [
-        const Positioned.fill(child: Background()),
-        navigator,
-      ],
-    );
-  }
 
   void showNotificationSnackBar({required String? title, required String? body, VoidCallback? onTap}) {
     final ctx = context;

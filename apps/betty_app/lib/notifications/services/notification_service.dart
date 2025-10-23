@@ -1,10 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/notification_model.dart';
 import '../repository/notification_repository.dart';
 import '../../shared/navigation/navigation.dart';
+import '../../shared/navigation/bloc/navigation_bloc.dart';
+import '../../shared/navigation/bloc/navigation_event.dart';
+import '../../shared/navigation/routes.dart';
 import '../../shared/services/api_service.dart';
-import '../notifications_page.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -78,7 +81,7 @@ class NotificationService {
       onTap: () {
         final context = Navigation.instance.context;
         if (context != null) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsPage()));
+          context.read<NavigationBloc>().add(const NavigateToPage(Routes.notifications));
         }
       },
     );
