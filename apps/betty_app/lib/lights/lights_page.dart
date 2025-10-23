@@ -110,17 +110,7 @@ class _LightsPageState extends State<LightsPage> with SingleTickerProviderStateM
               bottom: 0,
               child: Container(
                 padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.6),
-                      Colors.black.withValues(alpha: 0.3),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
+
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

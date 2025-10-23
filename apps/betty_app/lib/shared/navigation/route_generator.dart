@@ -10,13 +10,36 @@ import '../../notifications/notifications_page.dart';
 import '../../settings/settings_page.dart';
 
 class RouteGenerator {
+  // Método helper para crear transiciones personalizadas
+  static PageRouteBuilder _buildPageRoute({required Widget page, RouteSettings? settings}) {
+    return PageRouteBuilder(
+      settings: settings,
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionDuration: const Duration(milliseconds: 300),
+      reverseTransitionDuration: const Duration(milliseconds: 250),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(
+              begin: 0.95,
+              end: 1.0,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.home:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return _buildPageRoute(page: const HomePage(), settings: settings);
 
       case Routes.terminal:
         return PageRouteBuilder(
+          settings: settings,
           opaque: false, // Permite ver la página anterior
           pageBuilder: (context, animation, secondaryAnimation) => const TerminalPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -25,22 +48,22 @@ class RouteGenerator {
         );
 
       case Routes.batteryDetail:
-        return MaterialPageRoute(builder: (_) => const BatteryDetailPage());
+        return _buildPageRoute(page: const BatteryDetailPage(), settings: settings);
 
       case Routes.camera:
-        return MaterialPageRoute(builder: (_) => const CameraPage());
+        return _buildPageRoute(page: const CameraPage(), settings: settings);
 
       case Routes.lights:
-        return MaterialPageRoute(builder: (_) => const LightsPage());
+        return _buildPageRoute(page: const LightsPage(), settings: settings);
 
       case Routes.map:
-        return MaterialPageRoute(builder: (_) => const MapPage());
+        return _buildPageRoute(page: const MapPage(), settings: settings);
 
       case Routes.notifications:
-        return MaterialPageRoute(builder: (_) => const NotificationsPage());
+        return _buildPageRoute(page: const NotificationsPage(), settings: settings);
 
       case Routes.settings:
-        return MaterialPageRoute(builder: (_) => const SettingsPage());
+        return _buildPageRoute(page: const SettingsPage(), settings: settings);
 
       default:
         return null;

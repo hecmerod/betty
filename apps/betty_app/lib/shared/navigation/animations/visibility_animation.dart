@@ -52,6 +52,16 @@ class _VisibilityAnimationState extends State<VisibilityAnimation> with SingleTi
       begin: 1.0,
       end: 0.95,
     ).animate(CurvedAnimation(parent: _animationController, curve: widget.curve));
+
+    // Empezar oculto (reversed) y animar la entrada
+    _animationController.value = 1.0; // Empezar en estado "oculto"
+
+    // Animar la entrada después de que el widget esté montado
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _animationController.reverse(); // Reverse para ir de oculto (1.0) a visible (0.0)
+      }
+    });
   }
 
   @override
