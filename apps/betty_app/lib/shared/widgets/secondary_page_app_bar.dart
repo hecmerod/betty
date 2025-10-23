@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBackPressed;
+  final List<Widget>? actions;
 
-  const SecondaryPageAppBar({super.key, required this.title, this.onBackPressed});
+  const SecondaryPageAppBar({super.key, required this.title, this.onBackPressed, this.actions});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -33,6 +34,7 @@ class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget
         title,
         style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E1E1E)),
       ),
+      actions: actions,
     );
   }
 }
