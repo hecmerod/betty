@@ -4,8 +4,15 @@ class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget
   final String title;
   final VoidCallback? onBackPressed;
   final List<Widget>? actions;
+  final double backgroundOpacity;
 
-  const SecondaryPageAppBar({super.key, required this.title, this.onBackPressed, this.actions});
+  const SecondaryPageAppBar({
+    super.key,
+    required this.title,
+    this.onBackPressed,
+    this.actions,
+    this.backgroundOpacity = 1.0,
+  }) : assert(backgroundOpacity >= 0.0 && backgroundOpacity <= 1.0, 'backgroundOpacity must be between 0.0 and 1.0');
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -13,7 +20,7 @@ class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white.withValues(alpha: backgroundOpacity),
       elevation: 0,
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(12),

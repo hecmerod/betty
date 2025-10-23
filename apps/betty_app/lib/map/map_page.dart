@@ -1,10 +1,10 @@
+import 'package:betty_app/shared/widgets/secondary_page_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../shared/services/gps_service.dart';
 import 'widgets/location_button.dart';
 import 'widgets/vehicle_location_button.dart';
-import 'widgets/back_button_widget.dart';
 import 'services/map_api_service.dart';
 import '../shared/theme/app_theme.dart';
 
@@ -115,7 +115,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(leading: const BackButtonWidget()),
+      appBar: SecondaryPageAppBar(title: 'Mapa', backgroundOpacity: 0.8),
       body: Stack(
         children: [
           FlutterMap(
