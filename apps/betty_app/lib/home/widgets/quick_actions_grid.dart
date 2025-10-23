@@ -1,3 +1,4 @@
+import 'package:betty_app/shared/navigation/animations/visibility_animation.dart';
 import 'package:betty_app/shared/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -18,53 +19,67 @@ class QuickActionsGrid extends StatelessWidget {
       crossAxisSpacing: 20,
       childAspectRatio: 1.0,
       children: [
-        QuickActionCard(
-          icon: Icons.videocam_rounded,
-          title: 'Cámara',
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
+        VisibilityAnimation(
+          animationId: 'camera_button',
+          child: QuickActionCard(
+            icon: Icons.videocam_rounded,
+            title: 'Cámara',
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
+            ),
+            onTap: () {
+              context.read<NavigationBloc>().add(
+                const NavigateToPage(Routes.camera, excludeAnimationIds: ['camera_button']),
+              );
+            },
           ),
-          onTap: () {
-            context.read<NavigationBloc>().add(const NavigateToPage(Routes.camera));
-          },
         ),
-        QuickActionCard(
-          icon: Icons.map_rounded,
-          title: 'Mapa',
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
+        VisibilityAnimation(
+          animationId: 'map_button',
+          child: QuickActionCard(
+            icon: Icons.map_rounded,
+            title: 'Mapa',
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
+            ),
+            onTap: () {
+              context.read<NavigationBloc>().add(const NavigateToPage(Routes.map));
+            },
           ),
-          onTap: () {
-            context.read<NavigationBloc>().add(const NavigateToPage(Routes.map));
-          },
         ),
-        QuickActionCard(
-          icon: Icons.lightbulb_rounded,
-          title: 'Luces',
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFfa709a), Color(0xFFfee140)],
+        VisibilityAnimation(
+          animationId: 'light_button',
+          child: QuickActionCard(
+            icon: Icons.lightbulb_rounded,
+            title: 'Luces',
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFfa709a), Color(0xFFfee140)],
+            ),
+            onTap: () {
+              context.read<NavigationBloc>().add(const NavigateToPage(Routes.lights));
+            },
           ),
-          onTap: () {
-            context.read<NavigationBloc>().add(const NavigateToPage(Routes.lights));
-          },
         ),
-        QuickActionCard(
-          icon: Icons.tune_rounded,
-          title: 'Ajustes',
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF8e2de2), Color(0xFF4a00e0)],
+        VisibilityAnimation(
+          animationId: 'settings_button',
+          child: QuickActionCard(
+            icon: Icons.tune_rounded,
+            title: 'Ajustes',
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF8e2de2), Color(0xFF4a00e0)],
+            ),
+            onTap: () {
+              context.read<NavigationBloc>().add(const NavigateToPage(Routes.settings));
+            },
           ),
-          onTap: () {
-            context.read<NavigationBloc>().add(const NavigateToPage(Routes.settings));
-          },
         ),
       ],
     );

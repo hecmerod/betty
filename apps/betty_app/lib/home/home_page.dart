@@ -23,10 +23,8 @@ class HomePage extends StatelessWidget {
             const VisibilityAnimation(animationId: 'battery_status_card', child: BatteryStatusCard()),
             const Spacer(),
             const Spacer(),
-            const VisibilityAnimation(
-              animationId: 'quick_actions_grid',
-              child: Padding(padding: EdgeInsets.symmetric(horizontal: 24.0), child: QuickActionsGrid()),
-            ),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 24.0), child: QuickActionsGrid()),
+
             const SizedBox(height: 24),
             const Spacer(),
             VisibilityAnimation(
