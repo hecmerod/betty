@@ -22,7 +22,7 @@ export class CameraController {
 
   private getCameraType(type?: string): CameraType {
     if (!type) {
-      return CameraType.EXTERNAL; // Default
+      return CameraType.INTERNAL; // Default
     }
 
     const upperType = type.toUpperCase();

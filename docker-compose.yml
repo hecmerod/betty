@@ -15,6 +15,7 @@ services:
       - /sys/class/gpio:/sys/class/gpio
       - /var/run/dbus:/var/run/dbus:ro
       - /run/dbus:/run/dbus:ro
+      - ./tmp:/app/tmp:rw
     devices:
       - /dev/bus/usb:/dev/bus/usb
     cap_add:
@@ -27,6 +28,8 @@ services:
       - PORT=3000
       - DATABASE_URL=postgresql://betty:${POSTGRES_PASSWORD}@betty-db:5432/betty
       - CAMERA_SERVICE_URL=http://betty-camera:8001/camera
+      - BORE_CONTROL_FILE=/app/tmp/bore-control.txt
+      - BORE_SSH_URL_FILE=/app/tmp/bore-ssh-url.txt
     networks:
       - betty-network
 

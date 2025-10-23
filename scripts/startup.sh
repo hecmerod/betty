@@ -39,11 +39,40 @@ fi
 log "⏳ Esperando a que los servicios estén listos..."
 sleep 10
 
+# ========================================
+# CONFIGURACIÓN DE TÚNELES
+# ========================================
+
+LT_URL_FILE="$PROJECT_DIR/tmp/localtunnel-url.txt"
+
+# Crear directorio tmp si no existe
+mkdir -p "$PROJECT_DIR/tmp"
+
+# ========================================
+# 1. INICIAR BORE MONITOR
+# ========================================
+
+log "🔌 Iniciando monitor de Bore SSH..."
+
+# Verificar si el monitor ya está corriendo
+if pgrep -f "bore-monitor.sh" > /dev/null; then
+    log "⚠️ Bore monitor ya está en ejecución"
+else
+    # Iniciar bore-monitor en background
+    nohup "$PROJECT_DIR/scripts/bore-monitor.sh" > /dev/null 2>&1 &
+    MONITOR_PID=$!
+    log "✅ Bore monitor iniciado con PID: $MONITOR_PID"
+    log "📝 Para ver logs: tail -f $PROJECT_DIR/logs/bore-monitor.log"
+    log "� Para iniciar túnel SSH: curl -X POST http://localhost:3000/api/ssh/start"
+fi
+
+# ========================================
+# 2. INICIAR LOCALTUNNEL HTTP
+# ========================================
+
 # Verificar si localtunnel está instalado
 if ! command -v lt &> /dev/null; then
     log "⚠️ localtunnel no está instalado. Instalando..."
-    
-    # Instalar localtunnel globalmente con npm
     sudo npm install -g localtunnel
     
     if [ $? -eq 0 ]; then
@@ -61,8 +90,7 @@ if pgrep -f "lt --port" > /dev/null; then
     sleep 2
 fi
 
-# Subdominio personalizado difícil de replicar pero siempre el mismo
-# Cambia este valor por algo único y seguro para tu instalación
+# Subdominio personalizado
 SUBDOMAIN="betty-la-fragoneta-mas-guarra-del-mundo"
 
 # Iniciar localtunnel con subdominio personalizado
@@ -79,22 +107,19 @@ if [ $? -eq 0 ]; then
     # Construir la URL con el subdominio conocido
     LT_URL="https://${SUBDOMAIN}.loca.lt"
     
+    # Guardar URL en archivo
+    echo "$LT_URL" > "$LT_URL_FILE"
+    log "✅ URL de LocalTunnel guardada en: $LT_URL_FILE"
+    
     # Verificar que el túnel esté funcionando
     if curl -s --head --request GET "$LT_URL" | grep "200\|301\|302" > /dev/null; then
         log "🌍 URL pública de localtunnel: $LT_URL"
-        
     else
         log "⚠️ El túnel puede tardar un poco más en estar listo. URL: $LT_URL"
-        
-        # Intentar obtener la URL desde los logs como respaldo
-        sleep 3
-        LT_URL_LOG=$(tail -20 "$LOG_FILE" | grep -o 'https://[a-z0-9-]*\.loca\.lt' | tail -1)
-        if [ -n "$LT_URL_LOG" ]; then
-            log "🌍 URL confirmada desde logs: $LT_URL_LOG"
-        fi
     fi
 else
     log "❌ Error iniciando localtunnel"
+    echo "ERROR: LocalTunnel no se inició" > "$LT_URL_FILE"
 fi
 
 log "✨ Proceso de inicio completado"

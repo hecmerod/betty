@@ -117,5 +117,6 @@ apps/betty_app/.env
 # Obfuscation related
 **/app.*.map.json
 
+# Logs
 logs/startup.log
-logs/startup.log
+logs/bore-monitor.log
