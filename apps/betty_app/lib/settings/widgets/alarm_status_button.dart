@@ -36,7 +36,6 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
         setState(() {
           _isLoadingAlarm = false;
         });
-        _showSnackBar('Error al cargar el estado de la alarma', isError: true);
       }
     }
   }
@@ -53,29 +52,14 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
           _alarmActive = newStatus;
           _isTogglingAlarm = false;
         });
-
-        _showSnackBar(newStatus ? 'Alarma activada' : 'Alarma desactivada', isError: false);
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _isTogglingAlarm = false;
         });
-        _showSnackBar('Error al cambiar el estado de la alarma', isError: true);
       }
     }
-  }
-
-  void _showSnackBar(String message, {required bool isError}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red.shade400 : Colors.green.shade400,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 2),
-      ),
-    );
   }
 
   @override
@@ -94,12 +78,15 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             decoration: BoxDecoration(
-              gradient: gradient.scale(0.3),
+              gradient: gradient.scale(0.15),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 2),
+              border: Border.all(
+                color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.3),
+                width: 2,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.3),
+                  color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.2),
                   blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
@@ -115,7 +102,9 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.5),
+                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(
+                          alpha: 0.5,
+                        ),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -136,7 +125,12 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
                 const Text(
                   'Alarma',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.3),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E1E1E),
+                    letterSpacing: 0.3,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -146,7 +140,9 @@ class _AlarmStatusButtonState extends State<AlarmStatusButton> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(alpha: 0.4),
+                        color: (_alarmActive ? const Color(0xFF43e97b) : const Color(0xFFff6b6b)).withValues(
+                          alpha: 0.4,
+                        ),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
