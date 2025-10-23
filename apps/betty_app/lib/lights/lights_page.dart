@@ -71,6 +71,7 @@ class _LightsPageState extends State<LightsPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: const SecondaryPageAppBar(title: 'Control de Luces', backgroundOpacity: 0.0),
       body: SafeArea(

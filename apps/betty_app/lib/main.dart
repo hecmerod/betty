@@ -33,6 +33,9 @@ class BettyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       navigatorKey: Navigation.instance.navigatorKey,
       scaffoldMessengerKey: Navigation.instance.scaffoldMessengerKey,
+      builder: (context, child) {
+        return Navigation.instance.buildNavigatorWithBackground(child ?? const SizedBox());
+      },
       home: const HomePage(),
     );
   }

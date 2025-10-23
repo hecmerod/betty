@@ -37,6 +37,7 @@ class _BatteryDetailPageState extends State<BatteryDetailPage> with TickerProvid
     const double battery2PowerWatts = -150.0;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: const SecondaryPageAppBar(title: 'Estado de Baterías'),
       body: Padding(

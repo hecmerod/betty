@@ -114,6 +114,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: SecondaryPageAppBar(title: 'Mapa', backgroundOpacity: 0.8),
       body: Stack(
