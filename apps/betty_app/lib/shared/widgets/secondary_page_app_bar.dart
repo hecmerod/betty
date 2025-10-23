@@ -5,6 +5,7 @@ class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget
   final VoidCallback? onBackPressed;
   final List<Widget>? actions;
   final double backgroundOpacity;
+  final Widget? customTitle;
 
   const SecondaryPageAppBar({
     super.key,
@@ -12,6 +13,7 @@ class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget
     this.onBackPressed,
     this.actions,
     this.backgroundOpacity = 1.0,
+    this.customTitle,
   }) : assert(backgroundOpacity >= 0.0 && backgroundOpacity <= 1.0, 'backgroundOpacity must be between 0.0 and 1.0');
 
   @override
@@ -22,6 +24,7 @@ class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget
     return AppBar(
       backgroundColor: Colors.white.withValues(alpha: backgroundOpacity),
       elevation: 0,
+      centerTitle: true,
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Container(
@@ -37,11 +40,18 @@ class SecondaryPageAppBar extends StatelessWidget implements PreferredSizeWidget
           ),
         ),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E1E1E)),
-      ),
-      actions: actions,
+      title:
+          customTitle ??
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E1E1E)),
+          ),
+      actions: customTitle != null && actions == null
+          ? [
+              // Espaciador para balancear el leading cuando hay customTitle
+              const SizedBox(width: 56),
+            ]
+          : actions,
     );
   }
 }
