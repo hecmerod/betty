@@ -18,11 +18,12 @@ class ShowAllWidgets extends NavigationEvent {
 class NavigateToPage extends NavigationEvent {
   final String routeName;
   final Object? arguments;
+  final bool animateWidgets;
 
-  const NavigateToPage(this.routeName, {this.arguments});
+  const NavigateToPage(this.routeName, {this.arguments, this.animateWidgets = true});
 
   @override
-  List<Object?> get props => [routeName, arguments];
+  List<Object?> get props => [routeName, arguments, animateWidgets];
 }
 
 class ClearPendingRoute extends NavigationEvent {

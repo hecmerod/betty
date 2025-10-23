@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../shared/navigation/animations/hide_widget_animation.dart';
+import '../shared/navigation/animations/visibility_animation.dart';
 import 'widgets/app_bar/home_app_bar.dart';
 import 'widgets/quick_actions_grid.dart';
 import 'widgets/battery_status_card.dart';
@@ -11,6 +11,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
+      resizeToAvoidBottomInset: false, // No redimensionar cuando aparece el teclado
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: VisibilityAnimation(animationId: 'home_app_bar', child: HomeAppBar()),
@@ -19,21 +20,15 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             const Spacer(),
-
             const VisibilityAnimation(animationId: 'battery_status_card', child: BatteryStatusCard()),
-
             const Spacer(),
             const Spacer(),
-
             const VisibilityAnimation(
               animationId: 'quick_actions_grid',
               child: Padding(padding: EdgeInsets.symmetric(horizontal: 24.0), child: QuickActionsGrid()),
             ),
-
             const SizedBox(height: 24),
-
             const Spacer(),
-
             VisibilityAnimation(
               animationId: 'quick_actions_grid',
               child: Text(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../battery/battery_detail_page.dart';
 import '../../camera/camera_page.dart';
 import '../../home/home_page.dart';
+import '../../terminal/terminal_page.dart';
 import '../../lights/lights_page.dart';
 import '../../map/map_page.dart';
 import '../../notifications/notifications_page.dart';
@@ -13,6 +14,15 @@ class RouteGenerator {
     switch (settings.name) {
       case Routes.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
+
+      case Routes.terminal:
+        return PageRouteBuilder(
+          opaque: false, // Permite ver la página anterior
+          pageBuilder: (context, animation, secondaryAnimation) => const TerminalPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return child; // Sin transición, el widget ya tiene su propia animación
+          },
+        );
 
       case Routes.batteryDetail:
         return MaterialPageRoute(builder: (_) => const BatteryDetailPage());
@@ -41,6 +51,9 @@ class RouteGenerator {
     switch (routeName) {
       case Routes.home:
         return const HomePage();
+
+      case Routes.terminal:
+        return const TerminalPage();
 
       case Routes.batteryDetail:
         return const BatteryDetailPage();

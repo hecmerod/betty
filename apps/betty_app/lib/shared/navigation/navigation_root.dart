@@ -38,19 +38,13 @@ class _NavigationRootState extends State<NavigationRoot> {
 
       _navigationBloc.add(const ClearPendingRoute());
 
-      final pageWidget = RouteGenerator.getPageWidget(route);
+      final routeSettings = RouteSettings(name: route, arguments: arguments);
+      final generatedRoute = RouteGenerator.generateRoute(routeSettings);
 
-      if (pageWidget != null) {
-        widget.navigatorKey.currentState
-            ?.push(
-              MaterialPageRoute(
-                builder: (_) => pageWidget,
-                settings: RouteSettings(name: route, arguments: arguments),
-              ),
-            )
-            .then((_) {
-              _navigationBloc.add(const ShowAllWidgets());
-            });
+      if (generatedRoute != null) {
+        widget.navigatorKey.currentState?.push(generatedRoute).then((_) {
+          _navigationBloc.add(const ShowAllWidgets());
+        });
       }
     }
   }

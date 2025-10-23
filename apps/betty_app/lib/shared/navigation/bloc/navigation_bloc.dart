@@ -1,5 +1,5 @@
-import 'package:betty_app/shared/navigation/animations/visibility_animation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../animations/animation_constants.dart';
 import 'navigation_event.dart';
 import 'navigation_state.dart';
 
@@ -22,10 +22,12 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   }
 
   Future<void> _onNavigateToPage(NavigateToPage event, Emitter<NavigationState> emit) async {
-    final newStates = <String?, bool>{null: true};
-    emit(state.copyWith(hiddenStates: newStates));
-
-    await Future.delayed(kHideWidgetAnimationDuration);
+    // Solo animar si animateWidgets es true
+    if (event.animateWidgets) {
+      final newStates = <String?, bool>{null: true};
+      emit(state.copyWith(hiddenStates: newStates));
+      await Future.delayed(kHideWidgetAnimationTotal);
+    }
 
     emit(state.copyWith(pendingRoute: event.routeName, pendingArguments: event.arguments));
   }
