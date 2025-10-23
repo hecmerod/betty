@@ -40,7 +40,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
   void _startStream() async {
     try {
-      final url = await _cameraService.getVideoStreamUrl();
+      final url = _cameraService.getVideoStreamUrl();
       _httpClient = http.Client();
       final request = http.Request('GET', Uri.parse(url));
 

@@ -10,8 +10,8 @@ class CameraService {
   final _jwtService = JwtService.instance;
   final _config = AppConfig.instance;
 
-  Future<String> getVideoStreamUrl() async {
-    final token = await JwtService.instance.generateToken();
+  String getVideoStreamUrl() {
+    JwtService.instance.generateToken();
     return '${_config.bettyApiBaseUrl}/camera/video';
   }
 
@@ -20,11 +20,6 @@ class CameraService {
   }
 
   Future<void> capturePhoto() async {
-    try {
-      await _apiService.post('/camera/photo');
-    } catch (e) {
-      print('Error capturing photo: $e');
-      rethrow;
-    }
+    await _apiService.post('/camera/photo');
   }
 }
