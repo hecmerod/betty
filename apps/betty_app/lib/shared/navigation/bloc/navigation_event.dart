@@ -8,7 +8,12 @@ abstract class NavigationEvent extends Equatable {
 }
 
 class HideAllWidgets extends NavigationEvent {
-  const HideAllWidgets();
+  final List<String> excludeIds;
+
+  const HideAllWidgets({this.excludeIds = const []});
+
+  @override
+  List<Object?> get props => [excludeIds];
 }
 
 class ShowAllWidgets extends NavigationEvent {
@@ -19,11 +24,17 @@ class NavigateToPage extends NavigationEvent {
   final String routeName;
   final Object? arguments;
   final bool animateWidgets;
+  final List<String> excludeAnimationIds;
 
-  const NavigateToPage(this.routeName, {this.arguments, this.animateWidgets = true});
+  const NavigateToPage(
+    this.routeName, {
+    this.arguments,
+    this.animateWidgets = true,
+    this.excludeAnimationIds = const [],
+  });
 
   @override
-  List<Object?> get props => [routeName, arguments, animateWidgets];
+  List<Object?> get props => [routeName, arguments, animateWidgets, excludeAnimationIds];
 }
 
 class ClearPendingRoute extends NavigationEvent {

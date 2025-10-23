@@ -13,19 +13,19 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
   void _onHideAllWidgets(HideAllWidgets event, Emitter<NavigationState> emit) {
     final newStates = <String?, bool>{null: true};
-    emit(state.copyWith(hiddenStates: newStates));
+    emit(state.copyWith(hiddenStates: newStates, excludedIds: event.excludeIds));
   }
 
   void _onShowAllWidgets(ShowAllWidgets event, Emitter<NavigationState> emit) {
     final newStates = <String?, bool>{null: false};
-    emit(state.copyWith(hiddenStates: newStates));
+    emit(state.copyWith(hiddenStates: newStates, excludedIds: []));
   }
 
   Future<void> _onNavigateToPage(NavigateToPage event, Emitter<NavigationState> emit) async {
     // Solo animar si animateWidgets es true
     if (event.animateWidgets) {
       final newStates = <String?, bool>{null: true};
-      emit(state.copyWith(hiddenStates: newStates));
+      emit(state.copyWith(hiddenStates: newStates, excludedIds: event.excludeAnimationIds));
       await Future.delayed(kHideWidgetAnimationTotal);
     }
 
