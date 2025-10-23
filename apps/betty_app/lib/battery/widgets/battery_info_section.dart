@@ -32,16 +32,16 @@ class BatteryInfoSection extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
+              color: const Color(0xFF1E1E1E).withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+              border: Border.all(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1.5),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   'Resumen del Sistema',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E1E1E)),
                 ),
                 const SizedBox(height: 20),
 
@@ -134,23 +134,23 @@ class _InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: const Color(0xFF1E1E1E).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
+        border: Border.all(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1),
       ),
       child: Column(
         children: [
-          Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 24),
+          Icon(icon, color: const Color(0xFF1E1E1E).withValues(alpha: 0.6), size: 24),
           const SizedBox(height: 8),
           Text(
             label,
-            style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.7)),
+            style: TextStyle(fontSize: 12, color: const Color(0xFF1E1E1E).withValues(alpha: 0.6)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: valueColor ?? Colors.white),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: valueColor ?? const Color(0xFF1E1E1E)),
           ),
         ],
       ),
@@ -173,18 +173,18 @@ class _InfoRow extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
+            color: const Color(0xFF1E1E1E).withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 20),
+          child: Icon(icon, color: const Color(0xFF1E1E1E).withValues(alpha: 0.6), size: 20),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(label, style: TextStyle(fontSize: 15, color: Colors.white.withValues(alpha: 0.9))),
+          child: Text(label, style: TextStyle(fontSize: 15, color: const Color(0xFF1E1E1E).withValues(alpha: 0.7))),
         ),
         Text(
           value,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: valueColor ?? Colors.white),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: valueColor ?? const Color(0xFF1E1E1E)),
         ),
       ],
     );

@@ -28,9 +28,9 @@ class VerticalBatteryCard extends StatelessWidget {
       child: Container(
         height: 400,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
+          color: const Color(0xFF1E1E1E).withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+          border: Border.all(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1.5),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 8)),
           ],

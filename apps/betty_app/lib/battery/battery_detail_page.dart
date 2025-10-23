@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
-import '../shared/theme/app_theme.dart';
+import '../shared/widgets/secondary_page_app_bar.dart';
 import 'widgets/vertical_battery_card.dart';
 import 'widgets/battery_info_section.dart';
 
@@ -39,81 +38,46 @@ class _BatteryDetailPageState extends State<BatteryDetailPage> with TickerProvid
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ),
-        ),
-        title: const Text(
-          'Estado de Baterías',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppTheme.primaryGradientStart, AppTheme.primaryGradientMiddle, AppTheme.primaryGradientEnd],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 160),
+      appBar: const SecondaryPageAppBar(title: 'Estado de Baterías'),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 160),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: Material(
-                      color: Colors.transparent,
-                      child: VerticalBatteryCard(
-                        percentage: battery1Percentage,
-                        powerWatts: battery1PowerWatts,
-                        waveController: _waveController1,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
+            Row(
+              children: [
+                Expanded(
+                  child: Material(
+                    color: Colors.transparent,
                     child: VerticalBatteryCard(
-                      percentage: battery2Percentage,
-                      powerWatts: battery2PowerWatts,
-                      waveController: _waveController2,
+                      percentage: battery1Percentage,
+                      powerWatts: battery1PowerWatts,
+                      waveController: _waveController1,
                     ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: VerticalBatteryCard(
+                    percentage: battery2Percentage,
+                    powerWatts: battery2PowerWatts,
+                    waveController: _waveController2,
+                  ),
+                ),
+              ],
+            ),
 
-              const SizedBox(height: 32),
+            const SizedBox(height: 32),
 
-              BatteryInfoSection(
-                battery1Percentage: battery1Percentage,
-                battery1PowerWatts: battery1PowerWatts,
-                battery2Percentage: battery2Percentage,
-                battery2PowerWatts: battery2PowerWatts,
-              ),
-            ],
-          ),
+            BatteryInfoSection(
+              battery1Percentage: battery1Percentage,
+              battery1PowerWatts: battery1PowerWatts,
+              battery2Percentage: battery2Percentage,
+              battery2PowerWatts: battery2PowerWatts,
+            ),
+          ],
         ),
       ),
     );
