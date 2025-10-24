@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:ui';
 import 'bloc/terminal_bloc.dart';
+import 'bloc/terminal_event.dart';
 import 'bloc/terminal_state.dart';
 
 class TerminalPage extends StatefulWidget {
@@ -43,54 +44,66 @@ class _TerminalPageState extends State<TerminalPage> with SingleTickerProviderSt
     final terminalHeight = screenHeight * 0.6 + 300;
 
     return BlocProvider(
-      create: (_) => TerminalBloc(),
-      child: BlocListener<TerminalBloc, TerminalState>(
-        listenWhen: (_, current) => current.shouldClose && mounted,
-        listener: (context, state) {
-          Navigator.of(context).pop();
-        },
-        child: PopScope(
-          onPopInvokedWithResult: (didPop, result) async {
-            await _animationController.reverse();
-          },
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: false,
-            body: Align(
-              alignment: Alignment.bottomCenter,
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 1),
-                    end: Offset.zero,
-                  ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut)),
-                  child: RepaintBoundary(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          height: terminalHeight,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(24),
-                              topRight: Radius.circular(24),
-                            ),
-                            border: Border.all(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1.5),
+      create: (context) {
+        final bloc = TerminalBloc();
+        bloc.add(const InitializeTerminal());
+        return bloc;
+      },
+      child: Builder(
+        builder: (context) {
+          return BlocListener<TerminalBloc, TerminalState>(
+            listenWhen: (_, current) => current.shouldClose && mounted,
+            listener: (context, state) {
+              print("asd");
+              Navigator.of(context).pop();
+            },
+            child: PopScope(
+              onPopInvokedWithResult: (didPop, result) async {
+                if (didPop) {
+                  context.read<TerminalBloc>().add(const CloseTerminal());
+                }
+                await _animationController.reverse();
+              },
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                resizeToAvoidBottomInset: false,
+                body: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 1),
+                        end: Offset.zero,
+                      ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut)),
+                      child: RepaintBoundary(
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
                           ),
-                          child: Column(
-                            children: [
-                              const TerminalHeader(),
-                              Expanded(child: RepaintBoundary(child: const TerminalHistory())),
-                              Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                child: RepaintBoundary(child: const TerminalInput()),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              height: terminalHeight,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(24),
+                                  topRight: Radius.circular(24),
+                                ),
+                                border: Border.all(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1.5),
                               ),
-                            ],
+                              child: Column(
+                                children: [
+                                  const TerminalHeader(),
+                                  Expanded(child: RepaintBoundary(child: const TerminalHistory())),
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                    child: RepaintBoundary(child: const TerminalInput()),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -99,8 +112,8 @@ class _TerminalPageState extends State<TerminalPage> with SingleTickerProviderSt
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

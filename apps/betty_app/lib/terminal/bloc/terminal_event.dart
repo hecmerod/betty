@@ -7,6 +7,10 @@ abstract class TerminalEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class InitializeTerminal extends TerminalEvent {
+  const InitializeTerminal();
+}
+
 class ProcessCommand extends TerminalEvent {
   final String command;
 
