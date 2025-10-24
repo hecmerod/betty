@@ -34,7 +34,7 @@ class TerminalHeader extends StatelessWidget {
             ),
             child: IconButton(
               icon: const Icon(Icons.close_rounded, color: Color(0xFF1E1E1E), size: 20),
-              onPressed: () => context.read<TerminalBloc>().add(const CloseTerminal()),
+              onPressed: () => context.read<TerminalBloc>().add(CloseTerminal()),
             ),
           ),
         ],

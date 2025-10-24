@@ -54,13 +54,12 @@ class _TerminalPageState extends State<TerminalPage> with SingleTickerProviderSt
           return BlocListener<TerminalBloc, TerminalState>(
             listenWhen: (_, current) => current.shouldClose && mounted,
             listener: (context, state) {
-              print("asd");
               Navigator.of(context).pop();
             },
             child: PopScope(
               onPopInvokedWithResult: (didPop, result) async {
                 if (didPop) {
-                  context.read<TerminalBloc>().add(const CloseTerminal());
+                  context.read<TerminalBloc>().add(CloseTerminal());
                 }
                 await _animationController.reverse();
               },

@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   http: ^1.5.0
   flutter_dotenv: ^6.0.0
-  dart_jsonwebtoken: ^3.2.0
+  dart_jsonwebtoken: ^3.1.1
   provider: ^6.1.5+1
   firebase_messaging: ^16.0.2
   firebase_core: ^4.1.1
@@ -49,6 +49,7 @@ dependencies:
   model_viewer_plus: ^1.8.0
   flutter_bloc: ^8.1.6
   equatable: ^2.0.7
+  dartssh2: ^2.9.0
 
 dev_dependencies:
   flutter_test:

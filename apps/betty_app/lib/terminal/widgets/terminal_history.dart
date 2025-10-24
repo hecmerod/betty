@@ -36,6 +36,32 @@ class _TerminalHistoryState extends State<TerminalHistory> {
       },
       child: BlocBuilder<TerminalBloc, TerminalState>(
         builder: (context, state) {
+          // Mostrar indicador de carga mientras se conecta
+          if (state.isConnecting) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF667eea))),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Conectando al servidor SSH...',
+                    style: TextStyle(
+                      color: const Color(0xFF1E1E1E).withValues(alpha: 0.7),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Por favor, espera un momento',
+                    style: TextStyle(color: const Color(0xFF1E1E1E).withValues(alpha: 0.4), fontSize: 14),
+                  ),
+                ],
+              ),
+            );
+          }
+
           if (state.history.isEmpty) {
             return Center(
               child: Column(

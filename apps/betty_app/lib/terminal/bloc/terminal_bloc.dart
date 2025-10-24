@@ -14,6 +14,8 @@ class TerminalBloc extends Bloc<TerminalEvent, TerminalState> {
     on<ClearTerminal>(_onClearTerminal);
     on<CloseTerminal>(_onCloseTerminal);
     on<ScrollToBottom>(_onScrollToBottom);
+    on<ReceiveSshOutput>(_onReceiveSshOutput);
+    on<SshError>(_onSshError);
   }
 
   Future<void> _onInitializeTerminal(InitializeTerminal event, Emitter<TerminalState> emit) async {
@@ -23,8 +25,10 @@ class TerminalBloc extends Bloc<TerminalEvent, TerminalState> {
       final sshCommand = await _sshService.startSsh();
 
       final newHistory = List<String>.from(state.history)
-        ..add('Conectando a SSH...')
-        ..add('Comando: $sshCommand')
+        ..add('🔌 Conectando a SSH...')
+        ..add('📡 Comando: $sshCommand')
+        ..add('✅ Conexión SSH establecida')
+        ..add('💻 Terminal remoto listo')
         ..add('');
 
       emit(
@@ -36,6 +40,9 @@ class TerminalBloc extends Bloc<TerminalEvent, TerminalState> {
           shouldScrollToBottom: true,
         ),
       );
+
+      // Escuchar el output SSH
+      _listenToSshOutput();
     } catch (e) {
       final newHistory = List<String>.from(state.history)
         ..add('❌ Error al conectar: $e')
@@ -53,6 +60,28 @@ class TerminalBloc extends Bloc<TerminalEvent, TerminalState> {
     }
   }
 
+  /// Escucha el output del SSH en tiempo real
+  void _listenToSshOutput() {
+    _sshService.outputStream.listen(
+      (output) {
+        add(ReceiveSshOutput(output));
+      },
+      onError: (error) {
+        add(SshError(error.toString()));
+      },
+    );
+  }
+
+  void _onReceiveSshOutput(ReceiveSshOutput event, Emitter<TerminalState> emit) {
+    final newHistory = List<String>.from(state.history)..add(event.output);
+    emit(state.copyWith(history: newHistory, shouldScrollToBottom: true));
+  }
+
+  void _onSshError(SshError event, Emitter<TerminalState> emit) {
+    final newHistory = List<String>.from(state.history)..add('❌ Error SSH: ${event.error}');
+    emit(state.copyWith(history: newHistory, shouldScrollToBottom: true));
+  }
+
   void _onProcessCommand(ProcessCommand event, Emitter<TerminalState> emit) {
     final command = event.command.trim();
 
@@ -60,14 +89,24 @@ class TerminalBloc extends Bloc<TerminalEvent, TerminalState> {
       return;
     }
 
-    final newHistory = List<String>.from(state.history)..add('betty@fragoneta:~\$ $command');
+    // Si estamos conectados a SSH, enviar comando por SSH
+    if (state.isConnected && _sshService.isConnected) {
+      _sshService.sendInput('$command\n');
 
-    final response = _commandProcessor.processCommand(command);
-    if (response.isNotEmpty) {
-      newHistory.add(response);
+      // Añadir el comando al historial para mostrar lo que el usuario escribió
+      final newHistory = List<String>.from(state.history)..add('> $command');
+      emit(state.copyWith(history: newHistory, shouldScrollToBottom: true));
+    } else {
+      // Procesamiento local si no hay conexión SSH
+      final newHistory = List<String>.from(state.history)..add('betty@fragoneta:~\$ $command');
+
+      final response = _commandProcessor.processCommand(command);
+      if (response.isNotEmpty) {
+        newHistory.add(response);
+      }
+
+      emit(state.copyWith(history: newHistory, shouldScrollToBottom: true));
     }
-
-    emit(state.copyWith(history: newHistory, shouldScrollToBottom: true));
   }
 
   void _onClearTerminal(ClearTerminal event, Emitter<TerminalState> emit) {

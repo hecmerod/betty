@@ -1,5 +1,6 @@
 import 'package:betty_app/terminal/bloc/terminal_bloc.dart';
 import 'package:betty_app/terminal/bloc/terminal_event.dart';
+import 'package:betty_app/terminal/bloc/terminal_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,12 +14,10 @@ class TerminalInput extends StatefulWidget {
 class _TerminalInputState extends State<TerminalInput> {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  bool _hasRequestedFocus = false;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
     super.initState();
   }
 
@@ -44,57 +43,93 @@ class _TerminalInputState extends State<TerminalInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E).withValues(alpha: 0.1),
-        border: Border(top: BorderSide(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
+    return BlocListener<TerminalBloc, TerminalState>(
+      listenWhen: (previous, current) => previous.isConnecting && !current.isConnecting && current.isConnected,
+      listener: (context, state) {
+        // Cuando termina de conectar exitosamente, abrir el teclado
+        if (!_hasRequestedFocus) {
+          _hasRequestedFocus = true;
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) {
+              _focusNode.requestFocus();
+            }
+          });
+        }
+      },
+      child: BlocBuilder<TerminalBloc, TerminalState>(
+        builder: (context, state) {
+          final isDisabled = state.isConnecting;
+
+          return Container(
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF667eea).withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
+              color: const Color(0xFF1E1E1E).withValues(alpha: 0.1),
+              border: Border(top: BorderSide(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1)),
             ),
-            child: const Text(
-              '❯',
-              style: TextStyle(color: Color(0xFF667eea), fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Material(
-              color: Colors.transparent,
-              child: TextField(
-                controller: _textController,
-                focusNode: _focusNode,
-                style: const TextStyle(color: Color(0xFF1E1E1E), fontSize: 16, fontFamily: 'monospace'),
-                decoration: InputDecoration(
-                  hintText: 'Escribe un comando...',
-                  hintStyle: TextStyle(
-                    color: const Color(0xFF1E1E1E).withValues(alpha: 0.4),
-                    fontSize: 16,
-                    fontFamily: 'monospace',
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: (isDisabled
+                        ? const Color(0xFF1E1E1E).withValues(alpha: 0.1)
+                        : const Color(0xFF667eea).withValues(alpha: 0.15)),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  border: InputBorder.none,
+                  child: Text(
+                    '❯',
+                    style: TextStyle(
+                      color: isDisabled ? const Color(0xFF1E1E1E).withValues(alpha: 0.3) : const Color(0xFF667eea),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                onSubmitted: (_) => _handleSubmit(context),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: TextField(
+                      controller: _textController,
+                      focusNode: _focusNode,
+                      enabled: !isDisabled,
+                      style: TextStyle(
+                        color: isDisabled ? const Color(0xFF1E1E1E).withValues(alpha: 0.3) : const Color(0xFF1E1E1E),
+                        fontSize: 16,
+                        fontFamily: 'monospace',
+                      ),
+                      decoration: InputDecoration(
+                        hintText: isDisabled ? 'Conectando...' : 'Escribe un comando...',
+                        hintStyle: TextStyle(
+                          color: const Color(0xFF1E1E1E).withValues(alpha: 0.4),
+                          fontSize: 16,
+                          fontFamily: 'monospace',
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (_) => _handleSubmit(context),
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: (isDisabled
+                        ? const Color(0xFF1E1E1E).withValues(alpha: 0.1)
+                        : const Color(0xFF667eea).withValues(alpha: 0.15)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.send_rounded,
+                      color: isDisabled ? const Color(0xFF1E1E1E).withValues(alpha: 0.3) : const Color(0xFF667eea),
+                    ),
+                    onPressed: isDisabled ? null : () => _handleSubmit(context),
+                  ),
+                ),
+              ],
             ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF667eea).withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.send_rounded, color: Color(0xFF667eea)),
-              onPressed: () => _handleSubmit(context),
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
