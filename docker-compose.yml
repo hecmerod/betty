@@ -7,6 +7,8 @@ services:
     depends_on:
       betty-db:
         condition: service_healthy
+      betty-redis:
+        condition: service_healthy
     restart: unless-stopped
     network_mode: host
     privileged: true
@@ -23,6 +25,7 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - DATABASE_URL=postgresql://betty:${POSTGRES_PASSWORD}@localhost:5432/betty
+      - REDIS_URL=redis://localhost:6379
       - CAMERA_SERVICE_URL=http://localhost:8001/camera
       - BORE_CONTROL_FILE=/app/tmp/bore-control.txt
       - BORE_SSH_URL_FILE=/app/tmp/bore-ssh-url.txt
@@ -83,6 +86,24 @@ services:
     networks:
       - betty-network
 
+  betty-redis:
+    image: redis:7-alpine
+    container_name: betty-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - betty-redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - betty-network
+
   betty-db-backup:
     image: postgres:16-alpine
     container_name: betty-db-backup
@@ -125,4 +146,6 @@ networks:
 
 volumes:
   betty-db-data:
+    driver: local
+  betty-redis-data:
     driver: local

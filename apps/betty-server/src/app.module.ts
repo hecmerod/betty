@@ -14,6 +14,7 @@ import { BatteriesModule } from './batteries/batteries.module';
 import { MotionDetectionModule } from './motion-detection/motion-detection.module';
 import { SendNotificationUseCase } from './notifications/application/use-cases/send-notification/send-notification.use-case';
 import { SshModule } from './ssh/ssh.module';
+import { RedisModule } from './shared/redis/redis.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SshModule } from './ssh/ssh.module';
     PrismaModule,
     BatteriesModule,
     SshModule,
+    RedisModule,
   ],
 })
 export class AppModule implements OnModuleInit {

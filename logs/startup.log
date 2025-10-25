@@ -6652,3 +6652,15 @@ betty-db          postgres:16-alpine                "docker-entrypoint.s…"   b
 betty-db-backup   postgres:16-alpine                "/bin/sh -c 'chmod 7…"   betty-db-backup   2 days ago     Up 3 hours             5432/tcp
 betty-server      betty-betty-server                "docker-entrypoint.s…"   betty-server      3 hours ago    Up 3 hours (healthy)   
 cadvisor          gcr.io/cadvisor/cadvisor:latest   "/usr/bin/cadvisor -…"   cadvisor          41 hours ago   Up 3 hours (healthy)   0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+/usr/local/lib/node_modules/localtunnel/bin/lt.js:81
+    throw err;
+    ^
+
+Error: connection refused: localtunnel.me:31161 (check your firewall settings)
+    at Socket.<anonymous> (/usr/local/lib/node_modules/localtunnel/lib/TunnelCluster.js:52:11)
+    at Socket.emit (node:events:524:28)
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+
+Node.js v20.19.2
