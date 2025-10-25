@@ -8,30 +8,24 @@ services:
       betty-db:
         condition: service_healthy
     restart: unless-stopped
+    network_mode: host
     privileged: true
-    ports:
-      - "3000:3000"
     volumes:
       - /sys/class/gpio:/sys/class/gpio
-      - /var/run/dbus:/var/run/dbus:ro
-      - /run/dbus:/run/dbus:ro
+      - /sys:/sys
+      - /var/run/dbus:/var/run/dbus
+      - /run/dbus:/run/dbus
       - ./tmp:/app/tmp:rw
-    devices:
-      - /dev/bus/usb:/dev/bus/usb
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
+      - /dev:/dev
     env_file:
       - apps/betty-server/.env
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=postgresql://betty:${POSTGRES_PASSWORD}@betty-db:5432/betty
-      - CAMERA_SERVICE_URL=http://betty-camera:8001/camera
+      - DATABASE_URL=postgresql://betty:${POSTGRES_PASSWORD}@localhost:5432/betty
+      - CAMERA_SERVICE_URL=http://localhost:8001/camera
       - BORE_CONTROL_FILE=/app/tmp/bore-control.txt
       - BORE_SSH_URL_FILE=/app/tmp/bore-ssh-url.txt
-    networks:
-      - betty-network
 
   betty-camera:
     build:
@@ -64,7 +58,7 @@ services:
       - PORT=8001
       - LOG_LEVEL=INFO
       - PYTHONPATH=/app/src
-      - BETTY_SERVER_URL=http://betty-server:3000/api
+      - BETTY_SERVER_URL=http://localhost:3000/api
     networks:
       - betty-network
 
