@@ -6664,3 +6664,211 @@ Error: connection refused: localtunnel.me:31161 (check your firewall settings)
     at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
 
 Node.js v20.19.2
+[2025-10-26 13:07:25] 🚀 Iniciando servicios de Betty...
+[2025-10-26 13:07:25] ⏳ Esperando conexión de red...
+[2025-10-26 13:07:25] ✅ Red disponible
+[2025-10-26 13:07:25] 🐳 Iniciando contenedores Docker...
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.01kB done
+#1 DONE 0.0s
+
+#2 [betty-camera internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.55kB 0.0s done
+#2 DONE 0.1s
+
+#3 [betty-server internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.82kB 0.0s done
+#3 DONE 0.1s
+
+#4 [betty-server internal] load metadata for docker.io/library/node:20-alpine
+#4 DONE 1.2s
+
+#5 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#5 ...
+
+#6 [betty-server internal] load .dockerignore
+#6 transferring context: 2B 0.1s done
+#6 DONE 0.1s
+
+#6 [betty-camera internal] load .dockerignore
+#6 transferring context: 2B 0.1s done
+#6 DONE 0.1s
+
+#7 [betty-server builder  1/10] FROM docker.io/library/node:20-alpine@sha256:6178e78b972f79c335df281f4b7674a2d85071aae2af020ffa39f0a770265435
+#7 DONE 0.0s
+
+#5 [betty-camera internal] load metadata for docker.io/balenalib/raspberrypi4-64-debian:bookworm
+#5 DONE 1.4s
+
+#8 [betty-camera  1/22] FROM docker.io/balenalib/raspberrypi4-64-debian:bookworm@sha256:575d2cde58bc4a69f86c3793a838d0ada04133725ae71c6f7659468794f39dcd
+#8 DONE 0.0s
+
+#9 [betty-camera internal] load build context
+#9 transferring context: 5.52kB 0.1s done
+#9 DONE 0.1s
+
+#10 [betty-server internal] load build context
+#10 ...
+
+#11 [betty-camera  2/22] RUN apt-get update && apt-get install -y     python3     python3-pip     python3-dev     curl     gcc     g++     pkg-config     libjpeg-dev     libpng-dev     libcap-dev     cmake     wget     gnupg     git     make     build-essential     libvulkan-dev     && apt-get clean     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [betty-camera 13/22] RUN python3 -m pip install --no-cache-dir --break-system-packages opencv-python-headless
+#12 CACHED
+
+#13 [betty-camera 18/22] RUN python3 -c "import picamera2; print('✓ picamera2 disponible')" || echo "⚠ picamera2 no disponible"
+#13 CACHED
+
+#14 [betty-camera  5/22] COPY apps/betty-camera/requirements.txt ./
+#14 CACHED
+
+#15 [betty-camera  4/22] WORKDIR /app
+#15 CACHED
+
+#16 [betty-camera  8/22] RUN python3 -m pip install --no-cache-dir --break-system-packages -r requirements-basic.txt
+#16 CACHED
+
+#17 [betty-camera 16/22] RUN python3 -c "import uvicorn; print('✓ uvicorn disponible')"
+#17 CACHED
+
+#18 [betty-camera  7/22] RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+#18 CACHED
+
+#19 [betty-camera  9/22] RUN python3 -m pip install --no-cache-dir --break-system-packages ultralytics
+#19 CACHED
+
+#20 [betty-camera 14/22] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall simplejpeg
+#20 CACHED
+
+#21 [betty-camera 12/22] RUN python3 -m pip install --no-cache-dir --break-system-packages --force-reinstall numpy
+#21 CACHED
+
+#22 [betty-camera 15/22] RUN python3 -c "import picamera2; print('✓ picamera2 del sistema disponible')" ||     python3 -m pip install --no-cache-dir --break-system-packages picamera2
+#22 CACHED
+
+#23 [betty-camera 19/22] COPY apps/betty-camera/src/ ./src/
+#23 CACHED
+
+#24 [betty-camera  6/22] COPY apps/betty-camera/requirements-basic.txt ./
+#24 CACHED
+
+#25 [betty-camera 17/22] RUN python3 -c "import fastapi; print('✓ fastapi disponible')"
+#25 CACHED
+
+#26 [betty-camera 20/22] COPY apps/betty-camera/yolov8n_ncnn_model/ ./yolov8n_ncnn_model/
+#26 CACHED
+
+#27 [betty-camera  3/22] RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add - &&     echo "deb https://archive.raspberrypi.org/debian/ bookworm main" >> /etc/apt/sources.list.d/raspi.list &&     apt-get update &&     apt-get install -y python3-picamera2 python3-libcamera libcamera-apps ||     echo "Raspberry Pi packages not available, will use pip version"
+#27 CACHED
+
+#28 [betty-camera 10/22] RUN python3 -m pip install --no-cache-dir --break-system-packages PyJWT
+#28 CACHED
+
+#29 [betty-camera 11/22] RUN python3 -m pip install --no-cache-dir --break-system-packages git+https://github.com/Tencent/ncnn.git
+#29 CACHED
+
+#30 [betty-camera 21/22] COPY apps/betty-camera/yolov8n.pt ./yolov8n.pt
+#30 CACHED
+
+#31 [betty-camera 22/22] RUN mkdir -p config output
+#31 CACHED
+
+#32 [betty-camera] exporting to image
+#32 exporting layers done
+#32 writing image sha256:59359b980348e411b4a0b1a7533f20432adcda18e340cb396b671d4d2804f65e 0.0s done
+#32 naming to docker.io/library/betty-camera:final done
+#32 DONE 0.1s
+
+#10 [betty-server internal] load build context
+#10 ...
+
+#33 [betty-camera] resolving provenance for metadata file
+#33 DONE 0.0s
+
+#10 [betty-server internal] load build context
+#10 transferring context: 24B 7.5s
+#10 transferring context: 261.54kB 10.3s done
+#10 DONE 10.4s
+
+#34 [betty-server builder  2/10] WORKDIR /app
+#34 CACHED
+
+#35 [betty-server builder  3/10] RUN apk add --no-cache python3 make g++
+#35 CACHED
+
+#36 [betty-server production  3/10] RUN apk add --no-cache     python3     py3-libgpiod     bluez     bluez-deprecated     libcap     wget
+#36 CACHED
+
+#37 [betty-server production  4/10] RUN setcap cap_net_raw+eip $(which node)
+#37 CACHED
+
+#38 [betty-server builder  4/10] COPY tsconfig.base.json ./
+#38 CACHED
+
+#39 [betty-server production  5/10] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#39 ...
+
+#40 [betty-server builder  5/10] COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
+#40 DONE 0.7s
+
+#39 [betty-server production  5/10] COPY apps/betty-server/package.json apps/betty-server/package-lock.json* ./
+#39 DONE 0.7s
+
+#41 [betty-server builder  6/10] COPY apps/betty-server/tsconfig.json apps/betty-server/tsconfig.app.json ./apps/betty-server/
+#41 DONE 2.7s
+
+#42 [betty-server builder  7/10] COPY apps/betty-server/prisma ./apps/betty-server/prisma
+#42 DONE 0.3s
+
+#43 [betty-server builder  8/10] RUN cd apps/betty-server     && npm ci     && npx prisma generate --schema=prisma/schema.prisma     && npm cache clean --force
+#43 6.832 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#43 7.011 npm warn deprecated npmlog@5.0.1: This package is no longer supported.
+#43 7.868 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#43 8.604 npm warn deprecated gauge@3.0.2: This package is no longer supported.
+#43 8.770 npm warn deprecated are-we-there-yet@2.0.0: This package is no longer supported.
+#43 9.863 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#43 116.9 
+#43 116.9 added 531 packages, and audited 532 packages in 2m
+#43 116.9 
+#43 116.9 80 packages are looking for funding
+#43 116.9   run `npm fund` for details
+#43 116.9 
+#43 116.9 1 moderate severity vulnerability
+#43 116.9 
+#43 116.9 To address all issues, run:
+#43 116.9   npm audit fix
+#43 116.9 
+#43 116.9 Run `npm audit` for details.
+#43 116.9 npm notice
+#43 116.9 npm notice New major version of npm available! 10.8.2 -> 11.6.2
+#43 116.9 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+#43 116.9 npm notice To update run: npm install -g npm@11.6.2
+#43 116.9 npm notice
+#43 124.0 Prisma schema loaded from prisma/schema.prisma
+#43 125.4 
+#43 125.4 ✔ Generated Prisma Client (v6.17.1) to ./node_modules/@prisma/client in 488ms
+#43 125.4 
+#43 125.4 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#43 125.4 
+#43 125.4 Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+#43 125.4 
+#43 125.4 ┌─────────────────────────────────────────────────────────┐
+#43 125.4 │  Update available 6.17.1 -> 6.18.0                      │
+#43 125.4 │  Run the following to update                            │
+#43 125.4 │    npm i --save-dev prisma@latest                       │
+#43 125.4 │    npm i @prisma/client@latest                          │
+#43 125.4 └─────────────────────────────────────────────────────────┘
+#43 125.7 npm warn using --force Recommended protections disabled.
+#43 DONE 129.0s
+
+#44 [betty-server builder  9/10] COPY apps/betty-server/src/ ./apps/betty-server/src/
+#44 DONE 0.8s
+
+#45 [betty-server builder 10/10] RUN cd apps/betty-server && npm run build
+#45 1.092 
+#45 1.092 > betty-server@1.0.0 build
+#45 1.092 > tsc -p tsconfig.app.json
+#45 1.092 
+#45 DONE 13.9s
+
+#46 [betty-server production  6/10] COPY --from=builder /app/apps/betty-server/node_modules ./node_modules

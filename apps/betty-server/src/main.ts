@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { config } from 'dotenv';
 import { join } from 'path';
 import { AppModule } from './app.module';
+import { SendNotificationUseCase } from './notifications/application/use-cases/send-notification/send-notification.use-case';
 
 // Cargar variables de entorno desde .env
 config({ path: join(__dirname, '../.env') });
@@ -42,6 +43,22 @@ async function bootstrap() {
     `🍓 Betty Server is running on: http://0.0.0.0:${port}/${globalPrefix}`
   );
   Logger.log(`📊 Health check: http://0.0.0.0:${port}/${globalPrefix}/health`);
+
+  // Enviar notificación de inicio del sistema
+  try {
+    if (process.env.NODE_ENV !== 'production') return;
+
+    const sendNotificationUseCase = app.get(SendNotificationUseCase);
+    await sendNotificationUseCase.execute({
+      notification: {
+        title: 'Betty iniciada',
+        body: 'La Raspberry Pi se ha iniciado correctamente',
+      },
+      data: { type: 'system_startup' },
+    });
+  } catch (error) {
+    Logger.error('❌ Failed to send startup notification:', error.message);
+  }
 }
 
 bootstrap();
