@@ -30,7 +30,10 @@ RUN apk add --no-cache \
     bluez \
     bluez-deprecated \
     libcap \
-    wget
+    wget \
+    ffmpeg \
+    v4l-utils \
+    lsof
 
 # Configurar capacidades BLE para Node.js (permite acceso a Bluetooth sin sudo)
 RUN setcap cap_net_raw+eip $(which node)

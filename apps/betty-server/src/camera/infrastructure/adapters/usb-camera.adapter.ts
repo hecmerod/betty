@@ -42,10 +42,12 @@ export class UsbCameraAdapter {
     return from(
       (async () => {
         await this.killExistingProcesses();
+
+        // Usar ffmpeg para capturar una foto (más compatible que fswebcam)
         const result = await execAsync(
-          `fswebcam -d ${this.devicePath} -r 1280x720 --no-banner --jpeg 95 - 2>/dev/null`
+          `ffmpeg -y -f v4l2 -input_format mjpeg -video_size 1280x720 -i ${this.devicePath} -frames:v 1 -f image2pipe -vcodec mjpeg - 2>/dev/null`
         );
-        // fswebcam con '-' como salida escribe a stdout
+
         return Buffer.from(result.stdout);
       })()
     ).pipe(
