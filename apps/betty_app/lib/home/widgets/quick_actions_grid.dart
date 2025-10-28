@@ -15,8 +15,8 @@ class QuickActionsGrid extends StatelessWidget {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 20,
-      crossAxisSpacing: 20,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
       childAspectRatio: 1.0,
       children: [
         VisibilityAnimation(
@@ -24,11 +24,6 @@ class QuickActionsGrid extends StatelessWidget {
           child: QuickActionCard(
             icon: Icons.videocam_rounded,
             title: 'Cámara',
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
-            ),
             onTap: () {
               context.read<NavigationBloc>().add(
                 const NavigateToPage(Routes.camera, excludeAnimationIds: ['camera_button']),
@@ -41,11 +36,6 @@ class QuickActionsGrid extends StatelessWidget {
           child: QuickActionCard(
             icon: Icons.map_rounded,
             title: 'Mapa',
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
-            ),
             onTap: () {
               context.read<NavigationBloc>().add(const NavigateToPage(Routes.map));
             },
@@ -56,11 +46,6 @@ class QuickActionsGrid extends StatelessWidget {
           child: QuickActionCard(
             icon: Icons.lightbulb_rounded,
             title: 'Luces',
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFfa709a), Color(0xFFfee140)],
-            ),
             onTap: () {
               context.read<NavigationBloc>().add(const NavigateToPage(Routes.lights));
             },
@@ -71,11 +56,6 @@ class QuickActionsGrid extends StatelessWidget {
           child: QuickActionCard(
             icon: Icons.tune_rounded,
             title: 'Ajustes',
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF8e2de2), Color(0xFF4a00e0)],
-            ),
             onTap: () {
               context.read<NavigationBloc>().add(const NavigateToPage(Routes.settings));
             },
@@ -89,16 +69,9 @@ class QuickActionsGrid extends StatelessWidget {
 class QuickActionCard extends StatefulWidget {
   final IconData icon;
   final String title;
-  final Gradient gradient;
   final VoidCallback onTap;
 
-  const QuickActionCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.gradient,
-    required this.onTap,
-  });
+  const QuickActionCard({super.key, required this.icon, required this.title, required this.onTap});
 
   @override
   State<QuickActionCard> createState() => _QuickActionCardState();
@@ -153,50 +126,32 @@ class _QuickActionCardState extends State<QuickActionCard> with SingleTickerProv
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
-                gradient: widget.gradient,
+                color: const Color(0xFF1E1E1E).withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(28),
-                boxShadow: [
-                  BoxShadow(
-                    color: widget.gradient.colors.first.withValues(alpha: 0.4),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
+                border: Border.all(color: const Color(0xFF1E1E1E).withValues(alpha: 0.1), width: 1.5),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E1E1E).withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(widget.icon, color: const Color(0xFF1E1E1E), size: 40),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E1E1E),
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ],
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Colors.white.withValues(alpha: 0.2), Colors.white.withValues(alpha: 0.05)],
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.25),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
-                      ),
-                      child: Icon(widget.icon, color: Colors.white, size: 40),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 0.5,
-                        shadows: [Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ),
