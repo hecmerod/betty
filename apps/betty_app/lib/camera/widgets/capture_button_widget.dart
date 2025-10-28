@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../services/camera_service.dart';
 
 class CaptureButtonWidget extends StatefulWidget {
-  const CaptureButtonWidget({super.key});
+  final CameraType cameraType;
+
+  const CaptureButtonWidget({super.key, required this.cameraType});
 
   @override
   State<CaptureButtonWidget> createState() => _CaptureButtonWidgetState();
@@ -20,7 +22,7 @@ class _CaptureButtonWidgetState extends State<CaptureButtonWidget> {
     });
 
     try {
-      await _cameraService.capturePhoto();
+      await _cameraService.capturePhoto(type: widget.cameraType);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

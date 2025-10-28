@@ -8,7 +8,9 @@ import 'video_loading_widget.dart';
 import 'video_display_widget.dart';
 
 class VideoStreamWidget extends StatefulWidget {
-  const VideoStreamWidget({super.key});
+  final CameraType cameraType;
+
+  const VideoStreamWidget({super.key, required this.cameraType});
 
   @override
   State<VideoStreamWidget> createState() => _VideoStreamWidgetState();
@@ -40,7 +42,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
   void _startStream() async {
     try {
-      final url = _cameraService.getVideoStreamUrl();
+      final url = _cameraService.getVideoStreamUrl(type: widget.cameraType);
       _httpClient = http.Client();
       final request = http.Request('GET', Uri.parse(url));
 
