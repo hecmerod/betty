@@ -1,4 +1,5 @@
 import 'package:betty_app/camera/services/camera_service.dart';
+import 'package:betty_app/camera/camera_fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -9,8 +10,15 @@ import 'video_display_widget.dart';
 
 class VideoStreamWidget extends StatefulWidget {
   final CameraType cameraType;
+  final bool enableFullscreen;
+  final String heroTag;
 
-  const VideoStreamWidget({super.key, required this.cameraType});
+  const VideoStreamWidget({
+    super.key,
+    required this.cameraType,
+    this.enableFullscreen = false,
+    this.heroTag = 'camera-video',
+  });
 
   @override
   State<VideoStreamWidget> createState() => _VideoStreamWidgetState();
@@ -177,7 +185,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    final content = AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       switchInCurve: Curves.easeIn,
       switchOutCurve: Curves.easeOut,
@@ -192,6 +200,31 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       },
       child: _buildContent(context),
     );
+
+    if (!widget.enableFullscreen) {
+      return content;
+    }
+
+    return GestureDetector(
+      onTap: () {
+        if (_error == null && !_isLoading) {
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return FadeTransition(opacity: animation, child: _buildFullscreenPage(context));
+              },
+              transitionDuration: const Duration(milliseconds: 300),
+            ),
+          );
+        }
+      },
+      child: content,
+    );
+  }
+
+  Widget _buildFullscreenPage(BuildContext context) {
+    return CameraFullscreenPage(frameNotifier: _frameNotifier, heroTag: widget.heroTag);
   }
 
   Widget _buildContent(BuildContext context) {

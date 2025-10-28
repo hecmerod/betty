@@ -15,12 +15,16 @@ class InternalCameraPage extends StatelessWidget {
           const SizedBox(height: 16),
           Expanded(
             child: Hero(
-              tag: 'camera-hero',
+              tag: 'camera-internal-hero',
               child: Material(
                 color: Colors.transparent,
                 child: Container(
                   decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(16)),
-                  child: const VideoStreamWidget(cameraType: CameraType.internal),
+                  child: const VideoStreamWidget(
+                    cameraType: CameraType.internal,
+                    enableFullscreen: true,
+                    heroTag: 'camera-internal-hero',
+                  ),
                 ),
               ),
             ),
