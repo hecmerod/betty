@@ -43,7 +43,6 @@ class _BatteryStatusCardState extends State<BatteryStatusCard> with SingleTicker
         child: Container(
           height: 150,
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 24.0),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(24),
