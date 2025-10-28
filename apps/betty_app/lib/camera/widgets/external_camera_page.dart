@@ -14,9 +14,19 @@ class ExternalCameraPage extends StatelessWidget {
         children: [
           const SizedBox(height: 16),
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(16)),
-              child: const VideoStreamWidget(cameraType: CameraType.external),
+            child: Hero(
+              tag: 'camera-external-hero',
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(16)),
+                  child: const VideoStreamWidget(
+                    cameraType: CameraType.external,
+                    enableFullscreen: true,
+                    heroTag: 'camera-external-hero',
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 24),
