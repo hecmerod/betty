@@ -41,8 +41,8 @@ export class TriggerAlarmUseCase {
 }
 
 export interface AlarmTriggerData {
-  eventType?: string;
-  detectionType?: string;
+  eventType: string;
+  detectionType: string;
   confidence?: number;
   metadata?: Record<string, unknown>;
 }

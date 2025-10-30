@@ -12,6 +12,7 @@ import { HealthModule } from './shared/health/health.module';
 import { PrismaModule } from './shared/prisma/prisma.module';
 import { BatteriesModule } from './batteries/batteries.module';
 import { MotionDetectionModule } from './motion-detection/motion-detection.module';
+import { DoorsModule } from './doors/doors.module';
 import { SshModule } from './ssh/ssh.module';
 import { RedisModule } from './shared/redis/redis.module';
 
@@ -30,6 +31,7 @@ import { RedisModule } from './shared/redis/redis.module';
     TripsModule,
     GpioModule,
     MotionDetectionModule,
+    DoorsModule,
     HealthModule,
     PrismaModule,
     BatteriesModule,

@@ -6,7 +6,7 @@ import { SendNotificationUseCase } from '../../../notifications/application/use-
 @Injectable()
 export class MotionDetectionService implements OnModuleInit {
   private readonly logger = new Logger(MotionDetectionService.name);
-  private readonly MOTION_SENSOR_PIN = 22;
+  private readonly MOTION_SENSOR_PIN = 23;
 
   constructor(
     @Inject(GPIO_ADAPTER) private readonly gpioAdapter: IGpioPort,
@@ -36,7 +36,7 @@ export class MotionDetectionService implements OnModuleInit {
   ): Promise<void> {
     this.logger.log(`🔔 Motion event detected: ${eventType} (${state})`);
 
-    if (state) {
+    if (state && process.env.NODE_ENV === 'production') {
       await this.sendNotificationUseCase.execute({
         notification: {
           title: 'Movimiento detectado',

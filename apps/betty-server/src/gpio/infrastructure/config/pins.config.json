@@ -18,12 +18,12 @@
     {
       "pin": 5,
       "direction": "INPUT",
-      "description": "GPIO 5"
+      "description": "GPIO 5 - Puerta lateral"
     },
     {
       "pin": 6,
       "direction": "INPUT",
-      "description": "GPIO 6"
+      "description": "GPIO 6 - Puertas delanteras"
     },
     {
       "pin": 7,
@@ -104,13 +104,12 @@
     {
       "pin": 22,
       "direction": "INPUT",
-      "description": "GPIO 22",
-      "watch": true
+      "description": "GPIO 22 - Puerta trasera"
     },
     {
       "pin": 23,
       "direction": "INPUT",
-      "description": "GPIO 23"
+      "description": "GPIO 23 - Sensor de movimiento"
     },
     {
       "pin": 24,
@@ -126,6 +125,12 @@
       "pin": 26,
       "direction": "INPUT",
       "description": "GPIO 26"
+    },
+    {
+      "pin": 27,
+      "direction": "INPUT",
+      "description": "GPIO 27 - Claraboyas",
+      "watch": true
     }
   ]
 }
