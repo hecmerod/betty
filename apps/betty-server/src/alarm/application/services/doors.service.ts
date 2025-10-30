@@ -2,6 +2,9 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { GPIO_ADAPTER } from '../../../gpio/infrastructure/ioc/gpio.symbols';
 import { IGpioPort } from '../../../gpio/domain/ports/gpio.port';
 import { TriggerAlarmUseCase } from '../use-cases/trigger-alarm/trigger-alarm.use-case';
+import { SENSOR_REPOSITORY } from '../../infrastructure/ioc/symbols';
+import { SensorRepository } from '../../domain/repositories/sensor.repository';
+import { SensorType } from '../../domain/entities/sensor.entity';
 
 enum DoorPin {
   CLARABOYAS = 27,
@@ -17,6 +20,13 @@ const DOOR_NAMES: Record<DoorPin, string> = {
   [DoorPin.PUERTAS_DELANTERAS]: 'Puertas delanteras',
 };
 
+const PIN_TO_SENSOR: Record<DoorPin, SensorType> = {
+  [DoorPin.CLARABOYAS]: 'door_claraboyas',
+  [DoorPin.PUERTA_TRASERA]: 'door_trasera',
+  [DoorPin.PUERTA_LATERAL]: 'door_lateral',
+  [DoorPin.PUERTAS_DELANTERAS]: 'door_delanteras',
+};
+
 @Injectable()
 export class DoorsService implements OnModuleInit {
   private readonly logger = new Logger(DoorsService.name);
@@ -29,29 +39,53 @@ export class DoorsService implements OnModuleInit {
 
   constructor(
     @Inject(GPIO_ADAPTER) private readonly gpioAdapter: IGpioPort,
-    @Inject() private readonly triggerAlarmUseCase: TriggerAlarmUseCase
+    @Inject() private readonly triggerAlarmUseCase: TriggerAlarmUseCase,
+    @Inject(SENSOR_REPOSITORY)
+    private readonly sensorRepository: SensorRepository
   ) {}
 
-  onModuleInit() {
-    this.startDoorMonitoring();
+  async onModuleInit() {
+    for (const pin of this.DOOR_PINS) {
+      const sensorId = PIN_TO_SENSOR[pin];
+      const isListening = await this.sensorRepository.isListening(sensorId);
+
+      if (isListening) this.startDoorMonitoring(pin);
+    }
   }
 
-  private startDoorMonitoring(): void {
-    this.DOOR_PINS.forEach((pin) => {
-      this.gpioAdapter.watchPin(
-        pin,
-        (eventType, state) => this.onDoorEvent(pin, eventType, state),
-        (error) =>
-          this.logger.error(`Door monitoring error on pin ${pin}: ${error}`),
-        (code) => {
-          if (code !== 0 && code !== null) {
-            this.logger.warn(
-              `Door monitoring process for pin ${pin} exited with code ${code}`
-            );
-          }
-        }
-      );
-    });
+  async enableMonitoring(sensorId: SensorType): Promise<void> {
+    const pin = this.getSensorPin(sensorId);
+    const isListening = await this.sensorRepository.isListening(sensorId);
+
+    if (isListening) return;
+
+    await this.sensorRepository.enableListening(sensorId);
+    this.startDoorMonitoring(pin);
+  }
+
+  async disableMonitoring(sensorId: SensorType): Promise<void> {
+    const pin = this.getSensorPin(sensorId);
+    const isListening = await this.sensorRepository.isListening(sensorId);
+
+    if (!isListening) return;
+
+    await this.sensorRepository.disableListening(sensorId);
+    this.stopDoorMonitoring(pin);
+  }
+
+  private startDoorMonitoring(pin: DoorPin): void {
+    this.gpioAdapter.watchPin(
+      pin,
+      (eventType, state) => this.onDoorEvent(pin, eventType, state),
+      (error) =>
+        this.logger.error(`Door monitoring error on pin ${pin}: ${error}`)
+    );
+    this.logger.log(`Started monitoring for ${DOOR_NAMES[pin]}`);
+  }
+
+  private stopDoorMonitoring(pin: DoorPin): void {
+    this.gpioAdapter.unwatchPin(pin);
+    this.logger.log(`Stopped monitoring for ${DOOR_NAMES[pin]}`);
   }
 
   private async onDoorEvent(
@@ -59,6 +93,11 @@ export class DoorsService implements OnModuleInit {
     eventType: string,
     state: boolean
   ): Promise<void> {
+    const sensorId = PIN_TO_SENSOR[pin];
+    const isListening = await this.sensorRepository.isListening(sensorId);
+
+    if (!isListening) return;
+
     const doorName = DOOR_NAMES[pin];
     const doorState = state ? 'abierta' : 'cerrada';
 
@@ -70,5 +109,15 @@ export class DoorsService implements OnModuleInit {
         detectionType: 'door',
         metadata: { doorName },
       });
+  }
+
+  private getSensorPin(sensorId: SensorType): DoorPin {
+    const entry = Object.entries(PIN_TO_SENSOR).find(
+      ([, sensor]) => sensor === sensorId
+    );
+
+    if (!entry) throw new Error(`Invalid sensor ID: ${sensorId}`);
+
+    return parseInt(entry[0]) as DoorPin;
   }
 }

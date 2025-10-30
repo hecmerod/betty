@@ -23,6 +23,16 @@ model Alarm {
   @@map("alarms")
 }
 
+// Modelo Sensor - configuración de sensores (puertas y movimiento)
+model Sensor {
+  id          String   @id // 'motion', 'door_claraboyas', 'door_trasera', 'door_lateral', 'door_delanteras'
+  isListening Boolean  @default(true) // Si está escuchando eventos
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("sensors")
+}
+
 // Modelo DeviceToken - tokens de dispositivos para notificaciones push
 model DeviceToken {
   token        String   @id // El token es único, lo usamos como PK

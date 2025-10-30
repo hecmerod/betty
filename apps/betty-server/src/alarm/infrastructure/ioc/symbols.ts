@@ -1,1 +1,2 @@
 export const ALARM_REPOSITORY = Symbol('ALARM_REPOSITORY');
+export const SENSOR_REPOSITORY = Symbol('SENSOR_REPOSITORY');
