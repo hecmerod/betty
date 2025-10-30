@@ -7,12 +7,16 @@ import { GetAlarmStatusUseCase } from './application/use-cases/get-alarm-status/
 import { PrismaAlarmRepository } from './infrastructure/repositories/prisma-alarm.repository';
 import { ALARM_REPOSITORY } from './infrastructure/ioc/symbols';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { DoorsService } from './application/services/doors.service';
+import { MotionDetectionService } from './application/services/motion-detection.service';
 
 @Module({
   imports: [NotificationsModule],
   controllers: [AlarmController],
   providers: [
     ActivateAlarmUseCase,
+    DoorsService,
+    MotionDetectionService,
     DeactivateAlarmUseCase,
     TriggerAlarmUseCase,
     GetAlarmStatusUseCase,

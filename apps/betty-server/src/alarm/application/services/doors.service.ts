@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { GPIO_ADAPTER } from '../../../gpio/infrastructure/ioc/gpio.symbols';
 import { IGpioPort } from '../../../gpio/domain/ports/gpio.port';
-import { TriggerAlarmUseCase } from '../../../alarm/application/use-cases/trigger-alarm/trigger-alarm.use-case';
+import { TriggerAlarmUseCase } from '../use-cases/trigger-alarm/trigger-alarm.use-case';
 
 enum DoorPin {
   CLARABOYAS = 27,
