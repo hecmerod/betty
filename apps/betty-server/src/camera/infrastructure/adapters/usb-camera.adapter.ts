@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 import { Observable, from, catchError } from 'rxjs';
 import { Readable } from 'stream';
@@ -12,21 +13,59 @@ import * as fs from 'fs';
 const execAsync = promisify(exec);
 
 @Injectable()
-export class UsbCameraAdapter {
+export class UsbCameraAdapter implements OnModuleInit {
   private readonly logger = new Logger(UsbCameraAdapter.name);
-  private readonly devicePath: string;
   private activeStream: ChildProcess | null = null;
+  private devicePath: string | null = null;
 
-  constructor() {
-    // /dev/video8 es la cámara USB (HD 2MP WEBCAM)
-    // /dev/video0 es la cámara CSI (usada por betty-camera)
-    this.devicePath = process.env.USB_CAMERA_DEVICE || '/dev/video8';
+  async onModuleInit() {
+    this.devicePath = await this.findUsbCamera();
   }
 
-  private async killExistingProcesses(): Promise<void> {
+  private async findUsbCamera(): Promise<string> {
+    const { stdout } = await execAsync(
+      'v4l2-ctl --list-devices 2>/dev/null || echo ""'
+    );
+
+    if (!stdout) throw new Error('v4l2-ctl not available');
+
+    const lines = stdout.split('\n');
+    let isUsbCamera = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      if (
+        line.toLowerCase().includes('usb') ||
+        line.includes('HD 2MP WEBCAM') ||
+        line.includes('USB Camera')
+      ) {
+        isUsbCamera = true;
+        continue;
+      }
+
+      if (isUsbCamera && line.includes('/dev/video')) {
+        const match = line.match(/\/dev\/video\d+/);
+        if (match) {
+          this.logger.log(`Found USB camera at ${match[0]}`);
+          return match[0];
+        }
+      }
+      if (
+        isUsbCamera &&
+        !line.startsWith('\t') &&
+        !line.startsWith(' ') &&
+        line.trim()
+      ) {
+        isUsbCamera = false;
+      }
+    }
+  }
+
+  private async killExistingProcesses(devicePath: string): Promise<void> {
     try {
       // Matar cualquier proceso ffmpeg usando este dispositivo
-      await execAsync(`pkill -9 -f "ffmpeg.*${this.devicePath}" || true`).catch(
+      await execAsync(`pkill -9 -f "ffmpeg.*${devicePath}" || true`).catch(
         () => {
           // Ignorar si no hay procesos
         }
@@ -41,11 +80,12 @@ export class UsbCameraAdapter {
   requestPhoto(): Observable<Buffer> {
     return from(
       (async () => {
-        await this.killExistingProcesses();
+        const devicePath = this.devicePath;
+        await this.killExistingProcesses(devicePath);
 
         // Usar ffmpeg para capturar una foto (más compatible que fswebcam)
         const result = await execAsync(
-          `ffmpeg -y -f v4l2 -input_format mjpeg -video_size 1280x720 -i ${this.devicePath} -frames:v 1 -f image2pipe -vcodec mjpeg - 2>/dev/null`
+          `ffmpeg -y -f v4l2 -input_format mjpeg -video_size 1280x720 -i ${devicePath} -frames:v 1 -f image2pipe -vcodec mjpeg - 2>/dev/null`
         );
 
         return Buffer.from(result.stdout);
@@ -65,6 +105,8 @@ export class UsbCameraAdapter {
 
       (async () => {
         try {
+          const devicePath = this.devicePath;
+
           // Limpiar streams anteriores
           if (this.activeStream && !this.activeStream.killed) {
             this.logger.log('Killing previous stream');
@@ -72,9 +114,9 @@ export class UsbCameraAdapter {
             await new Promise((resolve) => setTimeout(resolve, 200));
           }
 
-          await this.killExistingProcesses();
+          await this.killExistingProcesses(devicePath);
 
-          this.logger.log('Starting FFmpeg stream');
+          this.logger.log(`Starting FFmpeg stream from ${devicePath}`);
 
           // Usar ffmpeg para streaming de video desde USB
           const ffmpeg = spawn(
@@ -91,7 +133,7 @@ export class UsbCameraAdapter {
               '-framerate',
               '30',
               '-i',
-              this.devicePath,
+              devicePath,
               '-f',
               'mpjpeg',
               '-q:v',
@@ -143,7 +185,6 @@ export class UsbCameraAdapter {
 
             // No loguear si fue una desconexión normal del cliente
             if (isClientDisconnected) {
-              this.logger.debug('FFmpeg closed after client disconnect');
               observer.complete();
               return;
             }
@@ -185,10 +226,11 @@ export class UsbCameraAdapter {
     return from(
       (async () => {
         try {
-          await fs.promises.access(this.devicePath, fs.constants.R_OK);
+          const devicePath = this.devicePath;
+          await fs.promises.access(devicePath, fs.constants.R_OK);
           // Verificar que no esté ocupado
           const { stdout } = await execAsync(
-            `lsof ${this.devicePath} 2>/dev/null || echo "free"`
+            `lsof ${devicePath} 2>/dev/null || echo "free"`
           );
           const isFree = stdout.includes('free');
           return isFree;
