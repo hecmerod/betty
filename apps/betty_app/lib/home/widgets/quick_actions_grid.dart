@@ -52,12 +52,12 @@ class QuickActionsGrid extends StatelessWidget {
           ),
         ),
         VisibilityAnimation(
-          animationId: 'settings_button',
+          animationId: 'alarm_button',
           child: QuickActionCard(
-            icon: Icons.tune_rounded,
-            title: 'Ajustes',
+            icon: Icons.shield_rounded,
+            title: 'Alarma',
             onTap: () {
-              context.read<NavigationBloc>().add(const NavigateToPage(Routes.settings));
+              context.read<NavigationBloc>().add(const NavigateToPage(Routes.alarm));
             },
           ),
         ),

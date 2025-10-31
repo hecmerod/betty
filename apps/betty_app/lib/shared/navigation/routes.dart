@@ -7,5 +7,5 @@ class Routes {
   static const String lights = '/lights';
   static const String map = '/map';
   static const String notifications = '/notifications';
-  static const String settings = '/settings';
+  static const String alarm = '/alarm';
 }

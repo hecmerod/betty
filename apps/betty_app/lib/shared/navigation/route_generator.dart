@@ -7,7 +7,7 @@ import '../../terminal/terminal_page.dart';
 import '../../lights/lights_page.dart';
 import '../../map/map_page.dart';
 import '../../notifications/notifications_page.dart';
-import '../../settings/settings_page.dart';
+import '../../alarm/alarm_page.dart';
 
 class RouteGenerator {
   // Método helper para crear transiciones personalizadas
@@ -62,8 +62,8 @@ class RouteGenerator {
       case Routes.notifications:
         return _buildPageRoute(page: const NotificationsPage(), settings: settings);
 
-      case Routes.settings:
-        return _buildPageRoute(page: const SettingsPage(), settings: settings);
+      case Routes.alarm:
+        return _buildPageRoute(page: const AlarmPage(), settings: settings);
 
       default:
         return null;
@@ -93,8 +93,8 @@ class RouteGenerator {
       case Routes.notifications:
         return const NotificationsPage();
 
-      case Routes.settings:
-        return const SettingsPage();
+      case Routes.alarm:
+        return const AlarmPage();
 
       default:
         return null;
