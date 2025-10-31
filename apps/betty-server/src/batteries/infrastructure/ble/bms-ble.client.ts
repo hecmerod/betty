@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Logger } from '@nestjs/common';
-import noble from '@abandonware/noble';
+const HCIBindings = require('@abandonware/noble/lib/hci-socket/bindings');
+const Noble = require('@abandonware/noble/lib/noble');
 
 export interface BmsRawData {
   deviceAddress: string;
@@ -8,22 +9,40 @@ export interface BmsRawData {
   cellVoltages: Buffer;
 }
 
+export interface BmsBleClientOptions {
+  deviceId: number;
+  userChannel?: boolean;
+}
+
 export class BmsBleClient {
   private readonly logger = new Logger(BmsBleClient.name);
+  private readonly noble: any;
+  private readonly deviceId: number;
+
+  constructor({ deviceId, userChannel }: BmsBleClientOptions) {
+    this.deviceId = deviceId;
+    const params = {
+      deviceId: deviceId,
+      userChannel: userChannel ?? true,
+      extended: false,
+    };
+
+    this.noble = new Noble(new HCIBindings(params));
+  }
 
   async readBms(macAddress: string): Promise<BmsRawData> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        noble.stopScanning();
+        this.noble.stopScanning();
         reject(new Error('Timeout reading BMS'));
       }, 60000);
 
-      const onDiscover = async (peripheral: noble.Peripheral) => {
+      const onDiscover = async (peripheral: any) => {
         if (peripheral.address.toLowerCase() !== macAddress.toLowerCase())
           return;
 
-        noble.stopScanning();
-        noble.removeListener('discover', onDiscover);
+        this.noble.stopScanning();
+        this.noble.removeListener('discover', onDiscover);
 
         //await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -47,18 +66,14 @@ export class BmsBleClient {
             });
           });
 
-          const chars = await new Promise<noble.Characteristic[]>(
-            (res, rej) => {
-              peripheral.discoverAllServicesAndCharacteristics(
-                (err, _services, characteristics) => {
-                  if (err) rej(err);
-                  else res(characteristics || []);
-                }
-              );
-            }
-          );
-
-          console.debug(chars);
+          const chars = await new Promise<any[]>((res, rej) => {
+            peripheral.discoverAllServicesAndCharacteristics(
+              (err, _services, characteristics) => {
+                if (err) rej(err);
+                else res(characteristics || []);
+              }
+            );
+          });
 
           const rxChar = chars.find((c) => c.uuid === 'ff01');
           const txChar = chars.find((c) => c.uuid === 'ff02');
@@ -113,14 +128,15 @@ export class BmsBleClient {
         }
       };
 
-      noble.on('discover', onDiscover);
+      this.noble.on('discover', onDiscover);
 
-      const currentState = (noble as any).state || (noble as any)._state;
+      const currentState =
+        (this.noble as any).state || (this.noble as any)._state;
       if (currentState === 'poweredOn') {
-        noble.startScanning([], false);
+        this.noble.startScanning([], false);
       } else {
-        noble.once('stateChange', (state) => {
-          if (state === 'poweredOn') noble.startScanning([], false);
+        this.noble.once('stateChange', (state) => {
+          if (state === 'poweredOn') this.noble.startScanning([], false);
           else {
             clearTimeout(timeout);
             reject(new Error(`BLE not ready: ${state}`));
@@ -131,8 +147,8 @@ export class BmsBleClient {
   }
 
   private sendCommand(
-    rxChar: noble.Characteristic,
-    txChar: noble.Characteristic,
+    rxChar: any,
+    txChar: any,
     command: Buffer,
     commandName: string
   ): Promise<Buffer> {
