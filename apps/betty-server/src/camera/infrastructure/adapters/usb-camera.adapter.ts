@@ -6,39 +6,52 @@ import {
 } from '@nestjs/common';
 import { Observable, from, catchError } from 'rxjs';
 import { Readable } from 'stream';
-import { spawn, exec, ChildProcess } from 'child_process';
+import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as fs from 'fs';
+import { MultiCameraGridService } from '../services/multi-camera-grid.service';
 
 const execAsync = promisify(exec);
 
 @Injectable()
 export class UsbCameraAdapter implements OnModuleInit {
   private readonly logger = new Logger(UsbCameraAdapter.name);
-  private activeStream: ChildProcess | null = null;
-  private devicePath: string | null = null;
+  private usbCameras: string[] = [];
+  private currentCameraIndex = 0;
+
+  constructor(private readonly gridService: MultiCameraGridService) {}
 
   async onModuleInit() {
-    this.devicePath = await this.findUsbCamera();
+    this.usbCameras = await this.findAllUsbCameras();
+
+    if (this.usbCameras.length == 0) throw new Error('No USB cameras found');
+
+    this.logger.log(
+      `📹 Initialized with ${
+        this.usbCameras.length
+      } USB cameras: ${this.usbCameras.join(', ')}`
+    );
   }
 
-  private async findUsbCamera(): Promise<string> {
+  private async findAllUsbCameras(): Promise<string[]> {
     const { stdout } = await execAsync(
       'v4l2-ctl --list-devices 2>/dev/null || echo ""'
     );
 
-    if (!stdout) throw new Error('v4l2-ctl not available');
-
+    const cameras: string[] = [];
     const lines = stdout.split('\n');
     let isUsbCamera = false;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
+      // Detectar línea de dispositivo USB (excluir cámaras Raspberry Pi)
       if (
-        line.toLowerCase().includes('usb') ||
-        line.includes('HD 2MP WEBCAM') ||
-        line.includes('USB Camera')
+        (line.toLowerCase().includes('usb') ||
+          line.includes('HD 2MP WEBCAM') ||
+          line.includes('USB Camera')) &&
+        !line.toLowerCase().includes('bcm') &&
+        !line.toLowerCase().includes('mmal')
       ) {
         isUsbCamera = true;
         continue;
@@ -46,32 +59,64 @@ export class UsbCameraAdapter implements OnModuleInit {
 
       if (isUsbCamera && line.includes('/dev/video')) {
         const match = line.match(/\/dev\/video\d+/);
-        if (match) {
-          this.logger.log(`Found USB camera at ${match[0]}`);
-          return match[0];
+        if (match && !cameras.includes(match[0])) {
+          const isCapture = await this.isVideoCaptureDevice(match[0]);
+          if (isCapture) {
+            cameras.push(match[0]);
+          }
         }
       }
+
       if (
         isUsbCamera &&
         !line.startsWith('\t') &&
         !line.startsWith(' ') &&
         line.trim()
-      ) {
+      )
         isUsbCamera = false;
-      }
     }
+
+    return cameras;
+  }
+
+  private async isVideoCaptureDevice(devicePath: string): Promise<boolean> {
+    try {
+      const { stdout } = await execAsync(
+        `v4l2-ctl --device=${devicePath} --list-formats 2>/dev/null || echo ""`
+      );
+
+      const hasValidFormat =
+        stdout.includes('MJPG') ||
+        stdout.includes('YUYV') ||
+        stdout.includes('H264') ||
+        stdout.includes('RGB');
+
+      return hasValidFormat;
+    } catch {
+      return false;
+    }
+  }
+
+  private getCurrentCamera(): string {
+    return this.usbCameras[this.currentCameraIndex % this.usbCameras.length];
+  }
+
+  private rotateCamera(): void {
+    this.currentCameraIndex =
+      (this.currentCameraIndex + 1) % this.usbCameras.length;
+  }
+
+  getAvailableCameras(): string[] {
+    return [...this.usbCameras];
   }
 
   private async killExistingProcesses(devicePath: string): Promise<void> {
     try {
-      // Matar cualquier proceso ffmpeg usando este dispositivo
       await execAsync(`pkill -9 -f "ffmpeg.*${devicePath}" || true`).catch(
         () => {
           // Ignorar si no hay procesos
         }
       );
-      // Pequeña pausa para asegurar que el dispositivo se libere
-      await new Promise((resolve) => setTimeout(resolve, 100));
     } catch (error) {
       this.logger.warn('Error killing existing processes', error);
     }
@@ -80,13 +125,18 @@ export class UsbCameraAdapter implements OnModuleInit {
   requestPhoto(): Observable<Buffer> {
     return from(
       (async () => {
-        const devicePath = this.devicePath;
+        const devicePath = this.getCurrentCamera();
+        this.logger.log(`📸 Capturing photo from ${devicePath}`);
+
         await this.killExistingProcesses(devicePath);
 
         // Usar ffmpeg para capturar una foto (más compatible que fswebcam)
         const result = await execAsync(
           `ffmpeg -y -f v4l2 -input_format mjpeg -video_size 1280x720 -i ${devicePath} -frames:v 1 -f image2pipe -vcodec mjpeg - 2>/dev/null`
         );
+
+        // Rotar a la siguiente cámara para la próxima captura
+        this.rotateCamera();
 
         return Buffer.from(result.stdout);
       })()
@@ -101,124 +151,47 @@ export class UsbCameraAdapter implements OnModuleInit {
 
   requestVideoStream(): Observable<Readable> {
     return new Observable((observer) => {
-      let isClientDisconnected = false;
+      try {
+        const positions = [
+          'top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right',
+        ] as const;
+        const cameraConfigs = this.usbCameras
+          .slice(0, 4)
+          .map((devicePath, index) => ({
+            devicePath,
+            position: positions[index],
+          }));
 
-      (async () => {
-        try {
-          const devicePath = this.devicePath;
+        const gridStream = this.gridService.createGridStream(cameraConfigs);
 
-          // Limpiar streams anteriores
-          if (this.activeStream && !this.activeStream.killed) {
-            this.logger.log('Killing previous stream');
-            this.activeStream.kill('SIGKILL');
-            await new Promise((resolve) => setTimeout(resolve, 200));
-          }
+        observer.next(gridStream);
 
-          await this.killExistingProcesses(devicePath);
+        gridStream.on('end', () => {
+          observer.complete();
+        });
 
-          this.logger.log(`Starting FFmpeg stream from ${devicePath}`);
-
-          // Usar ffmpeg para streaming de video desde USB
-          const ffmpeg = spawn(
-            'ffmpeg',
-            [
-              '-loglevel',
-              'error', // Solo mostrar errores
-              '-f',
-              'v4l2',
-              '-input_format',
-              'mjpeg',
-              '-video_size',
-              '1280x720',
-              '-framerate',
-              '30',
-              '-i',
-              devicePath,
-              '-f',
-              'mpjpeg',
-              '-q:v',
-              '5',
-              '-',
-            ],
-            {
-              stdio: ['ignore', 'pipe', 'pipe'],
-            }
-          );
-
-          this.activeStream = ffmpeg;
-
-          observer.next(ffmpeg.stdout);
-
-          ffmpeg.stderr.on('data', (data) => {
-            const errorMsg = data.toString();
-
-            // Ignorar errores de "Broken pipe" que son normales cuando el cliente se desconecta
-            if (errorMsg.includes('Broken pipe')) {
-              isClientDisconnected = true;
-              return;
-            }
-
-            // Solo loguear errores importantes que no sean desconexiones normales
-            if (
-              (errorMsg.includes('Error') ||
-                errorMsg.includes('error') ||
-                errorMsg.includes('busy')) &&
-              !isClientDisconnected
-            ) {
-              this.logger.error(`FFmpeg error: ${errorMsg}`);
-            }
-          });
-
-          ffmpeg.on('error', (error) => {
-            if (!isClientDisconnected) {
-              this.logger.error(`FFmpeg process error: ${error.message}`);
-              observer.error(
-                new InternalServerErrorException(
-                  `FFmpeg process error: ${error.message}`
-                )
-              );
-            }
-          });
-
-          ffmpeg.on('close', (code) => {
-            this.activeStream = null;
-
-            // No loguear si fue una desconexión normal del cliente
-            if (isClientDisconnected) {
-              observer.complete();
-              return;
-            }
-
-            this.logger.log(`FFmpeg closed with code ${code}`);
-
-            if (code !== 0 && code !== null) {
-              observer.error(
-                new InternalServerErrorException(
-                  `FFmpeg exited with code ${code}`
-                )
-              );
-            } else {
-              observer.complete();
-            }
-          });
-
-          // Cleanup cuando se desuscribe
-          return () => {
-            if (ffmpeg && !ffmpeg.killed) {
-              isClientDisconnected = true;
-              this.logger.debug('Cleaning up FFmpeg stream');
-              ffmpeg.kill('SIGKILL');
-              this.activeStream = null;
-            }
-          };
-        } catch (error) {
+        gridStream.on('error', (error) => {
+          this.logger.error(`Grid stream error: ${error.message}`);
           observer.error(
             new InternalServerErrorException(
-              `Failed to start video stream: ${error.message}`
+              `Grid stream error: ${error.message}`
             )
           );
-        }
-      })();
+        });
+
+        return () => {
+          this.gridService.stopGridStream();
+        };
+      } catch (error) {
+        observer.error(
+          new InternalServerErrorException(
+            `Failed to start grid video stream: ${error.message}`
+          )
+        );
+      }
     });
   }
 
@@ -226,8 +199,15 @@ export class UsbCameraAdapter implements OnModuleInit {
     return from(
       (async () => {
         try {
-          const devicePath = this.devicePath;
+          // Verificar que al menos una cámara USB esté disponible
+          if (this.usbCameras.length === 0) {
+            return false;
+          }
+
+          // Verificar la primera cámara como prueba rápida
+          const devicePath = this.usbCameras[0];
           await fs.promises.access(devicePath, fs.constants.R_OK);
+
           // Verificar que no esté ocupado
           const { stdout } = await execAsync(
             `lsof ${devicePath} 2>/dev/null || echo "free"`

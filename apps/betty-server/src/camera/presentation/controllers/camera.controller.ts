@@ -21,10 +21,6 @@ export class CameraController {
   ) {}
 
   private getCameraType(type?: string): CameraType {
-    if (!type) {
-      return CameraType.INTERNAL; // Default
-    }
-
     const upperType = type.toUpperCase();
     if (upperType === 'EXTERNAL') {
       return CameraType.EXTERNAL;

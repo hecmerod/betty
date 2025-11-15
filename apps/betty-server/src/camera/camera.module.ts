@@ -8,6 +8,7 @@ import { HttpCameraAdapter } from './infrastructure/adapters/http-camera.adapter
 import { UsbCameraAdapter } from './infrastructure/adapters/usb-camera.adapter';
 import { CameraRepositoryImpl } from './infrastructure/repositories/camera.repository';
 import { CAMERA_REPOSITORY } from './infrastructure/ioc/symbols';
+import { MultiCameraGridService } from './infrastructure/services/multi-camera-grid.service';
 
 @Module({
   imports: [
@@ -18,14 +19,12 @@ import { CAMERA_REPOSITORY } from './infrastructure/ioc/symbols';
   ],
   controllers: [CameraController],
   providers: [
-    // Unified Use Cases
     CapturePhotoUseCase,
     GetVideoStreamUseCase,
     CheckCameraAvailabilityUseCase,
-    // Adapters
+    MultiCameraGridService,
     HttpCameraAdapter,
     UsbCameraAdapter,
-    // Unified Repository
     {
       provide: CAMERA_REPOSITORY,
       useClass: CameraRepositoryImpl,

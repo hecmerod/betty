@@ -53,8 +53,7 @@ services:
     container_name: betty-camera
     restart: unless-stopped
     privileged: true
-    ports:
-      - "8001:8001"
+    network_mode: host
     volumes:
       # Montajes necesarios para acceso completo a la cámara Raspberry Pi
       - /opt/vc:/opt/vc
@@ -77,8 +76,6 @@ services:
       - LOG_LEVEL=INFO
       - PYTHONPATH=/app/src
       - BETTY_SERVER_URL=http://localhost:3000/api
-    networks:
-      - betty-network
 
   betty-db:
     image: postgres:16-alpine

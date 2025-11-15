@@ -17,7 +17,7 @@ export class CameraRepositoryImpl extends BaseCameraRepository {
   }
 
   private getAdapter(cameraType: CameraType) {
-    return cameraType === CameraType.INTERNAL
+    return cameraType === CameraType.EXTERNAL
       ? this.usbCameraAdapter
       : this.httpCameraAdapter;
   }
