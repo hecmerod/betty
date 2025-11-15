@@ -120,3 +120,10 @@ apps/betty_app/.env
 # Logs
 logs/startup.log
 logs/bore-monitor.log
+
+# YOLO Models (large files)
+apps/betty-server/models/*.onnx
+apps/betty-server/models/*.pt
+apps/betty-camera/*.onnx
+apps/betty-camera/*.pt
+apps/betty-camera/*.torchscript

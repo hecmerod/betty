@@ -11,6 +11,7 @@ import { CapturePhotoUseCase } from '../../application/use-cases/capture-photo/c
 import { GetVideoStreamUseCase } from '../../application/use-cases/get-video-stream/get-video-stream.use-case';
 import { GetGridVideoStreamUseCase } from '../../application/use-cases/get-grid-video-stream/get-grid-video-stream.use-case';
 import { CheckCameraAvailabilityUseCase } from '../../application/use-cases/check-camera-availability/check-camera-availability.use-case';
+import { ObjectDetectionService } from '../../infrastructure/services/object-detection.service';
 import { CameraType } from '../../domain/enums/camera-type.enum';
 
 @Controller('/camera')
@@ -19,7 +20,8 @@ export class CameraController {
     private readonly capturePhotoUseCase: CapturePhotoUseCase,
     private readonly getVideoStreamUseCase: GetVideoStreamUseCase,
     private readonly getGridVideoStreamUseCase: GetGridVideoStreamUseCase,
-    private readonly checkCameraAvailabilityUseCase: CheckCameraAvailabilityUseCase
+    private readonly checkCameraAvailabilityUseCase: CheckCameraAvailabilityUseCase,
+    private readonly objectDetectionService: ObjectDetectionService
   ) {}
 
   private getCameraType(type?: string): CameraType {

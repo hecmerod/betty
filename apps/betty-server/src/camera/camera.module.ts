@@ -9,6 +9,8 @@ import { HttpCameraAdapter } from './infrastructure/adapters/http-camera.adapter
 import { UsbCameraAdapter } from './infrastructure/adapters/usb-camera.adapter';
 import { MultiCameraGridService } from './infrastructure/services/multi-camera-grid.service';
 import { UsbCameraDetectorService } from './infrastructure/services/usb-camera-detector.service';
+import { ObjectDetectionService } from './infrastructure/services/object-detection.service';
+import { VideoDetectionService } from './infrastructure/services/video-detection.service';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { UsbCameraDetectorService } from './infrastructure/services/usb-camera-d
     CheckCameraAvailabilityUseCase,
     MultiCameraGridService,
     UsbCameraDetectorService,
+    ObjectDetectionService,
+    VideoDetectionService,
     HttpCameraAdapter,
     UsbCameraAdapter,
   ],
@@ -33,6 +37,7 @@ import { UsbCameraDetectorService } from './infrastructure/services/usb-camera-d
     GetVideoStreamUseCase,
     GetGridVideoStreamUseCase,
     CheckCameraAvailabilityUseCase,
+    ObjectDetectionService,
   ],
 })
 export class CameraModule {}
