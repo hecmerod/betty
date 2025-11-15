@@ -1,18 +1,27 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { CameraRepository } from '../../../domain/repositories/camera.repository';
+import { Injectable } from '@nestjs/common';
+import { Observable, map } from 'rxjs';
 import { VideoStream } from '../../../domain/entities/video-stream.entity';
 import { CameraType } from '../../../domain/enums/camera-type.enum';
-import { CAMERA_REPOSITORY } from '../../../infrastructure/ioc/symbols';
+import { HttpCameraAdapter } from '../../../infrastructure/adapters/http-camera.adapter';
+import { UsbCameraAdapter } from '../../../infrastructure/adapters/usb-camera.adapter';
 
 @Injectable()
 export class GetVideoStreamUseCase {
   constructor(
-    @Inject(CAMERA_REPOSITORY)
-    private readonly cameraRepository: CameraRepository
+    private readonly httpCameraAdapter: HttpCameraAdapter,
+    private readonly usbCameraAdapter: UsbCameraAdapter
   ) {}
 
   execute(cameraType: CameraType): Observable<VideoStream> {
-    return this.cameraRepository.startVideoStream(cameraType);
+    const adapter =
+      cameraType === CameraType.EXTERNAL
+        ? this.usbCameraAdapter
+        : this.httpCameraAdapter;
+
+    return adapter.requestVideoStream().pipe(
+      map((stream) => {
+        return new VideoStream(stream, new Date(), 'mjpeg');
+      })
+    );
   }
 }

@@ -1,17 +1,22 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { CameraRepository } from '../../../domain/repositories/camera.repository';
 import { CameraType } from '../../../domain/enums/camera-type.enum';
-import { CAMERA_REPOSITORY } from '../../../infrastructure/ioc/symbols';
+import { HttpCameraAdapter } from '../../../infrastructure/adapters/http-camera.adapter';
+import { UsbCameraAdapter } from '../../../infrastructure/adapters/usb-camera.adapter';
 
 @Injectable()
 export class CheckCameraAvailabilityUseCase {
   constructor(
-    @Inject(CAMERA_REPOSITORY)
-    private readonly cameraRepository: CameraRepository
+    private readonly httpCameraAdapter: HttpCameraAdapter,
+    private readonly usbCameraAdapter: UsbCameraAdapter
   ) {}
 
   execute(cameraType: CameraType): Observable<boolean> {
-    return this.cameraRepository.isAvailable(cameraType);
+    const adapter =
+      cameraType === CameraType.EXTERNAL
+        ? this.usbCameraAdapter
+        : this.httpCameraAdapter;
+
+    return adapter.checkAvailability();
   }
 }
