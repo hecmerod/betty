@@ -8,9 +8,9 @@ import { CheckCameraAvailabilityUseCase } from './application/use-cases/check-ca
 import { HttpCameraAdapter } from './infrastructure/adapters/http-camera.adapter';
 import { UsbCameraAdapter } from './infrastructure/adapters/usb-camera.adapter';
 import { MultiCameraGridService } from './infrastructure/services/multi-camera-grid.service';
-import { UsbCameraDetectorService } from './infrastructure/services/usb-camera-detector.service';
-import { ObjectDetectionService } from './infrastructure/services/object-detection.service';
-import { VideoDetectionService } from './infrastructure/services/video-detection.service';
+import { UsbCameraFinderService } from './infrastructure/services/usb-camera-finder.service';
+import { ImageObjectDetectionService } from './infrastructure/services/image-object-detection.service';
+import { CameraDetectionProcess } from './infrastructure/processes/camera-detection.process';
 
 @Module({
   imports: [
@@ -26,9 +26,9 @@ import { VideoDetectionService } from './infrastructure/services/video-detection
     GetGridVideoStreamUseCase,
     CheckCameraAvailabilityUseCase,
     MultiCameraGridService,
-    UsbCameraDetectorService,
-    ObjectDetectionService,
-    VideoDetectionService,
+    UsbCameraFinderService,
+    ImageObjectDetectionService,
+    CameraDetectionProcess,
     HttpCameraAdapter,
     UsbCameraAdapter,
   ],
@@ -37,7 +37,8 @@ import { VideoDetectionService } from './infrastructure/services/video-detection
     GetVideoStreamUseCase,
     GetGridVideoStreamUseCase,
     CheckCameraAvailabilityUseCase,
-    ObjectDetectionService,
+    ImageObjectDetectionService,
+    CameraDetectionProcess,
   ],
 })
 export class CameraModule {}

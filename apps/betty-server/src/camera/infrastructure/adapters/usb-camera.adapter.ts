@@ -13,7 +13,7 @@ import {
   MultiCameraGridService,
   GridCameraConfig,
 } from '../services/multi-camera-grid.service';
-import { UsbCameraDetectorService } from '../services/usb-camera-detector.service';
+import { UsbCameraFinderService } from '../services/usb-camera-finder.service';
 import { CameraType } from '../../domain/enums/camera-type.enum';
 
 const execAsync = promisify(exec);
@@ -25,17 +25,17 @@ export class UsbCameraAdapter {
 
   constructor(
     private readonly gridService: MultiCameraGridService,
-    private readonly cameraDetector: UsbCameraDetectorService
+    private readonly usbCameraFinder: UsbCameraFinderService
   ) {}
 
   private getDevicePath(cameraType: CameraType, cameraIndex?: number): string {
     if (cameraType === CameraType.INTERNAL) {
-      const internalCamera = this.cameraDetector.getInternalCamera();
+      const internalCamera = this.usbCameraFinder.getInternalCamera();
 
       return internalCamera;
     }
 
-    const externalCameras = this.cameraDetector.getExternalCameras();
+    const externalCameras = this.usbCameraFinder.getExternalCameras();
 
     const index = cameraIndex ?? 0;
     if (index < 0 || index >= externalCameras.length) {
@@ -163,7 +163,7 @@ export class UsbCameraAdapter {
           'bottom-right',
         ] as const;
 
-        const externalCameras = this.cameraDetector.getExternalCameras();
+        const externalCameras = this.usbCameraFinder.getExternalCameras();
         const cameraConfigs: GridCameraConfig[] = externalCameras
           .slice(0, 4)
           .map((devicePath, index) => ({

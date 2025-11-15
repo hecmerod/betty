@@ -1,11 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as ort from 'onnxruntime-node';
 import sharp from 'sharp';
-import {
-  Detection,
-  BoundingBox,
-  DetectionResult,
-} from '../../domain/entities/detection.entity';
+import { Detection, BoundingBox } from '../../domain/entities/detection.entity';
 
 interface ModelConfig {
   modelPath: string;
@@ -16,8 +12,8 @@ interface ModelConfig {
 }
 
 @Injectable()
-export class ObjectDetectionService implements OnModuleInit {
-  private readonly logger = new Logger(ObjectDetectionService.name);
+export class ImageObjectDetectionService implements OnModuleInit {
+  private readonly logger = new Logger(ImageObjectDetectionService.name);
   private session: ort.InferenceSession | null = null;
   private readonly config: ModelConfig;
 
@@ -40,9 +36,7 @@ export class ObjectDetectionService implements OnModuleInit {
     });
   }
 
-  async detectObjects(imageBuffer: Buffer): Promise<DetectionResult> {
-    const startTime = Date.now();
-
+  async detectObjects(imageBuffer: Buffer): Promise<Detection[]> {
     const { tensor, originalWidth, originalHeight } =
       await this.preprocessImage(imageBuffer);
 
@@ -55,14 +49,7 @@ export class ObjectDetectionService implements OnModuleInit {
       originalHeight
     );
 
-    const processingTime = Date.now() - startTime;
-
-    return new DetectionResult(
-      detections,
-      originalWidth,
-      originalHeight,
-      processingTime
-    );
+    return detections;
   }
 
   private async preprocessImage(imageBuffer: Buffer): Promise<{
@@ -76,7 +63,7 @@ export class ObjectDetectionService implements OnModuleInit {
     const originalHeight = metadata.height || this.config.inputHeight;
 
     // Redimensionar y convertir a RGB
-    const { data, info } = await sharp(imageBuffer)
+    const { data } = await sharp(imageBuffer)
       .resize(this.config.inputWidth, this.config.inputHeight, {
         fit: 'fill',
       })
@@ -196,7 +183,8 @@ export class ObjectDetectionService implements OnModuleInit {
     const selected: typeof detections = [];
 
     while (detections.length > 0) {
-      const current = detections.shift()!;
+      const current = detections.shift();
+      if (!current) break;
       selected.push(current);
 
       // Filtrar detecciones que se superponen demasiado
@@ -237,9 +225,5 @@ export class ObjectDetectionService implements OnModuleInit {
     const unionArea = box1Area + box2Area - intersectArea;
 
     return intersectArea / unionArea;
-  }
-
-  isModelLoaded(): boolean {
-    return this.session !== null;
   }
 }

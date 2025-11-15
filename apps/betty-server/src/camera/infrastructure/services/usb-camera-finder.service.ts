@@ -5,8 +5,8 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 
 @Injectable()
-export class UsbCameraDetectorService implements OnModuleInit {
-  private readonly logger = new Logger(UsbCameraDetectorService.name);
+export class UsbCameraFinderService implements OnModuleInit {
+  private readonly logger = new Logger(UsbCameraFinderService.name);
   private internalCamera: string | null = null;
   private externalCameras: string[] = [];
 
