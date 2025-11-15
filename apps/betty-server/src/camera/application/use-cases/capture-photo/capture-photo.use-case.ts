@@ -12,13 +12,19 @@ export class CapturePhotoUseCase {
     private readonly usbCameraAdapter: UsbCameraAdapter
   ) {}
 
-  execute(cameraType: CameraType): Observable<Photo> {
-    const adapter =
+  execute(cameraType: CameraType, cameraIndex?: number): Observable<Photo> {
+    if (
+      cameraType === CameraType.INTERNAL ||
       cameraType === CameraType.EXTERNAL
-        ? this.usbCameraAdapter
-        : this.httpCameraAdapter;
+    ) {
+      return this.usbCameraAdapter.requestPhoto(cameraType, cameraIndex).pipe(
+        map((photoBuffer: Buffer) => {
+          return new Photo(photoBuffer, new Date(), 'jpeg');
+        })
+      );
+    }
 
-    return adapter.requestPhoto().pipe(
+    return this.httpCameraAdapter.requestPhoto().pipe(
       map((photoBuffer: Buffer) => {
         return new Photo(photoBuffer, new Date(), 'jpeg');
       })

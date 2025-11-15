@@ -12,13 +12,24 @@ export class GetVideoStreamUseCase {
     private readonly usbCameraAdapter: UsbCameraAdapter
   ) {}
 
-  execute(cameraType: CameraType): Observable<VideoStream> {
-    const adapter =
+  execute(
+    cameraType: CameraType,
+    cameraIndex?: number
+  ): Observable<VideoStream> {
+    if (
+      cameraType === CameraType.INTERNAL ||
       cameraType === CameraType.EXTERNAL
-        ? this.usbCameraAdapter
-        : this.httpCameraAdapter;
+    ) {
+      return this.usbCameraAdapter
+        .requestVideoStream(cameraType, cameraIndex)
+        .pipe(
+          map((stream) => {
+            return new VideoStream(stream, new Date(), 'mjpeg');
+          })
+        );
+    }
 
-    return adapter.requestVideoStream().pipe(
+    return this.httpCameraAdapter.requestVideoStream().pipe(
       map((stream) => {
         return new VideoStream(stream, new Date(), 'mjpeg');
       })

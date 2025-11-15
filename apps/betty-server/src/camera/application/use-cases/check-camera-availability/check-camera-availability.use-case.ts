@@ -11,12 +11,14 @@ export class CheckCameraAvailabilityUseCase {
     private readonly usbCameraAdapter: UsbCameraAdapter
   ) {}
 
-  execute(cameraType: CameraType): Observable<boolean> {
-    const adapter =
+  execute(cameraType: CameraType, cameraIndex?: number): Observable<boolean> {
+    if (
+      cameraType === CameraType.INTERNAL ||
       cameraType === CameraType.EXTERNAL
-        ? this.usbCameraAdapter
-        : this.httpCameraAdapter;
+    ) {
+      return this.usbCameraAdapter.checkAvailability(cameraType, cameraIndex);
+    }
 
-    return adapter.checkAvailability();
+    return this.httpCameraAdapter.checkAvailability();
   }
 }

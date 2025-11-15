@@ -9,6 +9,7 @@ import {
 import { Response } from 'express';
 import { CapturePhotoUseCase } from '../../application/use-cases/capture-photo/capture-photo.use-case';
 import { GetVideoStreamUseCase } from '../../application/use-cases/get-video-stream/get-video-stream.use-case';
+import { GetGridVideoStreamUseCase } from '../../application/use-cases/get-grid-video-stream/get-grid-video-stream.use-case';
 import { CheckCameraAvailabilityUseCase } from '../../application/use-cases/check-camera-availability/check-camera-availability.use-case';
 import { CameraType } from '../../domain/enums/camera-type.enum';
 
@@ -17,17 +18,14 @@ export class CameraController {
   constructor(
     private readonly capturePhotoUseCase: CapturePhotoUseCase,
     private readonly getVideoStreamUseCase: GetVideoStreamUseCase,
+    private readonly getGridVideoStreamUseCase: GetGridVideoStreamUseCase,
     private readonly checkCameraAvailabilityUseCase: CheckCameraAvailabilityUseCase
   ) {}
 
   private getCameraType(type?: string): CameraType {
-    const upperType = type.toUpperCase();
-    if (upperType === 'EXTERNAL') {
-      return CameraType.EXTERNAL;
-    }
-    if (upperType === 'INTERNAL') {
-      return CameraType.INTERNAL;
-    }
+    if (type === 'external') return CameraType.EXTERNAL;
+
+    if (type === 'internal') return CameraType.INTERNAL;
 
     throw new BadRequestException(
       'Invalid camera type. Use "internal" or "external"'
@@ -37,12 +35,18 @@ export class CameraController {
   @Get('photo')
   async capturePhoto(
     @Query('type') type: string,
-    @Res() res: Response
+    @Query('index') index?: string,
+    @Res() res?: Response
   ): Promise<void> {
     try {
       const cameraType = this.getCameraType(type);
+      const cameraIndex = index !== undefined ? parseInt(index, 10) : undefined;
 
-      this.capturePhotoUseCase.execute(cameraType).subscribe({
+      if (cameraIndex !== undefined && isNaN(cameraIndex)) {
+        throw new BadRequestException('Invalid camera index');
+      }
+
+      this.capturePhotoUseCase.execute(cameraType, cameraIndex).subscribe({
         next: (photo) => {
           res.set({
             'Content-Type': photo.getMimeType(),
@@ -75,10 +79,22 @@ export class CameraController {
   @Get('video')
   async getVideoStream(
     @Query('type') type: string,
-    @Res() res: Response
+    @Query('index') index?: string,
+    @Query('grid') grid?: string,
+    @Res() res?: Response
   ): Promise<void> {
     try {
       const cameraType = this.getCameraType(type);
+      const cameraIndex = index !== undefined ? parseInt(index, 10) : undefined;
+      const useGrid = grid === 'true';
+
+      if (cameraIndex !== undefined && isNaN(cameraIndex))
+        throw new BadRequestException('Invalid camera index');
+
+      if (useGrid && cameraType !== CameraType.EXTERNAL)
+        throw new BadRequestException(
+          'Grid view is only available for external cameras'
+        );
 
       res.set({
         'Content-Type': 'multipart/x-mixed-replace; boundary=frame',
@@ -87,27 +103,28 @@ export class CameraController {
         Pragma: 'no-cache',
       });
 
-      const subscription = this.getVideoStreamUseCase
-        .execute(cameraType)
-        .subscribe({
-          next: (videoStream) => {
-            videoStream.stream.pipe(res);
+      const observable = useGrid
+        ? this.getGridVideoStreamUseCase.execute()
+        : this.getVideoStreamUseCase.execute(cameraType, cameraIndex);
 
-            // Limpiar cuando el cliente se desconecta
-            res.on('close', () => {
-              subscription.unsubscribe();
-              videoStream.stream.destroy();
+      const subscription = observable.subscribe({
+        next: (videoStream) => {
+          videoStream.stream.pipe(res);
+
+          res.on('close', () => {
+            subscription.unsubscribe();
+            videoStream.stream.destroy();
+          });
+        },
+        error: () => {
+          if (!res.headersSent) {
+            res.status(500).json({
+              error: 'Failed to start video stream',
+              message: `${cameraType} camera service unavailable`,
             });
-          },
-          error: () => {
-            if (!res.headersSent) {
-              res.status(500).json({
-                error: 'Failed to start video stream',
-                message: `${cameraType} camera service unavailable`,
-              });
-            }
-          },
-        });
+          }
+        },
+      });
     } catch (error) {
       if (error instanceof BadRequestException) {
         res.status(400).json({
@@ -123,30 +140,38 @@ export class CameraController {
   @Get('health')
   async checkAvailability(
     @Query('type') type: string,
-    @Res() res: Response
+    @Query('index') index?: string,
+    @Res() res?: Response
   ): Promise<void> {
     try {
       const cameraType = this.getCameraType(type);
+      const cameraIndex = index !== undefined ? parseInt(index, 10) : undefined;
 
-      this.checkCameraAvailabilityUseCase.execute(cameraType).subscribe({
-        next: (isAvailable) => {
-          res.status(isAvailable ? 200 : 503).json({
-            status: isAvailable ? 'healthy' : 'unavailable',
-            camera: isAvailable ? 'connected' : 'disconnected',
-            type: cameraType,
-            timestamp: new Date().toISOString(),
-          });
-        },
-        error: (error) => {
-          res.status(503).json({
-            status: 'error',
-            camera: 'unknown',
-            type: cameraType,
-            timestamp: new Date().toISOString(),
-            error: error.message,
-          });
-        },
-      });
+      if (cameraIndex !== undefined && isNaN(cameraIndex)) {
+        throw new BadRequestException('Invalid camera index');
+      }
+
+      this.checkCameraAvailabilityUseCase
+        .execute(cameraType, cameraIndex)
+        .subscribe({
+          next: (isAvailable) => {
+            res.status(isAvailable ? 200 : 503).json({
+              status: isAvailable ? 'healthy' : 'unavailable',
+              camera: isAvailable ? 'connected' : 'disconnected',
+              type: cameraType,
+              timestamp: new Date().toISOString(),
+            });
+          },
+          error: (error) => {
+            res.status(503).json({
+              status: 'error',
+              camera: 'unknown',
+              type: cameraType,
+              timestamp: new Date().toISOString(),
+              error: error.message,
+            });
+          },
+        });
     } catch (error) {
       if (error instanceof BadRequestException) {
         res.status(400).json({
