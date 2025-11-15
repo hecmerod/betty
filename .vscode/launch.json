@@ -57,7 +57,7 @@
       "program": "${workspaceFolder}/apps/betty_app/lib/main.dart",
       "cwd": "${workspaceFolder}/apps/betty_app",
       "flutterMode": "debug",
-      "deviceId": "192.168.1.166:5555"
+      "deviceId": "192.168.1.216:5555"
     },
     {
       "name": "🔨 App Betty ",

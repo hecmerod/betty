@@ -12,12 +12,16 @@ class VideoStreamWidget extends StatefulWidget {
   final CameraType cameraType;
   final bool enableFullscreen;
   final String heroTag;
+  final int? cameraIndex;
+  final bool grid;
 
   const VideoStreamWidget({
     super.key,
     required this.cameraType,
     this.enableFullscreen = false,
     this.heroTag = 'camera-video',
+    this.cameraIndex,
+    this.grid = false,
   });
 
   @override
@@ -50,7 +54,11 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
   void _startStream() async {
     try {
-      final url = _cameraService.getVideoStreamUrl(type: widget.cameraType);
+      final url = _cameraService.getVideoStreamUrl(
+        type: widget.cameraType,
+        index: widget.cameraIndex,
+        grid: widget.grid,
+      );
       _httpClient = http.Client();
       final request = http.Request('GET', Uri.parse(url));
 
