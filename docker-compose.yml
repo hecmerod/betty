@@ -45,38 +45,6 @@ services:
       - BORE_CONTROL_FILE=/app/tmp/bore-control.txt
       - BORE_SSH_URL_FILE=/app/tmp/bore-ssh-url.txt
 
-  betty-camera:
-    build:
-      context: .
-      dockerfile: apps/betty-camera/Dockerfile
-    image: betty-camera:final
-    container_name: betty-camera
-    restart: unless-stopped
-    privileged: true
-    network_mode: host
-    volumes:
-      # Montajes necesarios para acceso completo a la cámara Raspberry Pi
-      - /opt/vc:/opt/vc
-      - /dev:/dev
-      - /sys:/sys
-      - /proc:/proc
-      - /run/udev:/run/udev:ro
-      - /lib/firmware:/lib/firmware:ro
-      - /usr/share/libcamera:/usr/share/libcamera:ro
-    device_cgroup_rules:
-      # Reglas de dispositivos para acceso a cámara y hardware
-      - 'c 81:* rmw'   # Video devices
-      - 'c 235:* rmw'  # Media devices
-      - 'c 236:* rmw'  # Additional media devices
-    env_file:
-      - apps/betty-camera/.env
-    environment:
-      - HOST=0.0.0.0
-      - PORT=8001
-      - LOG_LEVEL=INFO
-      - PYTHONPATH=/app/src
-      - BETTY_SERVER_URL=http://localhost:3000/api
-
   betty-db:
     image: postgres:16-alpine
     container_name: betty-db

@@ -1,9 +1,13 @@
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
 # Instalar dependencias de compilación para módulos nativos de Node.js
-RUN apk add --no-cache python3 make g++
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY tsconfig.base.json ./
 COPY apps/betty-server/package.json apps/betty-server/package-lock.json ./apps/betty-server/
@@ -19,21 +23,25 @@ COPY apps/betty-server/src/ ./apps/betty-server/src/
 
 RUN cd apps/betty-server && npm run build
 
-FROM node:20-alpine AS production
+FROM node:20-slim AS production
 
 WORKDIR /app
 
-# Instalar Python 3, libgpiod para control de GPIO, bluez para Bluetooth, libcap para permisos BLE y wget para healthcheck
-RUN apk add --no-cache \
+# Instalar dependencias del sistema para Raspberry Pi
+RUN apt-get update && apt-get install -y \
     python3 \
-    py3-libgpiod \
+    python3-pip \
+    python3-libgpiod \
+    libgpiod2 \
+    gpiod \
     bluez \
-    bluez-deprecated \
-    libcap \
+    libcap2-bin \
     wget \
     ffmpeg \
     v4l-utils \
-    lsof
+    lsof \
+    && pip3 install --break-system-packages gpiod \
+    && rm -rf /var/lib/apt/lists/*
 
 # Configurar capacidades BLE para Node.js (permite acceso a Bluetooth sin sudo)
 RUN setcap cap_net_raw+eip $(which node)
@@ -43,6 +51,7 @@ COPY --from=builder /app/apps/betty-server/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY apps/betty-server/prisma ./prisma
 COPY apps/betty-server/scripts ./scripts
+COPY apps/betty-server/models ./models
 COPY apps/betty-server/src/gpio/infrastructure/config/pins.config.json ./dist/out-tsc/apps/betty-server/src/gpio/infrastructure/config/pins.config.json
 
 EXPOSE 3000
