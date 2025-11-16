@@ -9,7 +9,8 @@ import { UsbCameraAdapter } from './infrastructure/adapters/usb-camera.adapter';
 import { MultiCameraGridService } from './infrastructure/services/multi-camera-grid.service';
 import { UsbCameraFinderService } from './infrastructure/services/usb-camera-finder.service';
 import { ImageObjectDetectionService } from './infrastructure/services/image-object-detection.service';
-import { CameraDetectionProcess } from './infrastructure/processes/camera-detection.process';
+import { CameraDetectionProcess } from './application/processes/camera-detection.process';
+import { AlarmModule } from '../alarm/alarm.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CameraDetectionProcess } from './infrastructure/processes/camera-detect
       timeout: 30000,
       maxRedirects: 5,
     }),
+    AlarmModule,
   ],
   controllers: [CameraController],
   providers: [

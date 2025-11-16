@@ -3,7 +3,7 @@ import { Observable, of, map } from 'rxjs';
 import { VideoStream } from '../../../domain/entities/video-stream.entity';
 import { CameraType } from '../../../domain/enums/camera-type.enum';
 import { UsbCameraAdapter } from '../../../infrastructure/adapters/usb-camera.adapter';
-import { CameraDetectionProcess } from '../../../infrastructure/processes/camera-detection.process';
+import { CameraDetectionProcess } from '../../processes/camera-detection.process';
 
 @Injectable()
 export class GetVideoStreamUseCase {

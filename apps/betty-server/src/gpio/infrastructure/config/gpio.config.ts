@@ -47,7 +47,6 @@ export class GpioConfig {
     try {
       const configPath = join(__dirname, '../config/pins.config.json');
 
-      console.debug(configPath);
       if (!existsSync(configPath))
         throw new Error(`Pins configuration file not found at ${configPath}`);
 

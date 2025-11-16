@@ -12,7 +12,7 @@ import { GetVideoStreamUseCase } from '../../application/use-cases/get-video-str
 import { GetGridVideoStreamUseCase } from '../../application/use-cases/get-grid-video-stream/get-grid-video-stream.use-case';
 import { CheckCameraAvailabilityUseCase } from '../../application/use-cases/check-camera-availability/check-camera-availability.use-case';
 import { ImageObjectDetectionService } from '../../infrastructure/services/image-object-detection.service';
-import { CameraDetectionProcess } from '../../infrastructure/processes/camera-detection.process';
+import { CameraDetectionProcess } from '../../application/processes/camera-detection.process';
 import { CameraType } from '../../domain/enums/camera-type.enum';
 
 @Controller('/camera')

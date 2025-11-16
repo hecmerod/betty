@@ -5,9 +5,13 @@ import {
   OnApplicationBootstrap,
 } from '@nestjs/common';
 import { Readable, PassThrough } from 'stream';
-import { UsbCameraAdapter } from '../adapters/usb-camera.adapter';
-import { ImageObjectDetectionService } from '../services/image-object-detection.service';
+import { UsbCameraAdapter } from '../../infrastructure/adapters/usb-camera.adapter';
+import { ImageObjectDetectionService } from '../../infrastructure/services/image-object-detection.service';
 import { CameraType } from '../../domain/enums/camera-type.enum';
+import { YoloClassId } from '../../domain/enums/yolo-class-id.enum';
+import { TriggerAlarmUseCase } from '../../../alarm/application/use-cases/trigger-alarm/trigger-alarm.use-case';
+
+const DETECTION_INTERVAL = 60;
 
 @Injectable()
 export class CameraDetectionProcess
@@ -16,13 +20,13 @@ export class CameraDetectionProcess
   private readonly logger = new Logger(CameraDetectionProcess.name);
   private sourceStream: Readable | null = null;
   private consumers: PassThrough[] = [];
-  private frameCount = 0;
-  private detectionInterval = 60;
   private lastDetectionFrame = 0;
+  private frameCount = 0;
 
   constructor(
     private readonly usbCameraAdapter: UsbCameraAdapter,
-    private readonly imageObjectDetection: ImageObjectDetectionService
+    private readonly imageObjectDetection: ImageObjectDetectionService,
+    private readonly triggerAlarmUseCase: TriggerAlarmUseCase
   ) {}
 
   onApplicationBootstrap() {
@@ -30,13 +34,19 @@ export class CameraDetectionProcess
   }
 
   private startInternalCameraStream(): void {
-    this.logger.log('🎥 Iniciando stream de cámara interna con detección...');
-
     this.usbCameraAdapter.requestVideoStream(CameraType.INTERNAL).subscribe({
       next: (stream) => {
-        this.logger.log('✅ Stream recibido del adapter');
         this.sourceStream = stream;
-        this.setupStreamHandlers();
+
+        this.sourceStream.on('error', () => {
+          setTimeout(() => this.restartStream(), 2000);
+        });
+
+        this.sourceStream.on('end', () => {
+          this.consumers.forEach((consumer) => consumer.end());
+        });
+
+        this.onData();
       },
       error: (error) => {
         this.logger.error(`❌ Error iniciando stream: ${error.message}`);
@@ -49,7 +59,7 @@ export class CameraDetectionProcess
     this.stopInternalCameraStream();
   }
 
-  private setupStreamHandlers(): void {
+  private onData(): void {
     if (!this.sourceStream) return;
 
     let buffer = Buffer.alloc(0);
@@ -69,37 +79,30 @@ export class CameraDetectionProcess
       const frameStart = buffer.indexOf(Buffer.from([0xff, 0xd8])); // JPEG SOI
       const frameEnd = buffer.indexOf(Buffer.from([0xff, 0xd9]), 2); // JPEG EOI
 
-      if (frameStart !== -1 && frameEnd !== -1) {
-        const frame = buffer.slice(frameStart, frameEnd + 2);
-        buffer = buffer.slice(frameEnd + 2);
+      if (frameStart === -1 || frameEnd === -1) return;
 
-        this.frameCount++;
+      const frame = buffer.subarray(frameStart, frameEnd + 2);
+      buffer = buffer.subarray(frameEnd + 2);
 
-        if (
-          this.frameCount - this.lastDetectionFrame >=
-          this.detectionInterval
-        ) {
-          this.lastDetectionFrame = this.frameCount;
-          const detections = await this.imageObjectDetection.detectObjects(
-            frame
-          );
-          if (detections.length > 0) this.logger.log(detections);
-        }
-      }
-    });
+      this.frameCount++;
 
-    this.sourceStream.on('error', () => {
-      setTimeout(() => this.restartStream(), 2000);
-    });
+      if (this.frameCount - this.lastDetectionFrame < DETECTION_INTERVAL)
+        return;
 
-    this.sourceStream.on('end', () => {
-      this.consumers.forEach((consumer) => consumer.end());
+      this.lastDetectionFrame = this.frameCount;
+
+      const personsDetected = await this.imageObjectDetection.detectObjects(
+        frame,
+        YoloClassId.Person
+      );
+
+      if (personsDetected.length > 0) await this.triggerAlarmUseCase.execute();
     });
   }
 
   private async restartStream(): Promise<void> {
     this.stopInternalCameraStream();
-    await this.startInternalCameraStream();
+    this.startInternalCameraStream();
   }
 
   private stopInternalCameraStream(): void {
@@ -109,34 +112,21 @@ export class CameraDetectionProcess
     }
 
     this.consumers.forEach((consumer) => {
-      if (!consumer.destroyed) {
-        consumer.destroy();
-      }
+      if (!consumer.destroyed) consumer.destroy();
     });
     this.consumers = [];
   }
 
   getStream(): Readable {
-    if (!this.sourceStream || this.sourceStream.destroyed) {
-      this.logger.warn('⚠️ Stream no disponible, creando stream on-demand');
+    if (!this.sourceStream || this.sourceStream.destroyed)
       return this.createOnDemandStream();
-    }
 
     const consumerStream = new PassThrough();
     this.consumers.push(consumerStream);
 
-    this.logger.log(
-      `📺 Nuevo consumidor conectado (Total: ${this.consumers.length})`
-    );
-
     consumerStream.on('close', () => {
       const index = this.consumers.indexOf(consumerStream);
-      if (index > -1) {
-        this.consumers.splice(index, 1);
-        this.logger.log(
-          `👋 Consumidor desconectado (Restantes: ${this.consumers.length})`
-        );
-      }
+      if (index > -1) this.consumers.splice(index, 1);
     });
 
     return consumerStream;
@@ -147,20 +137,14 @@ export class CameraDetectionProcess
 
     this.usbCameraAdapter.requestVideoStream(CameraType.INTERNAL).subscribe({
       next: (stream) => {
+        this.sourceStream = stream;
         stream.pipe(passThrough);
       },
       error: (error) => {
-        this.logger.error(
-          `❌ Error creando stream on-demand: ${error.message}`
-        );
         passThrough.destroy(error);
       },
     });
 
     return passThrough;
-  }
-
-  isStreamActive(): boolean {
-    return this.sourceStream !== null && !this.sourceStream.destroyed;
   }
 }

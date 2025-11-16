@@ -1,3 +1,5 @@
+import { YoloClassId } from '../enums/yolo-class-id.enum';
+
 export class BoundingBox {
   constructor(
     public readonly x: number,
@@ -18,7 +20,7 @@ export class BoundingBox {
 
 export class Detection {
   constructor(
-    public readonly className: string,
+    public readonly classId: YoloClassId,
     public readonly confidence: number,
     public readonly boundingBox: BoundingBox,
     public readonly timestamp: Date = new Date()
@@ -26,7 +28,7 @@ export class Detection {
 
   toJSON() {
     return {
-      class_name: this.className,
+      class_name: this.classId,
       confidence: this.confidence,
       bounding_box: this.boundingBox.toJSON(),
       timestamp: this.timestamp.toISOString(),
