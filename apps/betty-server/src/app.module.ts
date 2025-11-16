@@ -8,11 +8,12 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { GpsModule } from './gps/gps.module';
 import { TripsModule } from './trips/trips.module';
 import { GpioModule } from './gpio/gpio.module';
-import { HealthModule } from './shared/health/health.module';
 import { PrismaModule } from './shared/prisma/prisma.module';
 import { BatteriesModule } from './batteries/batteries.module';
 import { SshModule } from './ssh/ssh.module';
 import { RedisModule } from './shared/redis/redis.module';
+import { LocaltunnelModule } from './core/localtunnel/localtunnel.module';
+import { HealthModule } from './core/health/health.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { RedisModule } from './shared/redis/redis.module';
     BatteriesModule,
     SshModule,
     RedisModule,
+    LocaltunnelModule,
   ],
 })
 export class AppModule {}

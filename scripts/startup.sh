@@ -66,62 +66,6 @@ else
     log "� Para iniciar túnel SSH: curl -X POST http://localhost:3000/api/ssh/start"
 fi
 
-# ========================================
-# 2. INICIAR LOCALTUNNEL HTTP
-# ========================================
-
-# Verificar si localtunnel está instalado
-if ! command -v lt &> /dev/null; then
-    log "⚠️ localtunnel no está instalado. Instalando..."
-    sudo npm install -g localtunnel
-    
-    if [ $? -eq 0 ]; then
-        log "✅ localtunnel instalado"
-    else
-        log "❌ Error instalando localtunnel"
-        exit 1
-    fi
-fi
-
-# Verificar si localtunnel ya está corriendo
-if pgrep -f "lt --port" > /dev/null; then
-    log "⚠️ localtunnel ya está en ejecución. Deteniendo proceso anterior..."
-    pkill -f "lt --port"
-    sleep 2
-fi
-
-# Subdominio personalizado
-SUBDOMAIN="betty-la-fragoneta-mas-guarra-del-mundo"
-
-# Iniciar localtunnel con subdominio personalizado
-log "🌐 Iniciando localtunnel en puerto 3000 con subdominio: $SUBDOMAIN..."
-nohup lt --port 3000 --subdomain "$SUBDOMAIN" >> "$LOG_FILE" 2>&1 &
-LT_PID=$!
-
-if [ $? -eq 0 ]; then
-    log "✅ localtunnel iniciado con PID: $LT_PID"
-    
-    # Esperar a que localtunnel esté listo
-    sleep 5
-    
-    # Construir la URL con el subdominio conocido
-    LT_URL="https://${SUBDOMAIN}.loca.lt"
-    
-    # Guardar URL en archivo
-    echo "$LT_URL" > "$LT_URL_FILE"
-    log "✅ URL de LocalTunnel guardada en: $LT_URL_FILE"
-    
-    # Verificar que el túnel esté funcionando
-    if curl -s --head --request GET "$LT_URL" | grep "200\|301\|302" > /dev/null; then
-        log "🌍 URL pública de localtunnel: $LT_URL"
-    else
-        log "⚠️ El túnel puede tardar un poco más en estar listo. URL: $LT_URL"
-    fi
-else
-    log "❌ Error iniciando localtunnel"
-    echo "ERROR: LocalTunnel no se inició" > "$LT_URL_FILE"
-fi
-
 log "✨ Proceso de inicio completado"
 log "📊 Estado de los servicios:"
 docker compose ps >> "$LOG_FILE" 2>&1

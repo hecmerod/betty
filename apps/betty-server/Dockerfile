@@ -40,7 +40,9 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     v4l-utils \
     lsof \
+    procps \
     && pip3 install --break-system-packages gpiod \
+    && npm install -g localtunnel \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar capacidades BLE para Node.js (permite acceso a Bluetooth sin sudo)
@@ -58,6 +60,7 @@ EXPOSE 3000
 
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV ENABLE_TUNNEL_HEALTH_CHECK=false
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
