@@ -14,6 +14,7 @@ import { SshModule } from './ssh/ssh.module';
 import { RedisModule } from './shared/redis/redis.module';
 import { LocaltunnelModule } from './core/localtunnel/localtunnel.module';
 import { HealthModule } from './core/health/health.module';
+import { ObdiiModule } from './obdii/obdii.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { HealthModule } from './core/health/health.module';
     SshModule,
     RedisModule,
     LocaltunnelModule,
+    ObdiiModule,
   ],
 })
 export class AppModule {}
