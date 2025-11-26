@@ -12,7 +12,6 @@ import { PrismaModule } from './shared/prisma/prisma.module';
 import { BatteriesModule } from './batteries/batteries.module';
 import { SshModule } from './ssh/ssh.module';
 import { RedisModule } from './shared/redis/redis.module';
-import { LocaltunnelModule } from './core/localtunnel/localtunnel.module';
 import { HealthModule } from './core/health/health.module';
 import { ObdiiModule } from './obdii/obdii.module';
 
@@ -35,7 +34,6 @@ import { ObdiiModule } from './obdii/obdii.module';
     BatteriesModule,
     SshModule,
     RedisModule,
-    LocaltunnelModule,
     ObdiiModule,
   ],
 })
