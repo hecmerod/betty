@@ -18,12 +18,12 @@
     {
       "pin": 5,
       "direction": "INPUT",
-      "description": "GPIO 5 - Puerta lateral"
+      "description": "GPIO 5 - Puerta lateral - Blanco"
     },
     {
       "pin": 6,
       "direction": "INPUT",
-      "description": "GPIO 6 - Puertas delanteras"
+      "description": "GPIO 6 - Puertas delanteras - Gris"
     },
     {
       "pin": 7,
@@ -104,7 +104,7 @@
     {
       "pin": 22,
       "direction": "INPUT",
-      "description": "GPIO 22 - Puerta trasera"
+      "description": "GPIO 22 - Puerta trasera - Morado"
     },
     {
       "pin": 23,
@@ -129,7 +129,7 @@
     {
       "pin": 27,
       "direction": "INPUT",
-      "description": "GPIO 27 - Claraboyas",
+      "description": "GPIO 27 - Claraboyas - Azul",
       "watch": true
     }
   ]
