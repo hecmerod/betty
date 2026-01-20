@@ -4,6 +4,8 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+//const camerasConfig = require('../adapters/cameras.json');
+
 @Injectable()
 export class UsbCameraFinderService implements OnModuleInit {
   private readonly logger = new Logger(UsbCameraFinderService.name);
@@ -13,31 +15,25 @@ export class UsbCameraFinderService implements OnModuleInit {
   async onModuleInit() {
     await this.findAllUsbCameras();
 
-    if (!this.internalCamera) throw new Error('No internal cameras detected');
+    if (!this.internalCamera) this.logger.error('No internal camera detected');
     if (this.externalCameras.length === 0)
-      throw new Error('No external cameras detected');
+      this.logger.error('No external cameras detected');
   }
 
   async findAllUsbCameras(): Promise<void> {
+
     const { stdout } = await execAsync(
       'v4l2-ctl --list-devices 2>/dev/null || echo ""'
     );
-
-    const cameras: string[] = [];
     const lines = stdout.split('\n');
+
     let isUsbCamera = false;
     let isWebcam = false;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
-      if (
-        (line.toLowerCase().includes('usb') ||
-          line.includes('HD 2MP WEBCAM') ||
-          line.includes('USB Camera')) &&
-        !line.toLowerCase().includes('bcm') &&
-        !line.toLowerCase().includes('mmal')
-      ) {
+      if (line.toLowerCase().includes('usb')) {
         isUsbCamera = true;
         isWebcam =
           line.toLowerCase().includes('webcam') ||
@@ -47,14 +43,16 @@ export class UsbCameraFinderService implements OnModuleInit {
 
       if (isUsbCamera && line.includes('/dev/video')) {
         const match = line.match(/\/dev\/video\d+/);
-        if (match && !cameras.includes(match[0])) {
+        if (match) {
           const isCapture = await this.isVideoCaptureDevice(match[0]);
-          if (isCapture) {
-            if (isWebcam && !this.internalCamera) {
+          if (isCapture) {            
+            this.internalCamera = match[0];              
+
+            /*if (isWebcam && !this.internalCamera) {
               this.internalCamera = match[0];
             } else {
               this.externalCameras.push(match[0]);
-            }
+            }*/
           }
         }
       }

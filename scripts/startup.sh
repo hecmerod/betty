@@ -44,6 +44,15 @@ sleep 10
 # ========================================
 
 LT_URL_FILE="$PROJECT_DIR/tmp/localtunnel-url.txt"
+ENV_FILE="$PROJECT_DIR/.env"
+if [ -f "$ENV_FILE" ]; then
+    set -o allexport
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
+    set +o allexport
+fi
+CLOUDFLARED_LOG="$PROJECT_DIR/logs/cloudflared.log"
+nohup cloudflared tunnel run --token "$CLOUDFLARED_TOKEN"
 
 # Crear directorio tmp si no existe
 mkdir -p "$PROJECT_DIR/tmp"
