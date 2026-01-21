@@ -2,9 +2,9 @@
 
 commit_msg=$(cat "$1")
 
-if ! echo "$commit_msg" | grep -qE '^\[(Server|App|Camera|Repo)\]'; then
+if ! echo "$commit_msg" | grep -qE '^\[(Server|App|Repo)\]'; then
   echo ""
-  echo "❌ Error: El mensaje del commit debe comenzar con [Server], [App], [Camera] o [Repo]"
+  echo "❌ Error: El mensaje del commit debe comenzar con [Server], [App] o [Repo]"
   echo ""
   exit 1
 fi

@@ -12,15 +12,12 @@ fi
 
 run_server_tests=false
 run_app_tests=false
-run_camera_tests=false
 
 while IFS= read -r file; do
   if echo "$file" | grep -qE '^apps/betty-server/'; then
     run_server_tests=true
   elif echo "$file" | grep -qE '^apps/betty_app/'; then
     run_app_tests=true
-  elif echo "$file" | grep -qE '^apps/betty-camera/'; then
-    run_camera_tests=true
   fi
 done << EOF
 $changed_files
@@ -53,21 +50,7 @@ if [ "$run_app_tests" = true ]; then
   echo ""
 fi
 
-if [ "$run_camera_tests" = true ]; then
-  echo "📷 Ejecutando tests de betty-camera..."
-  cd apps/betty-camera && python -m pytest
-  if [ $? -ne 0 ]; then
-    echo ""
-    echo "❌ Los tests de betty-camera fallaron. Commit cancelado."
-    echo ""
-    exit 1
-  fi
-  cd ../..
-  echo "✅ Tests de betty-camera pasaron"
-  echo ""
-fi
-
-if [ "$run_server_tests" = false ] && [ "$run_app_tests" = false ] && [ "$run_camera_tests" = false ]; then
+if [ "$run_server_tests" = false ] && [ "$run_app_tests" = false ]; then
   echo "ℹ️  No hay cambios que requieran tests"
 fi
 echo ""
