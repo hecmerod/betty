@@ -4,12 +4,15 @@ import { config } from 'dotenv';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { SendNotificationUseCase } from './notifications/application/use-cases/send-notification/send-notification.use-case';
+import { CustomLogger } from './core/logger/custom-logger';
 
 // Cargar variables de entorno desde .env
 config({ path: join(__dirname, '../.env') });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useLogger(app.get(CustomLogger));
 
   app.enableCors({
     origin: [
