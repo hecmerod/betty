@@ -43,7 +43,7 @@ async function bootstrap() {
   await app.listen(port, '0.0.0.0');
 
   Logger.log(
-    `🍓 Betty Server is running on: http://0.0.0.0:${port}/${globalPrefix}`
+    `🚐 Betty Server is running on: http://0.0.0.0:${port}/${globalPrefix}`
   );
   Logger.log(`📊 Health check: http://0.0.0.0:${port}/${globalPrefix}/health`);
 

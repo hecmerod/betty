@@ -32,6 +32,18 @@ npm run pm2:status
 curl http://localhost:3000/api/health
 ```
 
+## CI/CD (Automated Deployment)
+
+Pushing to `main` triggers automatic deployment via GitHub Actions.
+
+1. Tests run on GitHub's servers
+2. Deploy runs on the Raspberry Pi (self-hosted runner)
+3. PM2 restarts the server automatically
+
+See `.github/RUNNER_SETUP.md` for runner installation.
+
+---
+
 ## Monitoring
 
 View logs:
