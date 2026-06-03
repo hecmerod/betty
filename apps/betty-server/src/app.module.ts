@@ -36,7 +36,7 @@ import { LoggerModule } from './core/logger/logger.module';
     SshModule,
     RedisModule,
     ObdiiModule,
-    LoggerModule
+    LoggerModule,
   ],
 })
 export class AppModule {}

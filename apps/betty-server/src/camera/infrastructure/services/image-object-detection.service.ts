@@ -41,7 +41,7 @@ export class ImageObjectDetectionService implements OnModuleInit {
       await this.preprocessImage(imageBuffer);
 
     const feeds = { images: tensor };
-    const results = await this.session.run(feeds);
+    const results = await this.session!.run(feeds);
 
     const detections = this.postprocessResults(
       results,
