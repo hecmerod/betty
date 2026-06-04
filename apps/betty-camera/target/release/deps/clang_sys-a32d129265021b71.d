@@ -1,0 +1,14 @@
+/home/hecmerod/Projects/betty/apps/betty-camera/target/release/deps/clang_sys-a32d129265021b71.d: /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/lib.rs /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/support.rs /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/link.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/macros.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/common.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/dynamic.rs
+
+/home/hecmerod/Projects/betty/apps/betty-camera/target/release/deps/libclang_sys-a32d129265021b71.rlib: /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/lib.rs /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/support.rs /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/link.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/macros.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/common.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/dynamic.rs
+
+/home/hecmerod/Projects/betty/apps/betty-camera/target/release/deps/libclang_sys-a32d129265021b71.rmeta: /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/lib.rs /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/support.rs /home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/link.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/macros.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/common.rs /home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/dynamic.rs
+
+/home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/lib.rs:
+/home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/support.rs:
+/home/hecmerod/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clang-sys-1.8.1/src/link.rs:
+/home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/macros.rs:
+/home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/common.rs:
+/home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out/dynamic.rs:
+
+# env-dep:OUT_DIR=/home/hecmerod/Projects/betty/apps/betty-camera/target/release/build/clang-sys-7ff41655f244df1b/out

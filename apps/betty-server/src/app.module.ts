@@ -24,7 +24,7 @@ import { LoggerModule } from './core/logger/logger.module';
     }),
     ThrottlerConfigModule,
     AuthModule,
-    CameraModule,
+    //CameraModule,
     AlarmModule,
     NotificationsModule,
     GpsModule,

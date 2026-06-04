@@ -28,10 +28,10 @@ services:
       - /run/udev:/run/udev:ro
     device_cgroup_rules:
       # Reglas de dispositivos para acceso a cámara USB y hardware
-      - 'c 81:* rmw'   # Video devices (V4L2)
-      - 'c 189:* rmw'  # USB devices
-      - 'c 235:* rmw'  # Media devices
-      - 'c 236:* rmw'  # Additional media devices
+      - 'c 81:* rmw' # Video devices (V4L2)
+      - 'c 189:* rmw' # USB devices
+      - 'c 235:* rmw' # Media devices
+      - 'c 236:* rmw' # Additional media devices
     group_add:
       - video
     env_file:
@@ -45,6 +45,25 @@ services:
       - BORE_CONTROL_FILE=/app/tmp/bore-control.txt
       - BORE_SSH_URL_FILE=/app/tmp/bore-ssh-url.txt
 
+  betty-camera:
+    build:
+      context: ./apps/betty-camera
+      dockerfile: Dockerfile
+    container_name: betty-camera
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    devices:
+      - /dev/video0:/dev/video0
+    volumes:
+      - ./apps/betty-camera:/usr/src/betty-camera:rw
+    group_add:
+      - video
+    environment:
+      - PORT=8001
+      - CAMERA_DEVICE=/dev/video0
+    command: ['sh', '-c', "cargo watch -i target -w . -x 'run --release'"]
+
   betty-db:
     image: postgres:16-alpine
     container_name: betty-db
@@ -56,9 +75,9 @@ services:
     volumes:
       - betty-db-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - '5432:5432'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U betty -d betty"]
+      test: ['CMD-SHELL', 'pg_isready -U betty -d betty']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -71,12 +90,12 @@ services:
     container_name: betty-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - betty-redis-data:/data
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -88,7 +107,7 @@ services:
     image: postgres:16-alpine
     container_name: betty-db-backup
     restart: unless-stopped
-    user: "0:0"  # Ejecutar como root para tener permisos de escritura
+    user: '0:0' # Ejecutar como root para tener permisos de escritura
     depends_on:
       betty-db:
         condition: service_healthy
@@ -98,7 +117,7 @@ services:
       - ./backups/db:/backups
       - ./scripts/backup-db.sh:/backup-db.sh:ro
     entrypoint: /bin/sh
-    command: 
+    command:
       - -c
       - |
         chmod 777 /backups
