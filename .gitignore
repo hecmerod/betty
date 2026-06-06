@@ -127,3 +127,5 @@ apps/betty-server/models/*.pt
 apps/betty-camera/*.onnx
 apps/betty-camera/*.pt
 apps/betty-camera/*.torchscript
+
+target/

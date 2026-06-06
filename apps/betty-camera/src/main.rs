@@ -5,6 +5,9 @@ use std::sync::Arc;
 
 mod camera;
 mod capture_process;
+mod config;
+mod detection;
+mod http;
 mod image_processor;
 mod routes;
 mod state;
@@ -42,7 +45,5 @@ async fn main() {
         .await
         .expect("bind address");
 
-    axum::serve(listener, app)
-        .await
-        .expect("server failure");
+    axum::serve(listener, app).await.expect("server failure");
 }

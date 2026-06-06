@@ -41,5 +41,8 @@
     "editor.tabCompletion": "onlySnippets",
     "editor.wordBasedSuggestions": "off"
   },
-  "python.analysis.extraPaths": ["./apps/betty-camera/src/camera"]
+  "python.analysis.extraPaths": ["./apps/betty-camera/src/camera"],
+  "rust-analyzer.linkedProjects": [
+    "./apps/betty-camera/Cargo.toml"
+  ]
 }
