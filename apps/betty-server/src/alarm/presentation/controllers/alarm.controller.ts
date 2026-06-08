@@ -6,6 +6,7 @@ import {
   TriggerAlarmUseCase,
 } from '../../application/use-cases/trigger-alarm/trigger-alarm.use-case';
 import { GetAlarmStatusUseCase } from '../../application/use-cases/get-alarm-status/get-alarm-status.use-case';
+import { Protected } from '../../../shared/auth/presentation/decorators/protected.decorator';
 
 @Controller('alarm')
 export class AlarmController {
@@ -31,6 +32,7 @@ export class AlarmController {
     return this.deactivateAlarmUseCase.execute();
   }
 
+  @Protected()
   @Post('trigger')
   async triggerAlarm(@Body() body: AlarmTriggerData) {
     return this.triggerAlarmUseCase.execute(body);

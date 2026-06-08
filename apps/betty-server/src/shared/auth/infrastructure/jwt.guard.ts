@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../presentation/decorators/public.decorator';
+import { IS_PROTECTED_KEY } from '../presentation/decorators/protected.decorator';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -21,14 +22,20 @@ export class JwtAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     if (process.env.NODE_ENV !== 'production') return true;
 
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const [isPublic, isProtected] = [
+      this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]),
+      this.reflector.getAllAndOverride<boolean>(IS_PROTECTED_KEY, [context.getHandler(), context.getClass()]),
+    ];
 
-    if (isPublic) return true;
+    if (isPublic) return true;  
 
     const request = context.switchToHttp().getRequest();
+
+    const ip = request.ip;
+    
+    if (isProtected && ip?.startsWith('127.')) 
+      return true;
+
     const token = this.extractTokenFromHeader(request);
 
     if (!token) throw new UnauthorizedException('No token provided');
