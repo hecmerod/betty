@@ -4,15 +4,17 @@
   "license": "MIT",
   "scripts": {
     "prepare": "sh .husky/install.sh",
-    "betty-server": "nx build betty-server && NODE_ENV=production node dist/apps/betty-server/src/main.js",
-    "betty-server:dev": "nx serve betty-server --configuration=development",
-    "betty-server:test": "nx test betty-server",
-    "betty-server:test:watch": "nx test:watch betty-server",
-    "betty-server:install": "nx run betty-server:install",
-    "betty-server:build": "nx build betty-server",
+    "server": "nx build betty-server && NODE_ENV=production node dist/apps/betty-server/src/main.js",
+    "server:dev": "nx serve betty-server --configuration=development",
+    "server:test": "nx test betty-server",
+    "server:test:watch": "nx test:watch betty-server",
+    "server:install": "nx run betty-server:install",
+    "server:build": "nx build betty-server",
     "betty-app": "cd apps/betty_app && flutter run",
     "betty-app:dev": "cd apps/betty_app && flutter run --debug",
-    "betty-app:build": "cd apps/betty_app && flutter build apk"
+    "betty-app:build": "cd apps/betty_app && flutter build apk",
+    "camera:dev": "cd apps/betty-camera && cargo watch -x 'run'",
+    "camera:test": "cd apps/betty-camera && cargo test"
   },
   "private": true,
   "dependencies": {
