@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../services/camera_service.dart';
 import '../widgets/video_stream_widget.dart';
-import '../widgets/capture_button_widget.dart';
 import '../bloc/camera_bloc.dart';
 import '../bloc/camera_event.dart';
 import '../bloc/camera_state.dart';
@@ -46,9 +45,6 @@ class ExternalCameraPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              const CaptureButtonWidget(cameraType: CameraType.external),
-              const SizedBox(height: 16),
             ],
           ),
         );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/camera_service.dart';
 import '../widgets/video_stream_widget.dart';
-import '../widgets/capture_button_widget.dart';
 
 class InternalCameraPage extends StatelessWidget {
   const InternalCameraPage({super.key});
@@ -29,9 +28,6 @@ class InternalCameraPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
-          const CaptureButtonWidget(cameraType: CameraType.internal),
-          const SizedBox(height: 16),
         ],
       ),
     );

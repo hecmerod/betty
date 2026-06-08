@@ -6,7 +6,10 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "betty-server:dev"],
+      "runtimeArgs": [
+        "run",
+        "betty-server:dev"
+      ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "env": {
@@ -18,7 +21,10 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "betty-server:test"],
+      "runtimeArgs": [
+        "run",
+        "betty-server:test"
+      ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "env": {
@@ -30,7 +36,10 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "betty-server:build"],
+      "runtimeArgs": [
+        "run",
+        "betty-server:build"
+      ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "env": {
@@ -42,14 +51,16 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "betty-app"],
+      "runtimeArgs": [
+        "run",
+        "betty-app"
+      ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "env": {
         "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
       }
     },
-
     {
       "name": "🚀 App Debug ",
       "type": "dart",
@@ -57,14 +68,16 @@
       "program": "${workspaceFolder}/apps/betty_app/lib/main.dart",
       "cwd": "${workspaceFolder}/apps/betty_app",
       "flutterMode": "debug",
-      "deviceId": "192.168.1.216:5555"
     },
     {
       "name": "🔨 App Betty ",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "betty-app:build"],
+      "runtimeArgs": [
+        "run",
+        "betty-app:build"
+      ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "env": {

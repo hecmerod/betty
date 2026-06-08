@@ -70,6 +70,8 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
       final response = await _httpClient!.send(request);
 
+      print(url);
+
       if (response.statusCode == 200) {
         _streamSubscription = _parseMultipartStream(response.stream).listen(
           _onFrameReceived,
