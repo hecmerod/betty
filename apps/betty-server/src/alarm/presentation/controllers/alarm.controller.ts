@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ActivateAlarmUseCase } from '../../application/use-cases/activate-alarm/activate-alarm.use-case';
 import { DeactivateAlarmUseCase } from '../../application/use-cases/deactivate-alarm/deactivate-alarm.use-case';
 import {
-  AlarmTriggerData,
+  AlarmTriggerDataInput,
   TriggerAlarmUseCase,
 } from '../../application/use-cases/trigger-alarm/trigger-alarm.use-case';
 import { GetAlarmStatusUseCase } from '../../application/use-cases/get-alarm-status/get-alarm-status.use-case';
@@ -34,7 +34,7 @@ export class AlarmController {
 
   @Protected()
   @Post('trigger')
-  async triggerAlarm(@Body() body: AlarmTriggerData) {
+  async triggerAlarm(@Body() body: AlarmTriggerDataInput) {
     return this.triggerAlarmUseCase.execute(body);
   }
 }
