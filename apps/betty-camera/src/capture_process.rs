@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use tokio::sync::watch;
 use tokio::task;
+use tracing::{error, info};
 
 use crate::camera::CameraAdapter;
 use crate::detection::DetectionModel;
@@ -13,12 +14,12 @@ use crate::image_processor::ImageProcessor;
 pub fn start_capture_process(adapter: Arc<CameraAdapter>) -> watch::Receiver<Option<Bytes>> {
     let (frame_tx, frame_rx) = watch::channel(None);
 
-    let model_path =
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../betty-server/models/yolov8n.onnx");
+    let model_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join(std::env::var("MODEL_PATH").expect("MODEL_PATH not set"));
     let detection_model = match DetectionModel::new(&model_path) {
         Ok(model) => Some(Arc::new(Mutex::new(model))),
         Err(err) => {
-            eprintln!("load detection model: {}", err);
+            error!("load detection model: {}", err);
             None
         }
     };
@@ -29,7 +30,7 @@ pub fn start_capture_process(adapter: Arc<CameraAdapter>) -> watch::Receiver<Opt
             let mut stream = CameraAdapter::open_stream(&dev)?;
             let (width, height, fourcc_str) = CameraAdapter::get_format(&dev)?;
 
-            eprintln!(
+            info!(
                 "Capture process started: {}x{} format={}",
                 width, height, fourcc_str
             );
@@ -50,10 +51,8 @@ pub fn start_capture_process(adapter: Arc<CameraAdapter>) -> watch::Receiver<Opt
                             let model = model.lock().unwrap();
                             match model.detect_person(&image_for_detection) {
                                 Ok(true) => activate_alarm(),
-                                Ok(false) => {
-                                    eprintln!("Safe");
-                                }
-                                Err(err) => eprintln!("detection error: {}", err),
+                                Ok(false) => {}
+                                Err(err) => error!("detection error: {}", err),
                             }
                         });
                         next_detection += Duration::from_secs(5);
@@ -68,7 +67,7 @@ pub fn start_capture_process(adapter: Arc<CameraAdapter>) -> watch::Receiver<Opt
         .await;
 
         if let Err(err) = result {
-            eprintln!("Capture process error: {}", err);
+            error!("Capture process error: {}", err);
         }
     });
 

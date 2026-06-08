@@ -21,13 +21,15 @@ use state::CameraState;
 
 #[tokio::main]
 async fn main() {
-    let device_path = std::env::var("CAMERA_DEVICE").unwrap_or_else(|_| "/dev/video0".to_string());
+    dotenvy::dotenv().ok();
+    tracing_subscriber::fmt().without_time().init();
+
     let port = std::env::var("PORT")
         .ok()
         .and_then(|v| v.parse().ok())
         .unwrap_or(8001);
 
-    let camera_adapter = Arc::new(CameraAdapter::new(device_path));
+    let camera_adapter = Arc::new(CameraAdapter::new());
     let frame_rx = start_capture_process(camera_adapter.clone());
     let camera_state = CameraState { frame_rx };
 
@@ -38,8 +40,6 @@ async fn main() {
         .with_state(camera_state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
-    tracing_subscriber::fmt().without_time().init();
-    println!("betty-camera listening on http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr)
         .await

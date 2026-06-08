@@ -1,18 +1,37 @@
-FROM rust:1.93-slim
+FROM rust:1.91-slim-bookworm AS builder
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends clang libclang-dev libv4l-dev pkg-config \
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libclang-dev \
+    clang \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/src/betty-camera
+COPY Cargo.toml Cargo.lock ./
 
-COPY Cargo.toml ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs \
+    && cargo build --release \
+    && rm -rf src
+
 COPY src ./src
-RUN cargo fetch
-RUN cargo install cargo-watch
+RUN touch src/main.rs && cargo build --release
 
-COPY . .
+
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libv4l-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Acceso al dispositivo de cámara
+RUN usermod -aG video root 2>/dev/null || true
+
+COPY --from=builder /app/target/release/betty-camera ./betty-camera
 
 EXPOSE 8001
 
-CMD ["sh", "-c", "cargo watch -i target -w src -w Cargo.toml -x 'run --release'"]
+CMD ["./betty-camera"]

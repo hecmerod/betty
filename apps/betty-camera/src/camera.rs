@@ -9,31 +9,27 @@ pub struct CameraAdapter {
 }
 
 impl CameraAdapter {
-    pub fn new(device_path: String) -> Self {
+    pub fn new() -> Self {
+        let device_path = std::env::var("DEVICE_PATH").expect("DEVICE_PATH not set");
+
         CameraAdapter { device_path }
     }
 
     pub fn open_device(&self) -> Result<Device, String> {
-        Device::with_path(&self.device_path)
-            .map_err(|e| format!("open device: {}", e))
+        Device::with_path(&self.device_path).map_err(|e| format!("open device: {}", e))
     }
 
     pub fn open_stream(dev: &Device) -> Result<Stream<'_>, String> {
-        Stream::new(dev, Type::VideoCapture)
-            .map_err(|e| format!("open stream: {}", e))
+        Stream::new(dev, Type::VideoCapture).map_err(|e| format!("open stream: {}", e))
     }
 
     pub fn get_format(dev: &Device) -> Result<(u32, u32, String), String> {
-        let fmt = dev
-            .format()
-            .map_err(|e| format!("query format: {}", e))?;
+        let fmt = dev.format().map_err(|e| format!("query format: {}", e))?;
         Ok((fmt.width, fmt.height, format!("{}", fmt.fourcc)))
     }
 
     pub fn capture_frame(stream: &mut Stream) -> Result<Vec<u8>, String> {
-        let (data, _meta) = stream
-            .next()
-            .map_err(|e| format!("capture frame: {}", e))?;
+        let (data, _meta) = stream.next().map_err(|e| format!("capture frame: {}", e))?;
         Ok(data.to_vec())
     }
 }

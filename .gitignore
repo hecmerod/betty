@@ -128,4 +128,4 @@ apps/betty-camera/*.onnx
 apps/betty-camera/*.pt
 apps/betty-camera/*.torchscript
 
-target/
+**/target/**

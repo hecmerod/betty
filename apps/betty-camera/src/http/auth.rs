@@ -2,20 +2,21 @@ use crate::config::{get_backend_url, get_environment};
 use axum::body::Body;
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::Response;
+use tracing::{error, warn};
 
 pub async fn check_auth(headers: &HeaderMap) -> Result<(), Response> {
     let Some(env) = get_environment() else {
-        eprintln!("ENV not set, skipping auth call");
+        error!("ENV not set, skipping auth call");
         return Ok(());
     };
 
     if env == "development" {
-        eprintln!("Development environment, skipping auth call");
+        warn!("Development environment, skipping auth call");
         return Ok(());
     }
 
     let Some(base_url) = get_backend_url() else {
-        eprintln!("BACKEND_URL not set, skipping auth call");
+        warn!("BACKEND_URL not set, skipping auth call");
         return Ok(());
     };
 

@@ -4,11 +4,6 @@ services:
       context: .
       dockerfile: apps/betty-server/Dockerfile
     container_name: betty-server
-    depends_on:
-      betty-db:
-        condition: service_healthy
-      betty-redis:
-        condition: service_healthy
     restart: unless-stopped
     network_mode: host
     privileged: true
@@ -44,25 +39,42 @@ services:
       - CAMERA_SERVICE_URL=http://localhost:8001/camera
       - BORE_CONTROL_FILE=/app/tmp/bore-control.txt
       - BORE_SSH_URL_FILE=/app/tmp/bore-ssh-url.txt
+    healthcheck:
+      test:
+        ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/api/health']
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      betty-db:
+        condition: service_healthy
+      betty-redis:
+        condition: service_healthy
 
   betty-camera:
     build:
       context: ./apps/betty-camera
       dockerfile: Dockerfile
+    env_file:
+      - apps/betty-camera/.env
+    environment:
+      - ENV=production
+      - BACKEND_URL=http://localhost:3000/api/
+      - MODEL_PATH=models/yolov8n.onnx
+    volumes:
+      - ./models:/app/models:ro
     container_name: betty-camera
     restart: unless-stopped
     network_mode: host
     privileged: true
     devices:
       - /dev/video0:/dev/video0
-    volumes:
-      - ./apps/betty-camera:/usr/src/betty-camera:rw
     group_add:
       - video
-    environment:
-      - PORT=8001
-      - CAMERA_DEVICE=/dev/video0
-    command: ['sh', '-c', "cargo watch -i target -w . -x 'run --release'"]
+    depends_on:
+      betty-server:
+        condition: service_healthy
 
   betty-db:
     image: postgres:16-alpine
