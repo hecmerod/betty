@@ -18,6 +18,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { GpioModule } from '../gpio/gpio.module';
 import { DoorsService } from './application/services/doors.service';
 import { MotionDetectionService } from './application/services/motion-detection.service';
+import { TriggerSensorUseCase } from './application/use-cases/trigger-sensor/trigger-sensor.use-case';
 
 @Module({
   imports: [NotificationsModule, GpioModule],
@@ -32,6 +33,7 @@ import { MotionDetectionService } from './application/services/motion-detection.
     EnableSensorUseCase,
     DisableSensorUseCase,
     GetSensorsStatusUseCase,
+    TriggerSensorUseCase,
     {
       provide: ALARM_REPOSITORY,
       useClass: PrismaAlarmRepository,
@@ -49,6 +51,7 @@ import { MotionDetectionService } from './application/services/motion-detection.
     EnableSensorUseCase,
     DisableSensorUseCase,
     GetSensorsStatusUseCase,
+    TriggerSensorUseCase,
     ALARM_REPOSITORY,
     SENSOR_REPOSITORY,
   ],
