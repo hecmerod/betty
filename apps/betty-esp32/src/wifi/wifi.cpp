@@ -2,8 +2,8 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-const char *ssid = "DIGIFIBRA-FC01";
-const char *password = "MLANLD7KEF";
+const char *ssid = "";
+const char *password = "";
 
 void connect()
 {
