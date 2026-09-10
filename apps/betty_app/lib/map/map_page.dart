@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../shared/services/gps_service.dart';
-import 'widgets/location_button.dart';
-import 'widgets/vehicle_location_button.dart';
-import 'services/map_api_service.dart';
 import '../shared/theme/app_theme.dart';
+import 'models/location_record.dart';
+import 'services/map_api_service.dart';
+import 'widgets/location_button.dart';
+import 'widgets/locations_list.dart';
+import 'widgets/vehicle_location_button.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -16,6 +18,8 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
+  static const _historyRange = Duration(days: 30);
+
   final MapController _mapController = MapController();
   final _gpsService = GpsService.instance;
   final _mapApiService = MapApiService.instance;
@@ -23,6 +27,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   LatLng? _vehicleLocation;
   bool _locationObtained = false;
   bool _vehicleLocationObtained = false;
+  List<LocationRecord> _trackedLocations = [];
+  bool _locationsLoading = true;
+  int? _selectedLocationIndex;
 
   @override
   void initState() {
@@ -33,8 +40,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadLocations() async {
-    // Cargar ambas ubicaciones al inicio
-    await Future.wait([_fetchCurrentLocation(), _fetchVehicleLocation()]);
+    await Future.wait([_fetchCurrentLocation(), _fetchVehicleLocation(), _fetchTrackedLocations()]);
   }
 
   Future<void> _fetchCurrentLocation() async {
@@ -47,7 +53,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           _locationObtained = true;
         });
 
-        // Animar a la ubicación del usuario al inicio
         await Future.delayed(const Duration(milliseconds: 100));
         _animateToLocation(_currentLocation, 15.0);
       }
@@ -71,16 +76,42 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }
   }
 
+  Future<void> _fetchTrackedLocations() async {
+    try {
+      final now = DateTime.now().toUtc();
+      final locations = await _mapApiService.getAllLocations(from: now.subtract(_historyRange), to: now);
+
+      if (mounted) {
+        setState(() {
+          _trackedLocations = locations.reversed.toList();
+          _locationsLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error al obtener el historial de ubicaciones: $e');
+      if (mounted) {
+        setState(() => _locationsLoading = false);
+      }
+    }
+  }
+
   void _animateToCurrentLocation() {
     if (_locationObtained) {
+      setState(() => _selectedLocationIndex = null);
       _animateToLocation(_currentLocation, 15.0);
     }
   }
 
   void _animateToVehicleLocation() {
     if (_vehicleLocationObtained && _vehicleLocation != null) {
+      setState(() => _selectedLocationIndex = null);
       _animateToLocation(_vehicleLocation!, 15.0);
     }
+  }
+
+  void _onTrackedLocationSelected(int index) {
+    setState(() => _selectedLocationIndex = index);
+    _animateToLocation(_trackedLocations[index].position, 16.0);
   }
 
   void _animateToLocation(LatLng destination, double zoom) {
@@ -101,9 +132,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     });
 
     animation.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        controller.dispose();
-      } else if (status == AnimationStatus.dismissed) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
         controller.dispose();
       }
     });
@@ -111,8 +140,92 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     controller.forward();
   }
 
+  List<Marker> _buildMarkers() {
+    final markers = <Marker>[];
+
+    for (var i = 0; i < _trackedLocations.length; i++) {
+      final isSelected = _selectedLocationIndex == i;
+      markers.add(
+        Marker(
+          point: _trackedLocations[i].position,
+          width: isSelected ? 28 : 18,
+          height: isSelected ? 28 : 18,
+          child: GestureDetector(
+            onTap: () => _onTrackedLocationSelected(i),
+            child: Container(
+              decoration: BoxDecoration(
+                color: isSelected ? const Color(0xFF43e97b) : Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFF43e97b), width: isSelected ? 3 : 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF43e97b).withValues(alpha: isSelected ? 0.5 : 0.3),
+                    blurRadius: isSelected ? 8 : 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (_locationObtained) {
+      markers.add(
+        Marker(
+          point: _currentLocation,
+          width: 50,
+          height: 50,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: AppTheme.cameraGradient,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF4facfe).withValues(alpha: 0.5),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(Icons.person_pin_rounded, color: Colors.white, size: 30),
+          ),
+        ),
+      );
+    }
+
+    if (_vehicleLocationObtained && _vehicleLocation != null) {
+      markers.add(
+        Marker(
+          point: _vehicleLocation!,
+          width: 60,
+          height: 60,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: AppTheme.mapGradient,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF43e97b).withValues(alpha: 0.5),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(Icons.local_shipping_rounded, color: Colors.white, size: 35),
+          ),
+        ),
+      );
+    }
+
+    return markers;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final pathPoints = _trackedLocations.reversed.map((location) => location.position).toList();
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
@@ -135,54 +248,23 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 maxZoom: 19,
                 errorTileCallback: (tile, error, stackTrace) {},
               ),
-              if (_locationObtained)
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: _currentLocation,
-                      width: 50,
-                      height: 50,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: AppTheme.cameraGradient,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF4facfe).withValues(alpha: 0.5),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(Icons.person_pin_rounded, color: Colors.white, size: 30),
-                      ),
+              if (pathPoints.length >= 2)
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: pathPoints,
+                      color: const Color(0xFF43e97b),
+                      strokeWidth: 4,
+                      borderColor: Colors.white,
+                      borderStrokeWidth: 1,
                     ),
-                    if (_vehicleLocationObtained && _vehicleLocation != null)
-                      Marker(
-                        point: _vehicleLocation!,
-                        width: 60,
-                        height: 60,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.mapGradient,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF43e97b).withValues(alpha: 0.5),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(Icons.local_shipping_rounded, color: Colors.white, size: 35),
-                        ),
-                      ),
                   ],
                 ),
+              MarkerLayer(markers: _buildMarkers()),
             ],
           ),
           Positioned(
-            bottom: 24,
+            bottom: MediaQuery.of(context).size.height * 0.32,
             right: 16,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -193,6 +275,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 LocationButton(isLoading: false, onPressed: _animateToCurrentLocation),
               ],
             ),
+          ),
+          DraggableScrollableSheet(
+            initialChildSize: 0.28,
+            minChildSize: 0.18,
+            maxChildSize: 0.6,
+            builder: (context, scrollController) {
+              return LocationsList(
+                locations: _trackedLocations,
+                isLoading: _locationsLoading,
+                selectedIndex: _selectedLocationIndex,
+                scrollController: scrollController,
+                onLocationSelected: _onTrackedLocationSelected,
+              );
+            },
           ),
         ],
       ),
