@@ -5,7 +5,7 @@ NestJS backend that runs on a Raspberry Pi and coordinates the Betty camper van 
 ## Features
 
 - **Alarm** — sensor management, activation/deactivation, and event triggers
-- **GPS & Trips** — location tracking and trip history
+- **GPS** — location tracking
 - **Batteries (BMS)** — BLE readings from multiple battery packs
 - **GPIO** — control of physical pins (lights, relays, etc.)
 - **Notifications** — push notifications via Firebase Cloud Messaging
