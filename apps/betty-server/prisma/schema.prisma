@@ -43,3 +43,16 @@ model DeviceToken {
 
   @@map("device_tokens")
 }
+
+// Modelo Location - ubicaciones GPS
+model Location {
+  id         String   @id // UUID
+  latitude   Float
+  longitude  Float
+  altitude   Float?
+  recordedAt DateTime
+  createdAt  DateTime @default(now())
+
+  @@map("locations")
+  @@index([recordedAt])
+}
