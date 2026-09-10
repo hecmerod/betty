@@ -2,11 +2,12 @@
 #include <WiFi.h>
 #include "http/http.h"
 #include "wifi/wifi.h"
+#include "sensors/movement_sensor.h"
+#include "sensors/door_sensor.h"
 
 #define SENSOR_PIN 4
+#define MOVEMENT_SENSOR_PIN 5
 #define LED_PIN 2
-
-bool lastState = false;
 
 void setup()
 {
@@ -15,21 +16,14 @@ void setup()
   connect();
 
   pinMode(SENSOR_PIN, INPUT_PULLUP);
+  pinMode(MOVEMENT_SENSOR_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
 }
 
 void loop()
 {
-  bool open = (digitalRead(SENSOR_PIN) == LOW);
-
-  digitalWrite(LED_PIN, open ? HIGH : LOW);
-
-  // solo envía si cambia estado
-  if (open != lastState)
-  {
-    sendEvent(open);
-    lastState = open;
-  }
+  detectMovement();
+  detectChanges();
 
   delay(50);
 }

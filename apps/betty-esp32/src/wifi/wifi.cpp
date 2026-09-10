@@ -1,9 +1,10 @@
+#include "config.h"
 #include "wifi.h"
 #include <Arduino.h>
 #include <WiFi.h>
 
-const char *ssid = "";
-const char *password = "";
+const char *ssid = WIFI_SSID;
+const char *password = WIFI_PASSWORD;
 
 void connect()
 {

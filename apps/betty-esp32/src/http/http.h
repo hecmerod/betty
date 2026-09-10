@@ -3,6 +3,6 @@
 
 #include <Arduino.h>
 
-void sendEvent(bool open);
+void sendEvent(bool state, String sensor);
 
 #endif

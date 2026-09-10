@@ -1,0 +1,14 @@
+CompileFlags:
+  Add:
+    - --target=riscv32-unknown-elf
+    - -isystem/Users/hecmerod/.platformio/packages/toolchain-xtensa-esp32/xtensa-esp32-elf/include
+    - -isystem/Users/hecmerod/.platformio/packages/toolchain-xtensa-esp32/xtensa-esp32-elf/include/c++/8.4.0
+    - -isystem/Users/hecmerod/.platformio/packages/toolchain-xtensa-esp32/xtensa-esp32-elf/include/c++/8.4.0/xtensa-esp32-elf
+  Remove:
+    - -mlongcalls
+    - -mtext-section-literals
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+    - -freorder-blocks
+    - -Wno-frame-address
+    - -Wno-error=unused-but-set-variable

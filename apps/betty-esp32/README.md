@@ -16,10 +16,11 @@ PlatformIO firmware for an ESP32 that monitors a door/skylight sensor and report
 
 ## Setup
 
-Before flashing, configure the WiFi credentials and server URL in the source files:
+Before flashing, copy `.env.example` to `.env` and set:
 
-- **WiFi** — `src/wifi/wifi.cpp` (`ssid`, `password`)
-- **Server endpoint** — `src/http/http.cpp` (`serverUrl`)
+- `WIFI_SSID` / `WIFI_PASSWORD` — WiFi credentials
+- `SERVER_URL` — Betty Server API base URL
+- `JWT_SECRET` — shared secret used to sign request JWTs (must match Betty Server)
 
 ## Commands
 
