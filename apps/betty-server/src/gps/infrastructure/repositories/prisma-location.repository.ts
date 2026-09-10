@@ -27,19 +27,28 @@ export class PrismaLocationRepository extends LocationRepository {
     return LocationMapper.toDomainEntity(created);
   }
 
-  async get(from: Date, to: Date, page = 1): Promise<Location[]> {
+  async get(
+    from?: Date,
+    to?: Date,
+    page = 1,
+    take = PrismaLocationRepository.PAGE_SIZE
+  ): Promise<Location[]> {
     const currentPage = Math.max(1, page);
+    const currentTake = Math.max(1, take);
+    const hasRange = from !== undefined || to !== undefined;
 
     const records = await this.prisma.location.findMany({
-      where: {
-        recordedAt: {
-          gte: from,
-          lte: to,
-        },
-      },
-      orderBy: { recordedAt: 'asc' },
-      skip: (currentPage - 1) * PrismaLocationRepository.PAGE_SIZE,
-      take: PrismaLocationRepository.PAGE_SIZE,
+      where: hasRange
+        ? {
+            recordedAt: {
+              ...(from ? { gte: from } : {}),
+              ...(to ? { lte: to } : {}),
+            },
+          }
+        : undefined,
+      orderBy: { recordedAt: hasRange ? 'asc' : 'desc' },
+      skip: (currentPage - 1) * currentTake,
+      take: currentTake,
     });
 
     return LocationMapper.toDomainEntities(records);

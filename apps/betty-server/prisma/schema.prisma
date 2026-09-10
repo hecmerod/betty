@@ -23,9 +23,9 @@ model Alarm {
   @@map("alarms")
 }
 
-// Modelo Sensor - configuración de sensores (puertas y movimiento)
+// Modelo Sensor - configuración de sensores (puertas, movimiento y ubicación)
 model Sensor {
-  id          String   @id // 'motion', 'door_claraboyas', 'door_trasera', 'door_lateral', 'door_delanteras'
+  id          String   @id // 'motion', 'door_claraboyas', 'door_trasera', 'door_lateral', 'door_delanteras', 'location'
   isListening Boolean  @default(true) // Si está escuchando eventos
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AlarmController } from './presentation/controllers/alarm.controller';
 import { SensorsController } from './presentation/controllers/sensors.controller';
 import { ActivateAlarmUseCase } from './application/use-cases/activate-alarm/activate-alarm.use-case';
@@ -16,12 +16,13 @@ import {
 } from './infrastructure/ioc/symbols';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { GpioModule } from '../gpio/gpio.module';
+import { GpsModule } from '../gps/gps.module';
 import { DoorsService } from './application/services/doors.service';
 import { MotionDetectionService } from './application/services/motion-detection.service';
 import { TriggerSensorUseCase } from './application/use-cases/trigger-sensor/trigger-sensor.use-case';
 
 @Module({
-  imports: [NotificationsModule, GpioModule],
+  imports: [NotificationsModule, GpioModule, forwardRef(() => GpsModule)],
   controllers: [AlarmController, SensorsController],
   providers: [
     ActivateAlarmUseCase,

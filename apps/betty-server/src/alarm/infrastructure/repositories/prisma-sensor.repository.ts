@@ -98,6 +98,7 @@ export class PrismaSensorRepository
       'door_trasera',
       'door_lateral',
       'door_delanteras',
+      'location',
     ];
 
     for (const id of sensorTypes) {

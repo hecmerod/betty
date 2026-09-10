@@ -137,5 +137,20 @@ describe('PrismaLocationRepository', () => {
         })
       );
     });
+
+    it('should return the last location when take is 1 and no date range', async () => {
+      mockPrismaLocation.findMany.mockResolvedValue([prismaRecord]);
+
+      const result = await repository.get(undefined, undefined, 1, 1);
+
+      expect(mockPrismaLocation.findMany).toHaveBeenCalledWith({
+        where: undefined,
+        orderBy: { recordedAt: 'desc' },
+        skip: 0,
+        take: 1,
+      });
+      expect(result).toHaveLength(1);
+      expect(result[0].latitude).toBe(40.4168);
+    });
   });
 });

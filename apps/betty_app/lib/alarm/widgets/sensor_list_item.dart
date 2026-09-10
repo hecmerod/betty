@@ -23,6 +23,8 @@ class SensorListItem extends StatelessWidget {
         return Icons.door_sliding_rounded;
       case 'meeting_room':
         return Icons.meeting_room_rounded;
+      case 'location_on':
+        return Icons.location_on_rounded;
       default:
         return Icons.sensors_rounded;
     }

@@ -3,7 +3,8 @@ export type SensorType =
   | 'door_claraboyas'
   | 'door_trasera'
   | 'door_lateral'
-  | 'door_delanteras';
+  | 'door_delanteras'
+  | 'location';
 
 export class Sensor {
   constructor(
