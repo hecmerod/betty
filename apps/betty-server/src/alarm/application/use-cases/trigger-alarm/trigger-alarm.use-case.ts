@@ -4,14 +4,18 @@ import { SendNotificationUseCase } from '../../../../notifications/application/u
 import { ALARM_REPOSITORY } from '../../../infrastructure/ioc/symbols';
 import { SetPinUseCase } from '../../../../gpio/application/use-cases/set-pin.use-case';
 
+const ALARM_COUNTER = 10;
+const ALARM_DELAY_OFF = 500;
+const ALARM_DELAY_ON = 200;
+
 @Injectable()
-export class TriggerAlarmUseCase implements OnModuleDestroy{
+export class TriggerAlarmUseCase implements OnModuleDestroy {
   constructor(
     @Inject(ALARM_REPOSITORY)
     private readonly alarmRepository: AlarmRepository,
     private readonly sendNotificationUseCase: SendNotificationUseCase,
     private readonly setPinUseCase: SetPinUseCase,
-  ) {}
+  ) { }
 
   private isAlarmSoundActive = false;
   private alarmTimer = 0;
@@ -22,6 +26,8 @@ export class TriggerAlarmUseCase implements OnModuleDestroy{
     const alarm = await this.alarmRepository.get();
 
     if (!alarm.isActive) return false;
+
+    this.alarmTimer = 0;
 
     try {
       await this.sendNotificationUseCase.execute({
@@ -38,27 +44,36 @@ export class TriggerAlarmUseCase implements OnModuleDestroy{
         },
       });
 
-      if(!this.isAlarmSoundActive) this.alarmSoundController(false);
+      if (!this.isAlarmSoundActive) {
+        this.isAlarmSoundActive = true;
+        this.alarmSoundController(false);
+      }
       else this.alarmTimer = 0;
 
       return true;
-    } catch  {
+    } catch {
       return false;
     }
   }
 
   async alarmSoundController(state: boolean) {
-    this.isAlarmSoundActive = true;
+    const alarm = await this.alarmRepository.get();
+
+    if (!alarm.isActive) return;
+
 
     await this.setPinUseCase.execute(17, state)
-
-    if(this.alarmTimer < 10) {
-      this.alarmTimer++;
-      setTimeout(() => this.alarmSoundController(!state), state ? 200 : 500);
-    }
     
-    await this.setPinUseCase.execute(17, true);
-    this.isAlarmSoundActive = false;
+    setTimeout(async() => {
+      await this.setPinUseCase.execute(17, true);    
+
+      if(state) this.alarmTimer++;
+
+      if(this.alarmTimer < ALARM_COUNTER) this.alarmSoundController(!state);
+      else this.isAlarmSoundActive = false;
+      
+    }, state ? ALARM_DELAY_ON : ALARM_DELAY_OFF);    
+
   }
 
   async onModuleDestroy() {
