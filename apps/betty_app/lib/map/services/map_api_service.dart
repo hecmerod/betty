@@ -20,14 +20,16 @@ class MapApiService {
     }
   }
 
-  Future<List<LocationRecord>> getLocations({required DateTime from, required DateTime to, int page = 1}) {
+  Future<List<LocationRecord>> getLocations({DateTime? from, DateTime? to, int page = 1}) {
+    final queryParameters = <String, String>{};
+
+    if (from != null) queryParameters['from'] = _toIso8601(from);
+    if (to != null) queryParameters['to'] = _toIso8601(to);
+    if (from != null || to != null) queryParameters['page'] = page.toString();
+
     return _apiService.getJson(
       '/locations',
-      queryParameters: {
-        'from': from.toUtc().toIso8601String(),
-        'to': to.toUtc().toIso8601String(),
-        'page': page.toString(),
-      },
+      queryParameters: queryParameters.isEmpty ? null : queryParameters,
       fromJson: (json) {
         final locations = json['locations'] as List<dynamic>? ?? [];
         return locations.map((item) => LocationRecord.fromJson(item as Map<String, dynamic>)).toList();
@@ -35,7 +37,13 @@ class MapApiService {
     );
   }
 
-  Future<List<LocationRecord>> getAllLocations({required DateTime from, required DateTime to}) async {
+  Future<List<LocationRecord>> getAllLocations({DateTime? from, DateTime? to}) async {
+    final hasRange = from != null || to != null;
+
+    if (!hasRange) {
+      return _sortedNewestFirst(await getLocations());
+    }
+
     final locations = <LocationRecord>[];
     var page = 1;
 
@@ -47,6 +55,24 @@ class MapApiService {
       page++;
     }
 
-    return locations;
+    return _sortedNewestFirst(locations);
+  }
+
+  List<LocationRecord> _sortedNewestFirst(List<LocationRecord> locations) {
+    return [...locations]..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+  }
+
+  /// NestJS `@IsDateString()` rejects Dart's 6-digit microsecond ISO strings.
+  String _toIso8601(DateTime dateTime) {
+    final utc = dateTime.toUtc();
+    return DateTime.utc(
+      utc.year,
+      utc.month,
+      utc.day,
+      utc.hour,
+      utc.minute,
+      utc.second,
+      utc.millisecond,
+    ).toIso8601String();
   }
 }

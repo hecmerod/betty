@@ -18,8 +18,6 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
-  static const _historyRange = Duration(days: 30);
-
   final MapController _mapController = MapController();
   final _gpsService = GpsService.instance;
   final _mapApiService = MapApiService.instance;
@@ -30,6 +28,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   List<LocationRecord> _trackedLocations = [];
   bool _locationsLoading = true;
   int? _selectedLocationIndex;
+  DateTime? _from;
+  DateTime? _to;
 
   @override
   void initState() {
@@ -77,13 +77,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   Future<void> _fetchTrackedLocations() async {
+    setState(() {
+      _locationsLoading = true;
+      _selectedLocationIndex = null;
+    });
+
     try {
-      final now = DateTime.now().toUtc();
-      final locations = await _mapApiService.getAllLocations(from: now.subtract(_historyRange), to: now);
+      final locations = await _mapApiService.getAllLocations(from: _from, to: _to);
 
       if (mounted) {
         setState(() {
-          _trackedLocations = locations.reversed.toList();
+          _trackedLocations = locations;
           _locationsLoading = false;
         });
       }
@@ -93,6 +97,34 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         setState(() => _locationsLoading = false);
       }
     }
+  }
+
+  void _onFromSelected(DateTime date) {
+    setState(() {
+      _from = DateTime(date.year, date.month, date.day);
+      if (_to != null && _from!.isAfter(_to!)) {
+        _to = DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
+      }
+    });
+    _fetchTrackedLocations();
+  }
+
+  void _onToSelected(DateTime date) {
+    setState(() {
+      _to = DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
+      if (_from != null && _from!.isAfter(_to!)) {
+        _from = DateTime(date.year, date.month, date.day);
+      }
+    });
+    _fetchTrackedLocations();
+  }
+
+  void _onFilterCleared() {
+    setState(() {
+      _from = null;
+      _to = null;
+    });
+    _fetchTrackedLocations();
   }
 
   void _animateToCurrentLocation() {
@@ -277,9 +309,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             ),
           ),
           DraggableScrollableSheet(
-            initialChildSize: 0.28,
-            minChildSize: 0.18,
-            maxChildSize: 0.6,
+            initialChildSize: 0.34,
+            minChildSize: 0.22,
+            maxChildSize: 0.7,
             builder: (context, scrollController) {
               return LocationsList(
                 locations: _trackedLocations,
@@ -287,6 +319,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 selectedIndex: _selectedLocationIndex,
                 scrollController: scrollController,
                 onLocationSelected: _onTrackedLocationSelected,
+                from: _from,
+                to: _to,
+                onFromSelected: _onFromSelected,
+                onToSelected: _onToSelected,
+                onFilterCleared: _onFilterCleared,
               );
             },
           ),

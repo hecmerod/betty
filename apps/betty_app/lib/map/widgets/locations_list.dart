@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../models/location_record.dart';
 import 'location_list_item.dart';
+import 'locations_date_filter.dart';
 
 class LocationsList extends StatelessWidget {
   final List<LocationRecord> locations;
@@ -9,12 +10,22 @@ class LocationsList extends StatelessWidget {
   final int? selectedIndex;
   final ScrollController? scrollController;
   final ValueChanged<int> onLocationSelected;
+  final DateTime? from;
+  final DateTime? to;
+  final ValueChanged<DateTime> onFromSelected;
+  final ValueChanged<DateTime> onToSelected;
+  final VoidCallback onFilterCleared;
 
   const LocationsList({
     super.key,
     required this.locations,
     required this.isLoading,
     required this.onLocationSelected,
+    required this.onFromSelected,
+    required this.onToSelected,
+    required this.onFilterCleared,
+    this.from,
+    this.to,
     this.selectedIndex,
     this.scrollController,
   });
@@ -99,6 +110,13 @@ class LocationsList extends StatelessWidget {
             ],
           ),
         ),
+        LocationsDateFilter(
+          from: from,
+          to: to,
+          onFromSelected: onFromSelected,
+          onToSelected: onToSelected,
+          onCleared: onFilterCleared,
+        ),
       ],
     );
   }
@@ -119,7 +137,9 @@ class LocationsList extends StatelessWidget {
             Icon(Icons.location_off_rounded, size: 48, color: const Color(0xFF1E1E1E).withValues(alpha: 0.3)),
             const SizedBox(height: 12),
             Text(
-              'No hay ubicaciones registradas',
+              from != null || to != null
+                  ? 'No hay ubicaciones en este rango'
+                  : 'No hay ubicaciones registradas',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
