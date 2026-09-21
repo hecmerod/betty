@@ -20,6 +20,7 @@ import { LoggerModule } from './core/logger/logger.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ...(process.env.NODE_ENV === 'production' ? [ThrottlerConfigModule] : []),
     ThrottlerConfigModule,
     AuthModule,
     AlarmModule,

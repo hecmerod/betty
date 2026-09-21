@@ -49,8 +49,6 @@ async function bootstrap() {
 
   // Enviar notificación de inicio del sistema
   try {
-    if (process.env.NODE_ENV !== 'production') return;
-
     const sendNotificationUseCase = app.get(SendNotificationUseCase);
     await sendNotificationUseCase.execute({
       notification: {

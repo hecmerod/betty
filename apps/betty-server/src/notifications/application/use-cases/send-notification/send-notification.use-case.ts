@@ -20,6 +20,8 @@ export class SendNotificationUseCase {
   async execute(
     sendNotificationDto: SendNotificationDto
   ): Promise<SendNotificationResponse> {
+    if (process.env.NODE_ENV !== 'production') return { success: true, tokensUsed: 0 };
+
     const tokens = await this.deviceTokenRepository.getAll();
 
     if (tokens.length === 0) return { success: true, tokensUsed: 0 };

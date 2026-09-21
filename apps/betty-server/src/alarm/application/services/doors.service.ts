@@ -103,7 +103,7 @@ export class DoorsService implements OnModuleInit {
 
     this.logger.log(`🚪 Door event detected: ${doorName} ${doorState}`);
 
-    if (state && process.env.NODE_ENV === 'production')
+    if (state)
       await this.triggerAlarmUseCase.execute({
         eventType: 'door_opened',
         detectionType: 'door',

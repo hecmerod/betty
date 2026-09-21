@@ -19,6 +19,7 @@ const SERIAL_BY_ID_DIR = '/dev/serial/by-id';
 const GPS_DEVICE_NAME_PATTERN = /u-blox|ublox|gps|gnss/i;
 const DEFAULT_BAUD_RATE = 9600;
 const FALLBACK_DEVICE_PATH = '/dev/ttyACM0';
+const MAX_RECONNECT_ATTEMPTS = 0;
 
 @Injectable()
 export class GpsUsbAdapter implements IGpsPort, OnModuleInit, OnModuleDestroy {
@@ -28,6 +29,7 @@ export class GpsUsbAdapter implements IGpsPort, OnModuleInit, OnModuleDestroy {
   private buffer = '';
   private lastFix: GpsReading | null = null;
   private reconnectTimer?: NodeJS.Timeout;
+  private reconnectAttempts = 0;
   private devicePath: string | null = null;
   private shouldReconnect = false;
 
@@ -36,12 +38,7 @@ export class GpsUsbAdapter implements IGpsPort, OnModuleInit, OnModuleDestroy {
 
     try {
       await this.connect();
-    } catch (error) {
-      this.logger.error(
-        `Failed to connect to GPS USB: ${
-          error instanceof Error ? error.message : error
-        }`
-      );
+    } catch (error) {     
       this.scheduleReconnect();
     }
   }
@@ -105,16 +102,27 @@ export class GpsUsbAdapter implements IGpsPort, OnModuleInit, OnModuleDestroy {
   }
 
   private async connect(): Promise<void> {
-    this.devicePath = await this.findDevice();
-    await this.configureSerial(this.devicePath);
+    try {
+      this.reconnectAttempts++;
+      this.devicePath = await this.findDevice();
+      await this.configureSerial(this.devicePath);
 
-    const stream = createReadStream(this.devicePath, {
-      encoding: 'utf8',
-      highWaterMark: 1024,
-    });
+      const stream = createReadStream(this.devicePath, {
+        encoding: 'utf8',
+        highWaterMark: 1024,
+      });
 
-    this.attachStream(stream);
-    this.logger.log(`Connected to GPS USB at ${this.devicePath}`);
+      this.attachStream(stream);
+      this.reconnectAttempts = 0;
+    } 
+    catch (error) {
+      this.logger.error(
+        `Failed to connect to GPS USB: ${
+          error instanceof Error ? error.message : error
+        }`
+      );
+      throw error;
+    }
   }
 
   private async findDevice(): Promise<string> {
@@ -164,18 +172,15 @@ export class GpsUsbAdapter implements IGpsPort, OnModuleInit, OnModuleDestroy {
   }
 
   private scheduleReconnect(): void {
-    if (!this.shouldReconnect || this.reconnectTimer) return;
+    if (!this.shouldReconnect || this.reconnectTimer || this.reconnectAttempts > MAX_RECONNECT_ATTEMPTS) return;
 
     this.reconnectTimer = setTimeout(async () => {
+      if (this.reconnectAttempts > 1) return;
+
       this.reconnectTimer = undefined;
       try {
         await this.connect();
       } catch (error) {
-        this.logger.error(
-          `GPS USB reconnect failed: ${
-            error instanceof Error ? error.message : error
-          }`
-        );
         this.scheduleReconnect();
       }
     }, 5000);

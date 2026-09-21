@@ -10,7 +10,7 @@ export class GetLocationsUseCase {
     private readonly locationRepository: LocationRepository
   ) {}
 
-  async execute(from: Date, to: Date, page = 1): Promise<Location[]> {
+  async execute(from?: Date, to?: Date, page = 1): Promise<Location[]> {
     return this.locationRepository.get(from, to, page);
   }
 }

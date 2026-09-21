@@ -31,11 +31,12 @@ export class PrismaLocationRepository extends LocationRepository {
     from?: Date,
     to?: Date,
     page = 1,
-    take = PrismaLocationRepository.PAGE_SIZE
+    take?: number
   ): Promise<Location[]> {
     const currentPage = Math.max(1, page);
-    const currentTake = Math.max(1, take);
     const hasRange = from !== undefined || to !== undefined;
+    const currentTake =
+      take ?? (hasRange ? PrismaLocationRepository.PAGE_SIZE : undefined);
 
     const records = await this.prisma.location.findMany({
       where: hasRange
@@ -47,8 +48,12 @@ export class PrismaLocationRepository extends LocationRepository {
           }
         : undefined,
       orderBy: { recordedAt: hasRange ? 'asc' : 'desc' },
-      skip: (currentPage - 1) * currentTake,
-      take: currentTake,
+      ...(currentTake === undefined
+        ? {}
+        : {
+            skip: (currentPage - 1) * Math.max(1, currentTake),
+            take: Math.max(1, currentTake),
+          }),
     });
 
     return LocationMapper.toDomainEntities(records);

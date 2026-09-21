@@ -47,5 +47,17 @@ describe('GetLocationsUseCase', () => {
 
       expect(mockLocationRepository.get).toHaveBeenCalledWith(from, to, 1);
     });
+
+    it('should return all locations when no datetime range is provided', async () => {
+      mockLocationRepository.get.mockResolvedValue([]);
+
+      await useCase.execute();
+
+      expect(mockLocationRepository.get).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+        1
+      );
+    });
   });
 });

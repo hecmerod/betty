@@ -66,11 +66,10 @@ export class MotionDetectionService implements OnModuleInit {
 
     this.logger.log(`🔔 Motion event detected: ${eventType} (${state})`);
 
-    if (state && process.env.NODE_ENV === 'production') {
+    if (state) 
       await this.triggerAlarmUseCase.execute({
         eventType,
         detectionType: 'motion',
-      });
-    }
+      });    
   }
 }

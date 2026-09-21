@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { GetLocationsUseCase } from '../../../application/use-cases/get-locations/get-locations.use-case';
 import { Location } from '../../../domain/entities/location.entity';
+import { GetLocationsQueryDto } from '../../dto/location.dto';
 import { LocationController } from '../location.controller';
 
 describe('LocationController', () => {
@@ -28,7 +28,8 @@ describe('LocationController', () => {
       const location = new Location(40.4168, -3.7038, timestamp, 650);
       mockGetLocationsUseCase.execute.mockResolvedValue([location]);
 
-      const result = await controller.getLocations(from, to, '2');
+      const query: GetLocationsQueryDto = { from, to, page: 2 };
+      const result = await controller.getLocations(query);
 
       expect(mockGetLocationsUseCase.execute).toHaveBeenCalledWith(
         new Date(from),
@@ -50,7 +51,8 @@ describe('LocationController', () => {
     it('should default page to 1 when omitted', async () => {
       mockGetLocationsUseCase.execute.mockResolvedValue([]);
 
-      await controller.getLocations(from, to);
+      const query: GetLocationsQueryDto = { from, to };
+      await controller.getLocations(query);
 
       expect(mockGetLocationsUseCase.execute).toHaveBeenCalledWith(
         new Date(from),
@@ -59,22 +61,15 @@ describe('LocationController', () => {
       );
     });
 
-    it('should reject an invalid from datetime', async () => {
-      await expect(controller.getLocations('not-a-date', to)).rejects.toEqual(
-        new HttpException('Invalid from datetime', HttpStatus.BAD_REQUEST)
-      );
-      expect(mockGetLocationsUseCase.execute).not.toHaveBeenCalled();
-    });
+    it('should request all locations when no datetime range is provided', async () => {
+      mockGetLocationsUseCase.execute.mockResolvedValue([]);
 
-    it('should reject an invalid to datetime', async () => {
-      await expect(controller.getLocations(from, 'nope')).rejects.toEqual(
-        new HttpException('Invalid to datetime', HttpStatus.BAD_REQUEST)
-      );
-    });
+      await controller.getLocations({});
 
-    it('should reject an invalid page', async () => {
-      await expect(controller.getLocations(from, to, '0')).rejects.toEqual(
-        new HttpException('Invalid page', HttpStatus.BAD_REQUEST)
+      expect(mockGetLocationsUseCase.execute).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+        1
       );
     });
   });

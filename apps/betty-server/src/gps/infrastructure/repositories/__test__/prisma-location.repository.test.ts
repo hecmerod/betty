@@ -152,5 +152,17 @@ describe('PrismaLocationRepository', () => {
       expect(result).toHaveLength(1);
       expect(result[0].latitude).toBe(40.4168);
     });
+
+    it('should return all locations when no datetime range is provided', async () => {
+      mockPrismaLocation.findMany.mockResolvedValue([prismaRecord]);
+
+      const result = await repository.get();
+
+      expect(mockPrismaLocation.findMany).toHaveBeenCalledWith({
+        where: undefined,
+        orderBy: { recordedAt: 'desc' },
+      });
+      expect(result).toHaveLength(1);
+    });
   });
 });

@@ -27,8 +27,13 @@ describe('LocationService', () => {
     -3.7038,
     new Date('2026-09-10T10:05:00.000Z')
   );
+  const gpsJitterLocation = new Location(
+    40.4175,
+    -3.7038,
+    new Date('2026-09-10T10:05:00.000Z')
+  );
   const movedLocation = new Location(
-    40.4172,
+    40.4195,
     -3.7038,
     new Date('2026-09-10T10:05:00.000Z')
   );
@@ -84,7 +89,7 @@ describe('LocationService', () => {
       expect(mockTriggerAlarmUseCase.execute).not.toHaveBeenCalled();
     });
 
-    it('should ignore movement within 20 meters', async () => {
+    it('should ignore movement within 150 meters', async () => {
       mockGetLocationUseCase.execute.mockResolvedValue({
         success: true,
         location: nearbyLocation,
@@ -93,12 +98,29 @@ describe('LocationService', () => {
 
       await service.checkLocation();
 
-      expect(nearbyLocation.distanceTo(lastLocation)).toBeLessThanOrEqual(20);
+      expect(nearbyLocation.distanceTo(lastLocation)).toBeLessThanOrEqual(150);
       expect(mockLocationRepository.add).not.toHaveBeenCalled();
       expect(mockTriggerAlarmUseCase.execute).not.toHaveBeenCalled();
     });
 
-    it('should add the new location and trigger the alarm when moved more than 20 meters', async () => {
+    it('should ignore GPS jitter within the movement threshold', async () => {
+      mockGetLocationUseCase.execute.mockResolvedValue({
+        success: true,
+        location: gpsJitterLocation,
+      });
+      mockGetLastLocationUseCase.execute.mockResolvedValue(lastLocation);
+
+      await service.checkLocation();
+
+      expect(gpsJitterLocation.distanceTo(lastLocation)).toBeGreaterThan(20);
+      expect(gpsJitterLocation.distanceTo(lastLocation)).toBeLessThanOrEqual(
+        150
+      );
+      expect(mockLocationRepository.add).not.toHaveBeenCalled();
+      expect(mockTriggerAlarmUseCase.execute).not.toHaveBeenCalled();
+    });
+
+    it('should add the new location and trigger the alarm when moved more than 150 meters', async () => {
       process.env.NODE_ENV = 'production';
       mockGetLocationUseCase.execute.mockResolvedValue({
         success: true,
@@ -108,7 +130,7 @@ describe('LocationService', () => {
 
       await service.checkLocation();
 
-      expect(movedLocation.distanceTo(lastLocation)).toBeGreaterThan(20);
+      expect(movedLocation.distanceTo(lastLocation)).toBeGreaterThan(150);
       expect(mockLocationRepository.add).toHaveBeenCalledWith(movedLocation);
       expect(mockTriggerAlarmUseCase.execute).toHaveBeenCalledWith({
         eventType: 'location_moved',

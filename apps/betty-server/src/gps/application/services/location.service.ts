@@ -18,7 +18,7 @@ export class LocationService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(LocationService.name);
   private readonly SENSOR_ID = 'location' as const;
   private readonly CHECK_INTERVAL_MS = 5 * 60 * 1000;
-  private readonly MOVEMENT_THRESHOLD_METERS = 20;
+  private readonly MOVEMENT_THRESHOLD_METERS = 150;
   private trackingTimeout?: NodeJS.Timeout;
   private isChecking = false;
   private isMonitoring = false;
@@ -113,12 +113,11 @@ export class LocationService implements OnModuleInit, OnModuleDestroy {
 
       await this.locationRepository.add(location);
 
-      if (process.env.NODE_ENV === 'production')
-        await this.triggerAlarmUseCase.execute({
-          eventType: 'location_moved',
-          detectionType: 'location',
-          metadata: { distanceMeters: distance },
-        });
+      await this.triggerAlarmUseCase.execute({
+        eventType: 'location_moved',
+        detectionType: 'location',
+        metadata: { distanceMeters: distance },
+      });
     } catch (error) {
       this.logger.error(
         `Location monitoring error: ${
