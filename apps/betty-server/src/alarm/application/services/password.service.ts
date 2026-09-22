@@ -1,7 +1,9 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IrInput } from '../../../ir/domain/enums/ir-input.enum';
 import { AlarmService } from './alarm.service';
+import { AlarmRepository } from '../../domain/repositories/alarm.repository';
+import { ALARM_REPOSITORY } from '../../infrastructure/ioc/symbols';
 
 const PASSWORD_LENGTH = 4;
 const PASSWORD_WINDOW_MS = 5000;
@@ -13,10 +15,12 @@ export class PasswordService implements OnModuleDestroy {
   private windowTimeout?: NodeJS.Timeout;
 
   constructor(
-    private readonly alarmService: AlarmService
+    private readonly alarmService: AlarmService,
+    @Inject(ALARM_REPOSITORY)
+    private readonly alarmRepository: AlarmRepository,
   ) {}
 
-  handleInput(input: IrInput): void {
+  async handleInput(input: IrInput): Promise<void> {
     if (input === IrInput.STAR) return this.startWindow();
 
     if (!this.isWindowOpen() || !this.isDigit(input)) return;
@@ -25,7 +29,7 @@ export class PasswordService implements OnModuleDestroy {
 
     if (this.digits.length < PASSWORD_LENGTH) return;
 
-    this.complete();
+    await this.complete();
   }
 
   onModuleDestroy(): void {
@@ -41,13 +45,17 @@ export class PasswordService implements OnModuleDestroy {
     this.logger.log('Password entry started');
   }
 
-  private complete(): void {
+  private async complete(): Promise<void> {
     const password = this.digits.join('');
-    this.reset();
+    this.reset();    
+
+    const alarm = await this.alarmRepository.get();
+
+    if (password !== alarm.password) return this.logger.warn('Invalid password'); //TODO: Emit sound
     
     this.alarmService.stopSound();
 
-    this.logger.log('Password received');
+    this.logger.warn('Password received'); //TODO: Emit sound
   }
 
   private reset(): void {
