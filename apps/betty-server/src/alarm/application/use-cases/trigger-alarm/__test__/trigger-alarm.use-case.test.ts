@@ -1,31 +1,39 @@
 import {
   TriggerAlarmUseCase,
-  AlarmTriggerData,
+  AlarmTriggerDataInput,
 } from '../trigger-alarm.use-case';
 import { AlarmRepository } from '../../../../domain/repositories/alarm.repository';
 import { SendNotificationUseCase } from '../../../../../notifications/application/use-cases/send-notification/send-notification.use-case';
 import { Alarm } from '../../../../domain/entities/alarm.entity';
+import { AlarmService } from '../../../services/alarm.service';
 
 describe('TriggerAlarmUseCase', () => {
   let useCase: TriggerAlarmUseCase;
   let mockAlarmRepository: jest.Mocked<AlarmRepository>;
-  let mockSendNotificationUseCase: jest.Mocked<SendNotificationUseCase>;
+  let mockSendNotificationUseCase: jest.Mocked<
+    Pick<SendNotificationUseCase, 'execute'>
+  >;
+  let mockAlarmService: jest.Mocked<Pick<AlarmService, 'activate'>>;
 
   beforeEach(() => {
     mockAlarmRepository = {
       activate: jest.fn(),
       deactivate: jest.fn(),
       get: jest.fn(),
-      save: jest.fn(),
     } as jest.Mocked<AlarmRepository>;
 
     mockSendNotificationUseCase = {
       execute: jest.fn(),
-    } as unknown as jest.Mocked<SendNotificationUseCase>;
+    };
+
+    mockAlarmService = {
+      activate: jest.fn(),
+    };
 
     useCase = new TriggerAlarmUseCase(
       mockAlarmRepository,
-      mockSendNotificationUseCase
+      mockSendNotificationUseCase as unknown as SendNotificationUseCase,
+      mockAlarmService as unknown as AlarmService
     );
   });
 
@@ -38,9 +46,8 @@ describe('TriggerAlarmUseCase', () => {
   });
 
   describe('execute', () => {
-    it('should send notification when alarm is active', async () => {
-      const activeAlarm = new Alarm(true);
-      mockAlarmRepository.get.mockResolvedValue(activeAlarm);
+    it('should send a notification and activate the alarm service when the alarm is active', async () => {
+      mockAlarmRepository.get.mockResolvedValue(new Alarm(true));
       mockSendNotificationUseCase.execute.mockResolvedValue(undefined);
 
       const result = await useCase.execute();
@@ -59,19 +66,19 @@ describe('TriggerAlarmUseCase', () => {
           eventType: 'detection',
         },
       });
-      expect(result).toEqual({ notificationSent: true });
+      expect(mockAlarmService.activate).toHaveBeenCalledTimes(1);
+      expect(result).toBe(true);
     });
 
-    it('should send notification with custom trigger data', async () => {
-      const activeAlarm = new Alarm(true);
-      const triggerData: AlarmTriggerData = {
+    it('should send a notification with custom trigger data', async () => {
+      const triggerData: AlarmTriggerDataInput = {
         eventType: 'motion_detected',
         detectionType: 'motion',
         confidence: 0.95,
         metadata: { cameraId: 'cam-01' },
       };
 
-      mockAlarmRepository.get.mockResolvedValue(activeAlarm);
+      mockAlarmRepository.get.mockResolvedValue(new Alarm(true));
       mockSendNotificationUseCase.execute.mockResolvedValue(undefined);
 
       const result = await useCase.execute(triggerData);
@@ -89,42 +96,42 @@ describe('TriggerAlarmUseCase', () => {
           eventType: 'motion_detected',
         },
       });
-      expect(result).toEqual({ notificationSent: true });
+      expect(mockAlarmService.activate).toHaveBeenCalledTimes(1);
+      expect(result).toBe(true);
     });
 
-    it('should not send notification when alarm is inactive', async () => {
-      const inactiveAlarm = new Alarm(false);
-      mockAlarmRepository.get.mockResolvedValue(inactiveAlarm);
+    it('should not notify or activate the service when the alarm is inactive', async () => {
+      mockAlarmRepository.get.mockResolvedValue(new Alarm(false));
 
       const result = await useCase.execute();
 
       expect(mockAlarmRepository.get).toHaveBeenCalledTimes(1);
       expect(mockSendNotificationUseCase.execute).not.toHaveBeenCalled();
-      expect(result).toBeUndefined();
+      expect(mockAlarmService.activate).not.toHaveBeenCalled();
+      expect(result).toBe(false);
     });
 
-    it('should return notificationSent false when notification fails', async () => {
-      const activeAlarm = new Alarm(true);
-      mockAlarmRepository.get.mockResolvedValue(activeAlarm);
+    it('should not activate the service when the notification fails', async () => {
+      mockAlarmRepository.get.mockResolvedValue(new Alarm(true));
       mockSendNotificationUseCase.execute.mockRejectedValue(
         new Error('Notification failed')
       );
 
       const result = await useCase.execute();
 
-      expect(mockAlarmRepository.get).toHaveBeenCalledTimes(1);
       expect(mockSendNotificationUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(result).toEqual({ notificationSent: false });
+      expect(mockAlarmService.activate).not.toHaveBeenCalled();
+      expect(result).toBe(false);
     });
 
-    it('should handle notification errors gracefully', async () => {
-      const activeAlarm = new Alarm(true);
-      mockAlarmRepository.get.mockResolvedValue(activeAlarm);
+    it('should handle non-Error notification failures', async () => {
+      mockAlarmRepository.get.mockResolvedValue(new Alarm(true));
       mockSendNotificationUseCase.execute.mockRejectedValue('Network error');
 
       const result = await useCase.execute();
 
-      expect(result).toEqual({ notificationSent: false });
+      expect(mockAlarmService.activate).not.toHaveBeenCalled();
+      expect(result).toBe(false);
     });
   });
 });

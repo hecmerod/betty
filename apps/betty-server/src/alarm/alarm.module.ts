@@ -17,6 +17,7 @@ import {
 import { NotificationsModule } from '../notifications/notifications.module';
 import { GpioModule } from '../gpio/gpio.module';
 import { GpsModule } from '../gps/gps.module';
+import { AlarmService } from './application/services/alarm.service';
 import { DoorsService } from './application/services/doors.service';
 import { MotionDetectionService } from './application/services/motion-detection.service';
 import { TriggerSensorUseCase } from './application/use-cases/trigger-sensor/trigger-sensor.use-case';
@@ -26,6 +27,7 @@ import { TriggerSensorUseCase } from './application/use-cases/trigger-sensor/tri
   controllers: [AlarmController, SensorsController],
   providers: [
     ActivateAlarmUseCase,
+    AlarmService,
     DoorsService,
     MotionDetectionService,
     DeactivateAlarmUseCase,
