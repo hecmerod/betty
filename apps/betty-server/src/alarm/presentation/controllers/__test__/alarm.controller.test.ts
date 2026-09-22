@@ -3,9 +3,11 @@ import { ActivateAlarmUseCase } from '../../../application/use-cases/activate-al
 import { DeactivateAlarmUseCase } from '../../../application/use-cases/deactivate-alarm/deactivate-alarm.use-case';
 import {
   TriggerAlarmUseCase,
-  AlarmTriggerData,
+  AlarmTriggerDataInput,
 } from '../../../application/use-cases/trigger-alarm/trigger-alarm.use-case';
+import { GetAlarmPasswordUseCase } from '../../../application/use-cases/get-alarm-password/get-alarm-password.use-case';
 import { GetAlarmStatusUseCase } from '../../../application/use-cases/get-alarm-status/get-alarm-status.use-case';
+import { SetAlarmPasswordUseCase } from '../../../application/use-cases/set-alarm-password/set-alarm-password.use-case';
 
 describe('AlarmController', () => {
   let controller: AlarmController;
@@ -13,6 +15,8 @@ describe('AlarmController', () => {
   let mockDeactivateAlarmUseCase: jest.Mocked<DeactivateAlarmUseCase>;
   let mockTriggerAlarmUseCase: jest.Mocked<TriggerAlarmUseCase>;
   let mockGetAlarmStatusUseCase: jest.Mocked<GetAlarmStatusUseCase>;
+  let mockGetAlarmPasswordUseCase: jest.Mocked<GetAlarmPasswordUseCase>;
+  let mockSetAlarmPasswordUseCase: jest.Mocked<SetAlarmPasswordUseCase>;
 
   beforeEach(() => {
     mockActivateAlarmUseCase = {
@@ -31,11 +35,21 @@ describe('AlarmController', () => {
       execute: jest.fn(),
     } as unknown as jest.Mocked<GetAlarmStatusUseCase>;
 
+    mockGetAlarmPasswordUseCase = {
+      execute: jest.fn(),
+    } as unknown as jest.Mocked<GetAlarmPasswordUseCase>;
+
+    mockSetAlarmPasswordUseCase = {
+      execute: jest.fn(),
+    } as unknown as jest.Mocked<SetAlarmPasswordUseCase>;
+
     controller = new AlarmController(
       mockActivateAlarmUseCase,
       mockDeactivateAlarmUseCase,
       mockTriggerAlarmUseCase,
-      mockGetAlarmStatusUseCase
+      mockGetAlarmStatusUseCase,
+      mockGetAlarmPasswordUseCase,
+      mockSetAlarmPasswordUseCase
     );
   });
 
@@ -80,6 +94,36 @@ describe('AlarmController', () => {
       const result = await controller.getAlarmStatus();
 
       expect(result).toEqual(expectedStatus);
+    });
+  });
+
+  describe('getPassword', () => {
+    it('should return the alarm password', async () => {
+      mockGetAlarmPasswordUseCase.execute.mockResolvedValue({
+        password: '1234',
+      });
+
+      const result = await controller.getPassword();
+
+      expect(mockGetAlarmPasswordUseCase.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual({ password: '1234' });
+    });
+  });
+
+  describe('setPassword', () => {
+    it('should update the alarm password', async () => {
+      const expectedResponse = {
+        success: true,
+        message: 'Alarm password has been updated',
+        timestamp: '2024-01-01T00:00:00.000Z',
+      };
+
+      mockSetAlarmPasswordUseCase.execute.mockResolvedValue(expectedResponse);
+
+      const result = await controller.setPassword({ password: '5678' });
+
+      expect(mockSetAlarmPasswordUseCase.execute).toHaveBeenCalledWith('5678');
+      expect(result).toEqual(expectedResponse);
     });
   });
 
@@ -151,57 +195,36 @@ describe('AlarmController', () => {
 
   describe('triggerAlarm', () => {
     it('should trigger alarm without body', async () => {
-      const expectedResponse = {
-        notificationSent: true,
-      };
+      mockTriggerAlarmUseCase.execute.mockResolvedValue(true);
 
-      mockTriggerAlarmUseCase.execute.mockResolvedValue(expectedResponse);
+      const result = await controller.triggerAlarm(undefined);
 
-      const result = await controller.triggerAlarm({});
-
-      expect(mockTriggerAlarmUseCase.execute).toHaveBeenCalledWith({});
-      expect(result).toEqual(expectedResponse);
+      expect(mockTriggerAlarmUseCase.execute).toHaveBeenCalledWith(undefined);
+      expect(result).toBe(true);
     });
 
     it('should trigger alarm with trigger data', async () => {
-      const triggerData: AlarmTriggerData = {
+      const triggerData: AlarmTriggerDataInput = {
         eventType: 'motion_detected',
         detectionType: 'person',
         confidence: 0.95,
         metadata: { cameraId: 'cam-01' },
       };
 
-      const expectedResponse = {
-        notificationSent: true,
-      };
-
-      mockTriggerAlarmUseCase.execute.mockResolvedValue(expectedResponse);
+      mockTriggerAlarmUseCase.execute.mockResolvedValue(true);
 
       const result = await controller.triggerAlarm(triggerData);
 
       expect(mockTriggerAlarmUseCase.execute).toHaveBeenCalledWith(triggerData);
-      expect(result).toEqual(expectedResponse);
+      expect(result).toBe(true);
     });
 
-    it('should return notificationSent false when notification fails', async () => {
-      const expectedResponse = {
-        notificationSent: false,
-      };
+    it('should return false when the trigger fails', async () => {
+      mockTriggerAlarmUseCase.execute.mockResolvedValue(false);
 
-      mockTriggerAlarmUseCase.execute.mockResolvedValue(expectedResponse);
+      const result = await controller.triggerAlarm(undefined);
 
-      const result = await controller.triggerAlarm({});
-
-      expect(result).toEqual(expectedResponse);
-      expect(result.notificationSent).toBe(false);
-    });
-
-    it('should handle undefined response from trigger use case', async () => {
-      mockTriggerAlarmUseCase.execute.mockResolvedValue(undefined);
-
-      const result = await controller.triggerAlarm({});
-
-      expect(result).toBeUndefined();
+      expect(result).toBe(false);
     });
   });
 });

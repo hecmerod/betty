@@ -7,6 +7,7 @@ describe('Alarm', () => {
 
       expect(alarm.isActive).toBe(false);
       expect(alarm.status).toBe('inactive');
+      expect(alarm.password).toBe('1234');
       expect(alarm.createdAt).toBeInstanceOf(Date);
     });
 

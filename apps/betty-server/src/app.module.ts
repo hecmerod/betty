@@ -10,6 +10,7 @@ import { PrismaModule } from './shared/prisma/prisma.module';
 import { BatteriesModule } from './batteries/batteries.module';
 import { SshModule } from './ssh/ssh.module';
 import { RedisModule } from './shared/redis/redis.module';
+import { EventsModule } from './core/events/events.module';
 import { HealthModule } from './core/health/health.module';
 import { ObdiiModule } from './obdii/obdii.module';
 import { LoggerModule } from './core/logger/logger.module';
@@ -28,6 +29,7 @@ import { IrModule } from './ir/ir.module';
     NotificationsModule,
     GpsModule,
     GpioModule,
+    EventsModule,
     HealthModule,
     PrismaModule,
     BatteriesModule,

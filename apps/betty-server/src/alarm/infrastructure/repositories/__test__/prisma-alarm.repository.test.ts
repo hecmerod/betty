@@ -33,6 +33,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.create.mockResolvedValue({
         id: 1,
         isActive: false,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: null,
         lastDeactivatedAt: null,
@@ -56,6 +57,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue({
         id: 1,
         isActive: false,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: null,
         lastDeactivatedAt: null,
@@ -77,6 +79,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue({
         id: 1,
         isActive: false,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: null,
         lastDeactivatedAt: null,
@@ -85,6 +88,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.update.mockResolvedValue({
         id: 1,
         isActive: true,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: currentDate,
         lastDeactivatedAt: null,
@@ -109,6 +113,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue({
         id: 1,
         isActive: true,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: new Date(),
         lastDeactivatedAt: null,
@@ -129,6 +134,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue({
         id: 1,
         isActive: true,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: new Date(),
         lastDeactivatedAt: null,
@@ -137,6 +143,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.update.mockResolvedValue({
         id: 1,
         isActive: false,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: new Date(),
         lastDeactivatedAt: currentDate,
@@ -161,6 +168,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue({
         id: 1,
         isActive: false,
+        password: '1234',
         createdAt: new Date(),
         lastActivatedAt: null,
         lastDeactivatedAt: null,
@@ -185,6 +193,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue({
         id: 1,
         isActive: true,
+        password: '1234',
         createdAt,
         lastActivatedAt,
         lastDeactivatedAt,
@@ -195,6 +204,7 @@ describe('PrismaAlarmRepository', () => {
 
       expect(alarm).toBeInstanceOf(Alarm);
       expect(alarm.isActive).toBe(true);
+      expect(alarm.password).toBe('1234');
       expect(alarm.createdAt).toBe(createdAt);
       expect(alarm.lastActivatedAt).toBe(lastActivatedAt);
       expect(alarm.lastDeactivatedAt).toBe(lastDeactivatedAt);
@@ -207,6 +217,7 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue({
         id: 1,
         isActive: false,
+        password: '1234',
         createdAt,
         lastActivatedAt: null,
         lastDeactivatedAt: null,
@@ -227,6 +238,27 @@ describe('PrismaAlarmRepository', () => {
       mockPrismaAlarm.findUnique.mockResolvedValue(null);
 
       await expect(repository.get()).rejects.toThrow('Alarm record not found');
+    });
+  });
+
+  describe('setPassword', () => {
+    it('should update the alarm password', async () => {
+      mockPrismaAlarm.update.mockResolvedValue({
+        id: 1,
+        isActive: false,
+        password: '5678',
+        createdAt: new Date(),
+        lastActivatedAt: null,
+        lastDeactivatedAt: null,
+        lastTriggeredAt: null,
+      });
+
+      await repository.setPassword('5678');
+
+      expect(mockPrismaAlarm.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: { password: '5678' },
+      });
     });
   });
 });

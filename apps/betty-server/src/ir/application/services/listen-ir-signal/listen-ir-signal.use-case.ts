@@ -5,7 +5,12 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IrSignal } from '../../../domain/entities/ir-signal.entity';
+import {
+  IR_SIGNAL_RECEIVED,
+  IrSignalReceivedEvent,
+} from '../../../domain/events/ir-signal-received.event';
 import { IIrPort } from '../../../domain/ports/ir.port';
 import { IR_ADAPTER } from '../../../infrastructure/ioc/symbols';
 
@@ -13,7 +18,10 @@ import { IR_ADAPTER } from '../../../infrastructure/ioc/symbols';
 export class ListenIrSignalService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(ListenIrSignalService.name);
 
-  constructor(@Inject(IR_ADAPTER) private readonly irPort: IIrPort) {}
+  constructor(
+    @Inject(IR_ADAPTER) private readonly irPort: IIrPort,
+    private readonly eventEmitter: EventEmitter2
+  ) {}
 
   onModuleInit(): void {
     this.execute();
@@ -24,13 +32,15 @@ export class ListenIrSignalService implements OnModuleInit, OnModuleDestroy {
   }
 
   execute(): void {
-    this.irPort.listen((signal) => this.printSignal(signal));
+    this.irPort.listen((signal) => {
+      if (!signal.input) return;
+  
+      this.eventEmitter.emit(
+        IR_SIGNAL_RECEIVED,
+        new IrSignalReceivedEvent(signal.input)
+      );
+    });
+    
     this.logger.log('Listening for IR signals');
-  }
-
-  private printSignal(signal: IrSignal): void {
-    if (!signal.input) return;
-
-    this.logger.log(signal.input);
   }
 }

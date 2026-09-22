@@ -13,12 +13,13 @@ generator client {
 
 // Modelo Alarm - solo puede haber un registro (singleton)
 model Alarm {
-  id                  Int       @id @default(1) // Forzamos siempre id = 1
-  isActive            Boolean   @default(false)
-  createdAt           DateTime  @default(now())
-  lastActivatedAt     DateTime?
-  lastDeactivatedAt   DateTime?
-  lastTriggeredAt     DateTime?
+  id                Int       @id @default(1) // Forzamos siempre id = 1
+  isActive          Boolean   @default(false)
+  password          String    @default("1234")
+  createdAt         DateTime  @default(now())
+  lastActivatedAt   DateTime?
+  lastDeactivatedAt DateTime?
+  lastTriggeredAt   DateTime?
 
   @@map("alarms")
 }

@@ -2,9 +2,10 @@ export class Alarm {
   constructor(
     private _isActive = false,
     public readonly createdAt: Date = new Date(),
+    private _password: string,
     private _lastActivatedAt?: Date,
     private _lastDeactivatedAt?: Date,
-    private _lastTriggeredAt?: Date
+    private _lastTriggeredAt?: Date,
   ) {}
 
   get isActive(): boolean {
@@ -21,6 +22,10 @@ export class Alarm {
 
   get lastTriggeredAt(): Date | undefined {
     return this._lastTriggeredAt;
+  }
+
+  get password(): string {
+    return this._password;
   }
 
   get status(): AlarmStatus {

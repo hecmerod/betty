@@ -66,10 +66,18 @@ export class PrismaAlarmRepository
     return new Alarm(
       record.isActive,
       record.createdAt,
+      record.password,
       record.lastActivatedAt ?? undefined,
       record.lastDeactivatedAt ?? undefined,
-      record.lastTriggeredAt ?? undefined
+      record.lastTriggeredAt ?? undefined,
     );
+  }
+
+  async setPassword(password: string): Promise<void> {
+    await this.prisma.alarm.update({
+      where: { id: this.SINGLETON_ID },
+      data: { password },
+    });
   }
 
   private async ensureAlarmExists(): Promise<void> {
