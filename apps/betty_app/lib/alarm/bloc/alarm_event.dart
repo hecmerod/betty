@@ -21,3 +21,13 @@ class ToggleSensor extends AlarmEvent {
 
   const ToggleSensor(this.sensorType);
 }
+
+class LoadAlarmPassword extends AlarmEvent {
+  const LoadAlarmPassword();
+}
+
+class SetAlarmPassword extends AlarmEvent {
+  final String password;
+
+  const SetAlarmPassword(this.password);
+}

@@ -7,7 +7,11 @@ class AlarmState {
   final List<Sensor> sensors;
   final bool isLoadingSensors;
   final Map<SensorType, bool> togglingSensors;
+  final String? password;
+  final bool isLoadingPassword;
+  final bool isSavingPassword;
   final String? errorMessage;
+  final String? successMessage;
 
   const AlarmState({
     this.isAlarmActive = false,
@@ -16,7 +20,11 @@ class AlarmState {
     this.sensors = const [],
     this.isLoadingSensors = true,
     this.togglingSensors = const {},
+    this.password,
+    this.isLoadingPassword = true,
+    this.isSavingPassword = false,
     this.errorMessage,
+    this.successMessage,
   });
 
   AlarmState copyWith({
@@ -26,7 +34,11 @@ class AlarmState {
     List<Sensor>? sensors,
     bool? isLoadingSensors,
     Map<SensorType, bool>? togglingSensors,
+    String? password,
+    bool? isLoadingPassword,
+    bool? isSavingPassword,
     String? errorMessage,
+    String? successMessage,
   }) {
     return AlarmState(
       isAlarmActive: isAlarmActive ?? this.isAlarmActive,
@@ -35,7 +47,11 @@ class AlarmState {
       sensors: sensors ?? this.sensors,
       isLoadingSensors: isLoadingSensors ?? this.isLoadingSensors,
       togglingSensors: togglingSensors ?? this.togglingSensors,
+      password: password ?? this.password,
+      isLoadingPassword: isLoadingPassword ?? this.isLoadingPassword,
+      isSavingPassword: isSavingPassword ?? this.isSavingPassword,
       errorMessage: errorMessage,
+      successMessage: successMessage,
     );
   }
 

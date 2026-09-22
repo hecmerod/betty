@@ -14,42 +14,71 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
     on<ToggleAlarm>(_onToggleAlarm);
     on<LoadSensors>(_onLoadSensors);
     on<ToggleSensor>(_onToggleSensor);
+    on<LoadAlarmPassword>(_onLoadAlarmPassword);
+    on<SetAlarmPassword>(_onSetAlarmPassword);
   }
 
-  Future<void> _onLoadAlarmStatus(LoadAlarmStatus event, Emitter<AlarmState> emit) async {
+  Future<void> _onLoadAlarmStatus(
+    LoadAlarmStatus event,
+    Emitter<AlarmState> emit,
+  ) async {
     emit(state.copyWith(isLoadingAlarm: true, errorMessage: null));
 
     try {
       final isActive = await _alarmService.getAlarmStatus();
       emit(state.copyWith(isAlarmActive: isActive, isLoadingAlarm: false));
     } catch (e) {
-      emit(state.copyWith(isLoadingAlarm: false, errorMessage: 'Error al cargar el estado de la alarma'));
+      emit(
+        state.copyWith(
+          isLoadingAlarm: false,
+          errorMessage: 'Error al cargar el estado de la alarma',
+        ),
+      );
     }
   }
 
-  Future<void> _onToggleAlarm(ToggleAlarm event, Emitter<AlarmState> emit) async {
+  Future<void> _onToggleAlarm(
+    ToggleAlarm event,
+    Emitter<AlarmState> emit,
+  ) async {
     emit(state.copyWith(isTogglingAlarm: true, errorMessage: null));
 
     try {
       final newStatus = await _alarmService.toggleAlarm(state.isAlarmActive);
       emit(state.copyWith(isAlarmActive: newStatus, isTogglingAlarm: false));
     } catch (e) {
-      emit(state.copyWith(isTogglingAlarm: false, errorMessage: 'Error al cambiar el estado de la alarma'));
+      emit(
+        state.copyWith(
+          isTogglingAlarm: false,
+          errorMessage: 'Error al cambiar el estado de la alarma',
+        ),
+      );
     }
   }
 
-  Future<void> _onLoadSensors(LoadSensors event, Emitter<AlarmState> emit) async {
+  Future<void> _onLoadSensors(
+    LoadSensors event,
+    Emitter<AlarmState> emit,
+  ) async {
     emit(state.copyWith(isLoadingSensors: true, errorMessage: null));
 
     try {
       final sensors = await _sensorService.getSensorsStatus();
       emit(state.copyWith(sensors: sensors, isLoadingSensors: false));
     } catch (e) {
-      emit(state.copyWith(isLoadingSensors: false, errorMessage: 'Error al cargar los sensores'));
+      emit(
+        state.copyWith(
+          isLoadingSensors: false,
+          errorMessage: 'Error al cargar los sensores',
+        ),
+      );
     }
   }
 
-  Future<void> _onToggleSensor(ToggleSensor event, Emitter<AlarmState> emit) async {
+  Future<void> _onToggleSensor(
+    ToggleSensor event,
+    Emitter<AlarmState> emit,
+  ) async {
     try {
       final sensor = state.sensors.firstWhere(
         (s) => s.type == event.sensorType,
@@ -74,7 +103,73 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
         return s;
       }).toList();
 
-      emit(state.copyWith(sensors: revertedSensors, errorMessage: 'Error al cambiar el estado del sensor'));
+      emit(
+        state.copyWith(
+          sensors: revertedSensors,
+          errorMessage: 'Error al cambiar el estado del sensor',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onLoadAlarmPassword(
+    LoadAlarmPassword event,
+    Emitter<AlarmState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isLoadingPassword: true,
+        errorMessage: null,
+        successMessage: null,
+      ),
+    );
+
+    try {
+      final password = await _alarmService.getPassword();
+      emit(state.copyWith(password: password, isLoadingPassword: false));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoadingPassword: false,
+          errorMessage: 'Error al cargar la contraseña',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onSetAlarmPassword(
+    SetAlarmPassword event,
+    Emitter<AlarmState> emit,
+  ) async {
+    if (!RegExp(r'^\d{4}$').hasMatch(event.password)) {
+      emit(state.copyWith(errorMessage: 'La contraseña debe tener 4 dígitos'));
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        isSavingPassword: true,
+        errorMessage: null,
+        successMessage: null,
+      ),
+    );
+
+    try {
+      final password = await _alarmService.setPassword(event.password);
+      emit(
+        state.copyWith(
+          password: password,
+          isSavingPassword: false,
+          successMessage: 'Contraseña actualizada',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSavingPassword: false,
+          errorMessage: 'Error al actualizar la contraseña',
+        ),
+      );
     }
   }
 }

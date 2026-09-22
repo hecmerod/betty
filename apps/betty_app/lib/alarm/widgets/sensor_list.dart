@@ -31,23 +31,22 @@ class SensorList extends StatelessWidget {
           );
         }
 
-        return ListView.builder(
-          physics: const ClampingScrollPhysics(),
-          itemCount: state.sensors.length,
-          itemBuilder: (context, index) {
-            return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: Duration(milliseconds: 300 + (index * 100)),
-              curve: Curves.easeOut,
-              builder: (context, value, child) {
-                return Opacity(
-                  opacity: value,
-                  child: Transform.translate(offset: Offset(0, 20 * (1 - value)), child: child),
-                );
-              },
-              child: SensorListItem(sensor: state.sensors[index]),
-            );
-          },
+        return Column(
+          children: [
+            for (var index = 0; index < state.sensors.length; index++)
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: Duration(milliseconds: 300 + (index * 100)),
+                curve: Curves.easeOut,
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(offset: Offset(0, 20 * (1 - value)), child: child),
+                  );
+                },
+                child: SensorListItem(sensor: state.sensors[index]),
+              ),
+          ],
         );
       },
     );

@@ -57,4 +57,38 @@ class AlarmService {
       return await activateAlarm();
     }
   }
+
+  Future<String> getPassword() async {
+    final response = await _apiService.get('/alarm/password');
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final password = data['password'];
+      if (password is String) {
+        return password;
+      }
+      throw Exception('Error al obtener la contraseña de la alarma');
+    } else {
+      throw Exception('Error al obtener la contraseña de la alarma');
+    }
+  }
+
+  Future<String> setPassword(String password) async {
+    final response = await _apiService.post(
+      '/alarm/password',
+      body: {'password': password},
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = json.decode(response.body);
+      final success = data['success'] ?? false;
+      if (success) {
+        return password;
+      } else {
+        throw Exception(data['message'] ?? 'Error al actualizar la contraseña');
+      }
+    } else {
+      throw Exception('Error al actualizar la contraseña de la alarma');
+    }
+  }
 }
