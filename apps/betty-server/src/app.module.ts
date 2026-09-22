@@ -13,6 +13,7 @@ import { RedisModule } from './shared/redis/redis.module';
 import { HealthModule } from './core/health/health.module';
 import { ObdiiModule } from './obdii/obdii.module';
 import { LoggerModule } from './core/logger/logger.module';
+import { IrModule } from './ir/ir.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { LoggerModule } from './core/logger/logger.module';
     SshModule,
     RedisModule,
     ObdiiModule,
+    IrModule,
     LoggerModule,
   ],
 })

@@ -114,7 +114,8 @@
     {
       "pin": 24,
       "direction": "INPUT",
-      "description": "GPIO 24"
+      "description": "GPIO 24 - IR receiver",
+      "role": "ir"
     },
     {
       "pin": 25,

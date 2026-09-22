@@ -8,6 +8,8 @@ export interface PinConfig {
   direction: 'INPUT' | 'OUTPUT';
   initialValue?: number;
   description?: string;
+  watch?: boolean;
+  role?: string;
 }
 
 interface PinsConfigFile {
@@ -64,5 +66,18 @@ export class GpioConfig {
 
   getPinConfig(pin: number): PinConfig | undefined {
     return this._pinConfigs.find((config) => config.pin === pin);
+  }
+
+  getPinByRole(role: string): PinConfig | undefined {
+    return this._pinConfigs.find((config) => config.role === role);
+  }
+
+  get irPin(): number {
+    const pin = this.getPinByRole('ir')?.pin;
+
+    if (pin === undefined)
+      throw new Error('IR receiver pin is not configured in pins.config.json');
+
+    return pin;
   }
 }
