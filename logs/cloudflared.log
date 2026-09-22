@@ -1,0 +1,45 @@
+2026-10-22T08:44:13Z INF Starting tunnel tunnelID=b78ea0bc-84f3-4838-84da-58d1f26b1459
+2026-10-22T08:44:13Z INF Version 2026.5.2 (Checksum 5a4e8ce2701105271412059f44b6a0bf1ae4542b4d98ff3180c0c019443a5815)
+2026-10-22T08:44:13Z INF GOOS: linux, GOVersion: go1.26.3, GoArch: arm64
+2026-10-22T08:44:13Z INF Settings: map[token:*****]
+2026-10-22T08:44:13Z INF cloudflared will not automatically update if installed by a package manager.
+2026-10-22T08:44:18Z INF Generated Connector ID: 13e7caf3-3d46-4226-8668-c5267cf53d22
+2026-10-22T08:44:23Z INF Initial protocol quic
+2026-10-22T08:44:23Z INF ICMP proxy will use 192.168.1.232 as source for IPv4
+2026-10-22T08:44:23Z INF ICMP proxy will use 2a0c:5a85:d50a:6d00:24d5:7148:ba5e:733c in zone eth0 as source for IPv6
+2026-10-22T08:44:38Z INF ICMP proxy will use 192.168.1.232 as source for IPv4
+2026-10-22T08:44:38Z INF ICMP proxy will use 2a0c:5a85:d50a:6d00:24d5:7148:ba5e:733c in zone eth0 as source for IPv6
+2026-10-22T08:44:38Z INF Starting metrics server on 127.0.0.1:20241/metrics
+2026-10-22T08:44:38Z INF +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+2026-10-22T08:44:38Z INF |                                                                     CONNECTIVITY PRE-CHECKS                                                                      |
+2026-10-22T08:44:38Z INF +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+2026-10-22T08:44:38Z INF |  COMPONENT         TARGET                     STATUS  DETAILS                                                                                                    |
+2026-10-22T08:44:38Z INF |  DNS Resolution    region1.v2.argotunnel.com  PASS    DNS Resolved successfully                                                                                  |
+2026-10-22T08:44:38Z INF |  DNS Resolution    region2.v2.argotunnel.com  PASS    DNS Resolved successfully                                                                                  |
+2026-10-22T08:44:38Z INF |  UDP Connectivity  region1.v2.argotunnel.com  FAIL    QUIC connection failed                                                                                     |
+2026-10-22T08:44:38Z INF |  UDP Connectivity  region2.v2.argotunnel.com  FAIL    QUIC connection failed                                                                                     |
+2026-10-22T08:44:38Z INF |  TCP Connectivity  region1.v2.argotunnel.com  FAIL    HTTP/2 connection is blocked or unreachable                                                                |
+2026-10-22T08:44:38Z INF |  TCP Connectivity  region2.v2.argotunnel.com  FAIL    HTTP/2 connection is blocked or unreachable                                                                |
+2026-10-22T08:44:38Z INF |  Cloudflare API    api.cloudflare.com:443     FAIL    API Connection failed                                                                                      |
+2026-10-22T08:44:38Z INF |  ERROR: Allow outbound QUIC traffic on port 7844 or use HTTP2.                                                                                                   |
+2026-10-22T08:44:38Z INF |  ERROR: Allow outbound QUIC traffic on port 7844 or use HTTP2.                                                                                                   |
+2026-10-22T08:44:38Z INF |  ERROR: Allow outbound TCP on port 7844.                                                                                                                         |
+2026-10-22T08:44:38Z INF |  ERROR: Allow outbound TCP on port 7844.                                                                                                                         |
+2026-10-22T08:44:38Z INF |  ERROR: cloudflared will still run, but automatic software updates are unavailable. Ensure port 443 TCP to api.cloudflare.com is open if you want auto-updates.  |
+2026-10-22T08:44:38Z INF |                                                                                                                                                                  |
+2026-10-22T08:44:38Z INF |  SUMMARY: Environment has critical failures. cloudflared may not be able to establish a tunnel.                                                                  |
+2026-10-22T08:44:38Z INF +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+2026-10-22T08:44:38Z INF precheck component="DNS Resolution" details="DNS Resolved successfully" run_id=62a13266-85eb-4ff5-a488-3e220ebbb259 status=pass target=region1.v2.argotunnel.com
+2026-10-22T08:44:38Z INF precheck component="DNS Resolution" details="DNS Resolved successfully" run_id=62a13266-85eb-4ff5-a488-3e220ebbb259 status=pass target=region2.v2.argotunnel.com
+2026-10-22T08:44:38Z INF precheck component="UDP Connectivity" details="QUIC connection failed" run_id=62a13266-85eb-4ff5-a488-3e220ebbb259 status=fail target=region1.v2.argotunnel.com
+2026-10-22T08:44:38Z INF precheck component="UDP Connectivity" details="QUIC connection failed" run_id=62a13266-85eb-4ff5-a488-3e220ebbb259 status=fail target=region2.v2.argotunnel.com
+2026-10-22T08:44:38Z INF precheck component="TCP Connectivity" details="HTTP/2 connection is blocked or unreachable" run_id=62a13266-85eb-4ff5-a488-3e220ebbb259 status=fail target=region1.v2.argotunnel.com
+2026-10-22T08:44:38Z INF precheck component="TCP Connectivity" details="HTTP/2 connection is blocked or unreachable" run_id=62a13266-85eb-4ff5-a488-3e220ebbb259 status=fail target=region2.v2.argotunnel.com
+2026-10-22T08:44:38Z INF precheck component="Cloudflare API" details="API Connection failed" run_id=62a13266-85eb-4ff5-a488-3e220ebbb259 status=fail target=api.cloudflare.com:443
+2026-10-22T08:44:38Z INF precheck complete hard_fail=true run_id=62a13266-85eb-4ff5-a488-3e220ebbb259
+2026-10-22T08:44:50Z INF Initiating graceful shutdown due to signal terminated ...
+2026-10-22T08:44:53Z INF Tunnel server stopped
+2026-10-22T08:44:53Z ERR icmp router terminated error="context canceled"
+2026-10-22T08:44:53Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(65074) CurveP256] connIndex=0 event=0 ip=2606:4700:a8::6
+2026-10-22T08:44:53Z INF Metrics server stopped
+2026-10-22T08:44:53Z ERR Failed to initialize DNS local resolver error="lookup region1.v2.argotunnel.com: operation was canceled"

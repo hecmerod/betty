@@ -52,7 +52,23 @@ if [ -f "$ENV_FILE" ]; then
     set +o allexport
 fi
 CLOUDFLARED_LOG="$PROJECT_DIR/logs/cloudflared.log"
-nohup cloudflared tunnel run --token "$CLOUDFLARED_TOKEN"
+mkdir -p "$(dirname "$CLOUDFLARED_LOG")"
+
+if systemctl is-enabled --quiet cloudflared 2>/dev/null; then
+    log "✅ Cloudflare tunnel: cloudflared.service (systemd); no se inicia desde este script"
+    log "📝 Estado: systemctl status cloudflared | Logs: journalctl -u cloudflared -f"
+elif pgrep -f "cloudflared tunnel run" > /dev/null; then
+    log "⚠️ cloudflared ya está en ejecución, omitiendo arranque duplicado"
+else
+    if [ -z "${CLOUDFLARED_TOKEN:-}" ]; then
+        log "⚠️ CLOUDFLARED_TOKEN no definido; omitiendo cloudflared"
+    else
+        log "🌐 Iniciando Cloudflare tunnel..."
+        nohup cloudflared tunnel run --token "$CLOUDFLARED_TOKEN" >> "$CLOUDFLARED_LOG" 2>&1 &
+        log "✅ cloudflared iniciado (PID: $!)"
+        log "📝 Logs: tail -f $CLOUDFLARED_LOG"
+    fi
+fi
 
 # Crear directorio tmp si no existe
 mkdir -p "$PROJECT_DIR/tmp"
