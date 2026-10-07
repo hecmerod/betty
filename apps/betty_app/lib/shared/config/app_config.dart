@@ -9,4 +9,6 @@ class AppConfig {
   String get bettyCameraBaseUrl => dotenv.env['BETTY_CAMERA_BASE_URL'] ?? 'http://betty-camera.hecmerod.online/camera';
 
   String get jwtSecret => dotenv.env['JWT_SECRET'] ?? 'undefined';
+
+  String get appLogo => dotenv.env['APP_LOGO'] ?? 'assets/betty-icon.png';
 }

@@ -1,13 +1,7 @@
+import 'package:betty_app/notifications/presentation/notifications_page.dart';
 import 'package:betty_app/shared/navigation/routes.dart';
 import 'package:flutter/material.dart';
-import '../../battery/battery_detail_page.dart';
-import '../../camera/camera_page.dart';
-import '../../home/home_page.dart';
-import '../../terminal/terminal_page.dart';
-import '../../lights/lights_page.dart';
-import '../../map/map_page.dart';
-import '../../notifications/notifications_page.dart';
-import '../../alarm/alarm_page.dart';
+import '../../home/presentation/home_page.dart';
 
 class RouteGenerator {
   // Método helper para crear transiciones personalizadas
@@ -37,33 +31,8 @@ class RouteGenerator {
       case Routes.home:
         return _buildPageRoute(page: const HomePage(), settings: settings);
 
-      case Routes.terminal:
-        return PageRouteBuilder(
-          settings: settings,
-          opaque: false, // Permite ver la página anterior
-          pageBuilder: (context, animation, secondaryAnimation) => const TerminalPage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return child; // Sin transición, el widget ya tiene su propia animación
-          },
-        );
-
-      case Routes.batteryDetail:
-        return _buildPageRoute(page: const BatteryDetailPage(), settings: settings);
-
-      case Routes.camera:
-        return _buildPageRoute(page: const CameraPage(), settings: settings);
-
-      case Routes.lights:
-        return _buildPageRoute(page: const LightsPage(), settings: settings);
-
-      case Routes.map:
-        return _buildPageRoute(page: const MapPage(), settings: settings);
-
       case Routes.notifications:
         return _buildPageRoute(page: const NotificationsPage(), settings: settings);
-
-      case Routes.alarm:
-        return _buildPageRoute(page: const AlarmPage(), settings: settings);
 
       default:
         return null;
@@ -74,28 +43,6 @@ class RouteGenerator {
     switch (routeName) {
       case Routes.home:
         return const HomePage();
-
-      case Routes.terminal:
-        return const TerminalPage();
-
-      case Routes.batteryDetail:
-        return const BatteryDetailPage();
-
-      case Routes.camera:
-        return const CameraPage();
-
-      case Routes.lights:
-        return const LightsPage();
-
-      case Routes.map:
-        return const MapPage();
-
-      case Routes.notifications:
-        return const NotificationsPage();
-
-      case Routes.alarm:
-        return const AlarmPage();
-
       default:
         return null;
     }
