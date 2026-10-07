@@ -1,5 +1,5 @@
 import 'package:betty_app/home/presentation/widgets/app_bar/app_bar.dart';
-import 'package:betty_app/home/presentation/widgets/three_d_van_viewer/three_d_van_viewer.dart';
+import 'package:betty_app/home/presentation/widgets/three_d_van_viewer.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
       children: [
         Positioned.fill(child: ThreeDVanViewer()),
         Positioned.fill(
-          child: Scaffold(appBar: CustomAppBar(), backgroundColor: Colors.transparent),
+          child: Scaffold(appBar: CustomAppBar(), backgroundColor: Colors.transparent, body: Placeholder()),
         ),
       ],
     );

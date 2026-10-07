@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'jwt_service.dart';
-import '../config/app_config.dart';
+import '../../core/config/app_config.dart';
 
 class ApiService {
   static final ApiService instance = ApiService._();

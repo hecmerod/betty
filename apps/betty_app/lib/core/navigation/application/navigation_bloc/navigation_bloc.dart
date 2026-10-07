@@ -1,4 +1,4 @@
-import 'package:betty_app/shared/navigation/animations/visibility_animation.dart';
+import 'package:betty_app/core/navigation/presentation/animations/visibility_animation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'navigation_event.dart';
 import 'navigation_state.dart';

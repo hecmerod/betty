@@ -1,15 +1,10 @@
-import 'package:betty_app/camera/presentation/camera_page.dart';
-import 'package:betty_app/map/presentation/map_page.dart';
-import 'package:betty_app/shared/navigation/navigation_root.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:betty_app/home/presentation/widgets/page_view/home_page_view.dart';
+import 'package:betty_app/core/navigation/presentation/navigation_root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'firebase_options.dart';
-import 'notifications/infrastructure/notification_service.dart';
-import 'home/presentation/home_page.dart';
 import 'shared/theme/app_theme.dart';
-import 'shared/navigation/navigation.dart';
+import 'core/navigation/navigation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,10 +32,7 @@ class BettyApp extends StatelessWidget {
       scaffoldMessengerKey: Navigation.instance.scaffoldMessengerKey,
       builder: (context, child) =>
           NavigationRoot(navigatorKey: Navigation.instance.navigatorKey, child: child ?? const SizedBox()),
-      home: PageView(
-        controller: PageController(initialPage: 1),
-        children: [const CameraPage(), const HomePage(), MapPage()],
-      ),
+      home: HomePageView(),
     );
   }
 }

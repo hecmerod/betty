@@ -1,5 +1,5 @@
 import 'package:betty_app/home/presentation/widgets/app_bar/app_bar_notifications_icon.dart';
-import 'package:betty_app/shared/config/app_config.dart';
+import 'package:betty_app/core/config/app_config.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

@@ -1,5 +1,5 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import '../config/app_config.dart';
+import '../../core/config/app_config.dart';
 
 class JwtService {
   static final JwtService instance = JwtService._();

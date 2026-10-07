@@ -1,6 +1,6 @@
-import 'package:betty_app/shared/navigation/bloc/navigation_bloc.dart';
-import 'package:betty_app/shared/navigation/bloc/navigation_event.dart';
-import 'package:betty_app/shared/navigation/routes.dart';
+import 'package:betty_app/core/navigation/application/navigation_bloc/navigation_bloc.dart';
+import 'package:betty_app/core/navigation/application/navigation_bloc/navigation_event.dart';
+import 'package:betty_app/core/navigation/presentation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

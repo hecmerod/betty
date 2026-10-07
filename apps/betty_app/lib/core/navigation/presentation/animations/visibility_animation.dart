@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/navigation_bloc.dart';
-import '../bloc/navigation_state.dart';
+import '../../application/navigation_bloc/navigation_bloc.dart';
+import '../../application/navigation_bloc/navigation_state.dart';
 
 const Duration kHideWidgetAnimationDuration = Duration(milliseconds: 300);
 

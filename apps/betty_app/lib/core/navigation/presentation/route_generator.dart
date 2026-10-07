@@ -1,7 +1,7 @@
 import 'package:betty_app/notifications/presentation/notifications_page.dart';
-import 'package:betty_app/shared/navigation/routes.dart';
+import 'package:betty_app/core/navigation/presentation/routes.dart';
 import 'package:flutter/material.dart';
-import '../../home/presentation/home_page.dart';
+import '../../../home/presentation/home_page.dart';
 
 class RouteGenerator {
   // Método helper para crear transiciones personalizadas
@@ -28,9 +28,6 @@ class RouteGenerator {
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case Routes.home:
-        return _buildPageRoute(page: const HomePage(), settings: settings);
-
       case Routes.notifications:
         return _buildPageRoute(page: const NotificationsPage(), settings: settings);
 

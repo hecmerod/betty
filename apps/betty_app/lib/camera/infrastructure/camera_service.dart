@@ -1,4 +1,4 @@
-import 'package:betty_app/shared/config/app_config.dart';
+import 'package:betty_app/core/config/app_config.dart';
 import 'package:betty_app/shared/services/api_service.dart';
 import 'package:betty_app/shared/services/jwt_service.dart';
 

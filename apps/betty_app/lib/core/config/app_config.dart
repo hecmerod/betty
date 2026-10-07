@@ -11,4 +11,6 @@ class AppConfig {
   String get jwtSecret => dotenv.env['JWT_SECRET'] ?? 'undefined';
 
   String get appLogo => dotenv.env['APP_LOGO'] ?? 'assets/betty-icon.png';
+
+  String get mapBoxApiKey => dotenv.env['MAP_BOX_API_KEY'] ?? '';
 }

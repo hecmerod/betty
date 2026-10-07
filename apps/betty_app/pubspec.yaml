@@ -50,6 +50,7 @@ dependencies:
   flutter_bloc: ^8.1.6
   equatable: ^2.0.7
   dartssh2: ^2.9.0
+  mapbox_maps_flutter: ^3.0.0
 
 dev_dependencies:
   flutter_test:

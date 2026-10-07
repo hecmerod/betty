@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import '../../../shared/db/database_helper.dart';
+import '../../../core/db/database_helper.dart';
 import '../../domain/notification_model.dart';
 
 class NotificationRepository {

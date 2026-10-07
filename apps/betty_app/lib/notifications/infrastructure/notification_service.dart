@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../domain/notification_model.dart';
 import 'repositories/notification_repository.dart';
-import '../../shared/navigation/navigation.dart';
-import '../../shared/navigation/bloc/navigation_bloc.dart';
-import '../../shared/navigation/bloc/navigation_event.dart';
-import '../../shared/navigation/routes.dart';
+import '../../core/navigation/navigation.dart';
+import '../../core/navigation/application/navigation_bloc/navigation_bloc.dart';
+import '../../core/navigation/application/navigation_bloc/navigation_event.dart';
+import '../../core/navigation/presentation/routes.dart';
 import '../../shared/services/api_service.dart';
 
 @pragma('vm:entry-point')
