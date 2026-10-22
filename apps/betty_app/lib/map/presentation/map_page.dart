@@ -1,7 +1,12 @@
 import 'dart:convert';
 
 import 'package:betty_app/core/config/app_config.dart';
+import 'package:betty_app/core/navigation/presentation/routes.dart';
+import 'package:betty_app/home/application/home_page_bloc/home_page_bloc.dart';
+import 'package:betty_app/home/application/home_page_bloc/home_page_state.dart';
+import 'package:betty_app/home/presentation/helpers/home_routes_to_index_mapper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {
@@ -34,7 +39,15 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MapWidget(key: const ValueKey('mapWidget'), styleUri: MapboxStyles.OUTDOORS, onMapCreated: _onMapCreated),
+      backgroundColor: const Color(0xFFE8E4D8),
+      body: BlocSelector<HomePageBloc, HomePageState, bool>(
+        selector: (state) => state.activePage == HomeRoutesToIndexMapper.getIndexFromRoute(Routes.map),
+        builder: (context, isActive) {
+          return isActive
+              ? MapWidget(key: const ValueKey('mapWidget'), styleUri: MapboxStyles.OUTDOORS, onMapCreated: _onMapCreated)
+              : const SizedBox.expand();
+        },
+      ),
     );
   }
 }

@@ -1,25 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 class VideoDisplayWidget extends StatelessWidget {
-  final ValueNotifier<Uint8List?> frameNotifier;
+  final ValueListenable<ui.Image?> imageNotifier;
   final bool roundedCorners;
 
-  const VideoDisplayWidget({super.key, required this.frameNotifier, this.roundedCorners = true});
+  const VideoDisplayWidget({super.key, required this.imageNotifier, this.roundedCorners = true});
 
   @override
   Widget build(BuildContext context) {
     final content = SizedBox.expand(
       child: Container(
         color: Colors.grey[900],
-        child: ValueListenableBuilder<Uint8List?>(
-          valueListenable: frameNotifier,
-          builder: (context, frameData, child) {
-            if (frameData == null) {
-              return const SizedBox.shrink();
-            }
-            return Image.memory(frameData, fit: BoxFit.contain, gaplessPlayback: true);
-          },
+        child: RepaintBoundary(
+          child: ValueListenableBuilder<ui.Image?>(
+            valueListenable: imageNotifier,
+            builder: (context, image, child) {
+              if (image == null) {
+                return const SizedBox.shrink();
+              }
+              return RawImage(image: image, fit: BoxFit.contain);
+            },
+          ),
         ),
       ),
     );

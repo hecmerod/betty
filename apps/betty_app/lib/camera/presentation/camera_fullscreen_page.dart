@@ -1,12 +1,15 @@
+import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'widgets/video_display_widget.dart';
 
 class CameraFullscreenPage extends StatefulWidget {
-  final ValueNotifier<Uint8List?> frameNotifier;
+  final ValueListenable<ui.Image?> imageNotifier;
   final String heroTag;
 
-  const CameraFullscreenPage({super.key, required this.frameNotifier, required this.heroTag});
+  const CameraFullscreenPage({super.key, required this.imageNotifier, required this.heroTag});
 
   @override
   State<CameraFullscreenPage> createState() => _CameraFullscreenPageState();
@@ -41,7 +44,7 @@ class _CameraFullscreenPageState extends State<CameraFullscreenPage> {
                 child: SizedBox.expand(
                   child: Container(
                     color: Colors.black,
-                    child: VideoDisplayWidget(frameNotifier: widget.frameNotifier, roundedCorners: false),
+                    child: VideoDisplayWidget(imageNotifier: widget.imageNotifier, roundedCorners: false),
                   ),
                 ),
               ),

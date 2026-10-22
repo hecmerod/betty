@@ -1,11 +1,6 @@
 import 'package:betty_app/core/navigation/presentation/routes.dart';
-import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_bloc.dart';
-import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_event.dart';
-import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_state.dart';
-import 'package:betty_app/home/presentation/helpers/home_routes_to_index_mapper.dart';
 import 'package:betty_app/home/presentation/widgets/navigation_bar/home_navigation_bar_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeNavigationBar extends StatelessWidget {
   const HomeNavigationBar({super.key});

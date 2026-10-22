@@ -1,9 +1,10 @@
 import 'package:betty_app/camera/infrastructure/camera_service.dart';
+import 'package:betty_app/camera/infrastructure/mjpeg_stream_client.dart';
 import 'package:betty_app/camera/presentation/camera_fullscreen_page.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'video_error_widget.dart';
 import 'video_loading_widget.dart';
 import 'video_display_widget.dart';
@@ -14,6 +15,7 @@ class VideoStreamWidget extends StatefulWidget {
   final String heroTag;
   final int? cameraIndex;
   final bool grid;
+  final bool isActive;
 
   const VideoStreamWidget({
     super.key,
@@ -22,6 +24,7 @@ class VideoStreamWidget extends StatefulWidget {
     this.heroTag = 'camera-video',
     this.cameraIndex,
     this.grid = false,
+    this.isActive = true,
   });
 
   @override
@@ -30,167 +33,113 @@ class VideoStreamWidget extends StatefulWidget {
 
 class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   final _cameraService = CameraService.instance;
-  final _frameNotifier = ValueNotifier<Uint8List?>(null);
+  final _streamClient = MjpegStreamClient();
+  final _imageNotifier = ValueNotifier<ui.Image?>(null);
   bool _isLoading = true;
   String? _error;
   StreamSubscription<Uint8List>? _streamSubscription;
-  http.Client? _httpClient;
-  Timer? _timeoutTimer;
+  bool _isDecoding = false;
+  Uint8List? _pendingFrame;
 
   @override
   void initState() {
     super.initState();
-    _startStream();
+    if (widget.isActive) _startStream();
+  }
+
+  @override
+  void didUpdateWidget(covariant VideoStreamWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive == oldWidget.isActive) return;
+    widget.isActive ? _startStream() : _stopStream();
   }
 
   @override
   void dispose() {
-    _timeoutTimer?.cancel();
-    _timeoutTimer = null;
-    _frameNotifier.dispose();
     _stopStream();
+    _imageNotifier.value?.dispose();
+    _imageNotifier.dispose();
     super.dispose();
   }
 
-  void _startStream() async {
-    try {
-      final url = _cameraService.getVideoStreamUrl(
-        type: widget.cameraType,
-        index: widget.cameraIndex,
-        grid: widget.grid,
-      );
-      _httpClient = http.Client();
-      final request = http.Request('GET', Uri.parse(url));
+  void _startStream() {
+    _stopStream();
 
-      final headers = _cameraService.getVideoStreamHeaders();
+    final url = _cameraService.getVideoStreamUrl(
+      type: widget.cameraType,
+      index: widget.cameraIndex,
+      grid: widget.grid,
+    );
 
-      headers.forEach((key, value) {
-        request.headers[key] = value;
-      });
-
-      final response = await _httpClient!.send(request);
-
-      print(url);
-
-      if (response.statusCode == 200) {
-        _streamSubscription = _parseMultipartStream(response.stream).listen(
+    _streamSubscription = _streamClient
+        .start(url: url, headers: _cameraService.getVideoStreamHeaders())
+        .listen(
           _onFrameReceived,
           onError: _onStreamError,
-          onDone: () {
-            if (mounted) {
-              _onStreamError('Stream finalizado');
-            }
-          },
+          onDone: () => _onStreamError('Stream finalizado'),
           cancelOnError: false,
         );
-      } else {
-        _onStreamError('HTTP ${response.statusCode}');
-      }
-    } catch (e) {
-      if (mounted) {
-        _onStreamError('Error de conexión: $e');
-      }
-    }
   }
 
-  Future<void> _stopStream() async {
-    // Primero cancelar la suscripción
-    try {
-      await _streamSubscription?.cancel();
-    } catch (e) {
-      // Ignorar errores
-    } finally {
-      _streamSubscription = null;
-    }
-
-    // Esperar un poco antes de cerrar el cliente para que termine de procesar
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    // Ahora cerrar el cliente HTTP
-    try {
-      _httpClient?.close();
-    } catch (e) {
-      // Ignorar errores
-    } finally {
-      _httpClient = null;
-    }
-  }
-
-  Stream<Uint8List> _parseMultipartStream(Stream<List<int>> stream) async* {
-    final buffer = <int>[];
-    const int startMarker1 = 0xFF;
-    const int startMarker2 = 0xD8;
-    const int endMarker1 = 0xFF;
-    const int endMarker2 = 0xD9;
-
-    int soiSearchStart = 0;
-    int foundSoiIndex = -1;
-
-    await for (final chunk in stream) {
-      buffer.addAll(chunk);
-
-      while (true) {
-        if (foundSoiIndex != -1) {
-          final eoiSearchStart = foundSoiIndex + 2;
-          if (buffer.length < eoiSearchStart + 2) break;
-
-          final eoiIndex = _findJpegMarker(buffer, endMarker1, endMarker2, eoiSearchStart);
-          if (eoiIndex == -1) {
-            break;
-          } else {
-            final frame = buffer.sublist(foundSoiIndex, eoiIndex + 2);
-            if (frame.length > 2) {
-              yield Uint8List.fromList(frame);
-            }
-            buffer.removeRange(0, eoiIndex + 2);
-            soiSearchStart = 0;
-            foundSoiIndex = -1;
-          }
-        } else {
-          if (buffer.length < soiSearchStart + 2) break;
-          foundSoiIndex = _findJpegMarker(buffer, startMarker1, startMarker2, soiSearchStart);
-          if (foundSoiIndex == -1) {
-            soiSearchStart = buffer.length > 1 ? buffer.length - 1 : 0;
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  int _findJpegMarker(List<int> buffer, int marker1, int marker2, int startIndex) {
-    if (buffer.length < startIndex + 2) return -1;
-    for (int i = startIndex; i <= buffer.length - 2; i++) {
-      if (buffer[i] == marker1 && buffer[i + 1] == marker2) {
-        return i;
-      }
-    }
-    return -1;
+  void _stopStream() {
+    _streamSubscription?.cancel();
+    _streamSubscription = null;
+    _streamClient.stop();
+    _pendingFrame = null;
   }
 
   void _onFrameReceived(Uint8List frameData) {
-    _timeoutTimer?.cancel();
-    if (mounted) {
-      final bool wasLoading = _isLoading;
-      _frameNotifier.value = frameData;
+    if (_isDecoding) {
+      _pendingFrame = frameData;
+      return;
+    }
+    _decodeFrame(frameData);
+  }
 
-      if (wasLoading || _error != null) {
-        setState(() {
-          _isLoading = false;
-          _error = null;
-        });
-      }
+  Future<void> _decodeFrame(Uint8List frameData) async {
+    _isDecoding = true;
+    ui.Image? image;
+    try {
+      final codec = await ui.instantiateImageCodec(frameData);
+      final frame = await codec.getNextFrame();
+      codec.dispose();
+      image = frame.image;
+    } catch (_) {
+      // Skip corrupt frames.
+    }
+    _isDecoding = false;
+
+    if (!mounted) {
+      image?.dispose();
+      return;
+    }
+
+    if (image != null) _showImage(image);
+
+    final pending = _pendingFrame;
+    _pendingFrame = null;
+    if (pending != null && _streamSubscription != null) _decodeFrame(pending);
+  }
+
+  void _showImage(ui.Image image) {
+    final previous = _imageNotifier.value;
+    _imageNotifier.value = image;
+    previous?.dispose();
+
+    if (_isLoading || _error != null) {
+      setState(() {
+        _isLoading = false;
+        _error = null;
+      });
     }
   }
 
-  void _onStreamError(dynamic error) {
-    _timeoutTimer?.cancel();
-    if (mounted) {
-      setState(() {
-        _error = error.toString();
-        _isLoading = false;
-      });
-    }
+  void _onStreamError(Object error) {
+    if (!mounted) return;
+    setState(() {
+      _error = error.toString();
+      _isLoading = false;
+    });
   }
 
   @override
@@ -202,7 +151,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(
           opacity: Tween<double>(
-            begin: child.key == const ValueKey('video') ? 2.0 : 0.2,
+            begin: child.key == const ValueKey('video') ? 1.0 : 0.2,
             end: 1.0,
           ).animate(CurvedAnimation(parent: animation, curve: Curves.easeIn)),
           child: child,
@@ -234,7 +183,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   }
 
   Widget _buildFullscreenPage(BuildContext context) {
-    return CameraFullscreenPage(frameNotifier: _frameNotifier, heroTag: widget.heroTag);
+    return CameraFullscreenPage(imageNotifier: _imageNotifier, heroTag: widget.heroTag);
   }
 
   Widget _buildContent(BuildContext context) {
@@ -242,10 +191,10 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       return VideoErrorWidget(error: _error!);
     }
 
-    if (_isLoading || _frameNotifier.value == null) {
+    if (_isLoading || _imageNotifier.value == null) {
       return const VideoLoadingWidget();
     }
 
-    return VideoDisplayWidget(frameNotifier: _frameNotifier);
+    return VideoDisplayWidget(imageNotifier: _imageNotifier);
   }
 }
