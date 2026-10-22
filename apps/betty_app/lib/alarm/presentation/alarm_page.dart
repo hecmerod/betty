@@ -1,5 +1,5 @@
 import 'package:betty_app/alarm/infrastructure/camera_service.dart';
-import 'package:betty_app/alarm/presentation/widgets/video_stream_widget.dart';
+import 'package:betty_app/alarm/presentation/camera/widgets/video_stream_widget.dart';
 import 'package:betty_app/core/navigation/presentation/routes.dart';
 import 'package:betty_app/home/application/home_page_bloc/home_page_bloc.dart';
 import 'package:betty_app/home/application/home_page_bloc/home_page_state.dart';
