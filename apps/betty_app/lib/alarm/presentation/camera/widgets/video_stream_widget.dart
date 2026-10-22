@@ -1,7 +1,9 @@
-import 'package:betty_app/alarm/infrastructure/camera_service.dart';
+import 'package:betty_app/alarm/domain/camera_type.dart';
+import 'package:betty_app/alarm/domain/ports/camera_port.dart';
 import 'package:betty_app/alarm/infrastructure/mjpeg_stream_client.dart';
-import 'package:betty_app/alarm/presentation/camera_fullscreen_page.dart';
+import 'package:betty_app/alarm/presentation/camera/camera_fullscreen_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -32,7 +34,6 @@ class VideoStreamWidget extends StatefulWidget {
 }
 
 class _VideoStreamWidgetState extends State<VideoStreamWidget> {
-  final _cameraService = CameraService.instance;
   final _streamClient = MjpegStreamClient();
   final _imageNotifier = ValueNotifier<ui.Image?>(null);
   bool _isLoading = true;
@@ -65,10 +66,11 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   void _startStream() {
     _stopStream();
 
-    final url = _cameraService.getVideoStreamUrl(type: widget.cameraType, index: widget.cameraIndex, grid: widget.grid);
+    final camera = context.read<CameraPort>();
+    final url = camera.getVideoStreamUrl(type: widget.cameraType, index: widget.cameraIndex, grid: widget.grid);
 
     _streamSubscription = _streamClient
-        .start(url: url, headers: _cameraService.getVideoStreamHeaders())
+        .start(url: url, headers: camera.getVideoStreamHeaders())
         .listen(
           _onFrameReceived,
           onError: _onStreamError,

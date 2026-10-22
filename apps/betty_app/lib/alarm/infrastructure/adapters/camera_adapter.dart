@@ -1,19 +1,19 @@
+import 'package:betty_app/alarm/domain/camera_type.dart';
+import 'package:betty_app/alarm/domain/ports/camera_port.dart';
 import 'package:betty_app/core/config/app_config.dart';
-import 'package:betty_app/shared/services/api_service.dart';
 import 'package:betty_app/shared/services/jwt_service.dart';
 
-enum CameraType { internal, external }
+class CameraAdapter implements CameraPort {
+  CameraAdapter({required AppConfig config, required JwtService jwtService})
+    : _config = config,
+      _jwtService = jwtService;
 
-class CameraService {
-  static final CameraService instance = CameraService._();
-  CameraService._();
+  final AppConfig _config;
+  final JwtService _jwtService;
 
-  final _apiService = ApiService.instance;
-  final _jwtService = JwtService.instance;
-  final _config = AppConfig.instance;
-
+  @override
   String getVideoStreamUrl({CameraType type = CameraType.internal, int? index, bool grid = false}) {
-    JwtService.instance.generateToken();
+    _jwtService.generateToken();
     final typeQuery = type == CameraType.internal ? 'internal' : 'external';
     final params = <String, String>{'type': typeQuery, if (grid) 'grid': 'true', if (index != null) 'index': '$index'};
     final query = params.entries.map((entry) => '${entry.key}=${Uri.encodeQueryComponent(entry.value)}').join('&');
@@ -21,6 +21,7 @@ class CameraService {
     return '${_config.bettyCameraBaseUrl}/camera?$query';
   }
 
+  @override
   Map<String, String> getVideoStreamHeaders() {
     return {'Authorization': 'Bearer ${_jwtService.generateToken()}'};
   }

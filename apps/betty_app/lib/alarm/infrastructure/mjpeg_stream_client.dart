@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 
+//TODO
 class MjpegStreamException implements Exception {
   final String message;
 

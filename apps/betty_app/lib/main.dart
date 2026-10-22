@@ -1,7 +1,9 @@
+import 'package:betty_app/core/di/providers.dart';
 import 'package:betty_app/home/presentation/widgets/page_view/home_page_view.dart';
 import 'package:betty_app/core/navigation/presentation/navigation_root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'shared/theme/app_theme.dart';
 import 'core/navigation/navigation.dart';
@@ -17,7 +19,7 @@ void main() async {
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark),
   );
 
-  runApp(const BettyApp());
+  runApp(MultiRepositoryProvider(providers: providers, child: const BettyApp()));
 }
 
 class BettyApp extends StatelessWidget {
