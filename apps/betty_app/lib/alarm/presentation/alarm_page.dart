@@ -1,34 +1,63 @@
+import 'package:betty_app/alarm/application/alarm_bloc/alarm_bloc.dart';
+import 'package:betty_app/alarm/application/alarm_bloc/alarm_event.dart';
 import 'package:betty_app/alarm/domain/camera_type.dart';
+import 'package:betty_app/alarm/domain/ports/alarm_port.dart';
+import 'package:betty_app/alarm/domain/ports/sensor_port.dart';
 import 'package:betty_app/alarm/presentation/camera/widgets/video_stream_widget.dart';
-import 'package:betty_app/core/navigation/presentation/routes.dart';
-import 'package:betty_app/home/application/home_page_bloc/home_page_bloc.dart';
-import 'package:betty_app/home/application/home_page_bloc/home_page_state.dart';
-import 'package:betty_app/home/presentation/helpers/home_routes_to_index_mapper.dart';
+import 'package:betty_app/alarm/presentation/widgets/alarm_main_button.dart';
+import 'package:betty_app/alarm/presentation/widgets/sensor_list.dart';
+import 'package:betty_app/alarm/presentation/widgets/sensor_heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AlarmPage extends StatefulWidget {
+class AlarmPage extends StatelessWidget {
   const AlarmPage({super.key});
 
   @override
-  State<AlarmPage> createState() => _AlarmPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AlarmBloc(alarmPort: context.read<AlarmPort>(), sensorPort: context.read<SensorPort>())
+        ..add(const LoadAlarmStatus())
+        ..add(const LoadAlarmPassword())
+        ..add(const LoadSensors()),
+      child: const AlarmPageView(),
+    );
+  }
 }
 
-class _AlarmPageState extends State<AlarmPage>
-    with AutomaticKeepAliveClientMixin<AlarmPage> {
+class AlarmPageView extends StatefulWidget {
+  const AlarmPageView({super.key});
+
+  @override
+  State<AlarmPageView> createState() => _AlarmPageViewState();
+}
+
+class _AlarmPageViewState extends State<AlarmPageView> with AutomaticKeepAliveClientMixin<AlarmPageView> {
   @override
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocSelector<HomePageBloc, HomePageState, bool>(
-      selector: (state) =>
-          state.activePage ==
-          HomeRoutesToIndexMapper.getIndexFromRoute(Routes.camera),
-      builder: (context, isActive) => VideoStreamWidget(
-        cameraType: CameraType.internal,
-        isActive: isActive,
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const AspectRatio(
+              aspectRatio: 16 / 9,
+              child: VideoStreamWidget(cameraType: CameraType.internal),
+            ),
+            const SizedBox(height: 24),
+            const AlarmMainButton(),
+            const SizedBox(height: 24),
+            const SensorHeading(),
+            const SizedBox(height: 16),
+            const SensorList(),
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
-import 'package:betty_app/alarm/domain/sensor.dart';
+import 'package:betty_app/alarm/domain/entities/sensor.dart';
+import 'package:betty_app/alarm/domain/sensor_type.dart';
 
 abstract class SensorPort {
   Future<List<Sensor>> getSensorsStatus();

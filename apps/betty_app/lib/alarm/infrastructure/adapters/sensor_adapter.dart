@@ -1,7 +1,8 @@
 import 'dart:convert';
 
+import 'package:betty_app/alarm/domain/entities/sensor.dart';
 import 'package:betty_app/alarm/domain/ports/sensor_port.dart';
-import 'package:betty_app/alarm/domain/sensor.dart';
+import 'package:betty_app/alarm/domain/sensor_type.dart';
 import 'package:betty_app/shared/services/api_service.dart';
 
 class SensorAdapter implements SensorPort {
@@ -17,7 +18,7 @@ class SensorAdapter implements SensorPort {
       final Map<String, dynamic> responseData = json.decode(response.body);
       final List<dynamic> sensorsData = responseData['sensors'] ?? [];
       return sensorsData
-          .map((json) => Sensor.fromJson(json as Map<String, dynamic>))
+          .map((json) => _sensorFromJson(json as Map<String, dynamic>))
           .toList();
     } else {
       throw Exception('Error al obtener el estado de los sensores');
@@ -56,4 +57,17 @@ class SensorAdapter implements SensorPort {
       await enableSensor(sensorType);
     }
   }
+}
+
+Sensor _sensorFromJson(Map<String, dynamic> json) {
+  return Sensor(
+    type: SensorType.fromId(json['id'] as String),
+    isListening: json['isListening'] as bool,
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'] as String)
+        : null,
+    updatedAt: json['updatedAt'] != null
+        ? DateTime.parse(json['updatedAt'] as String)
+        : null,
+  );
 }

@@ -2,6 +2,10 @@ import 'package:betty_app/alarm/domain/camera_type.dart';
 import 'package:betty_app/alarm/domain/ports/camera_port.dart';
 import 'package:betty_app/alarm/infrastructure/mjpeg_stream_client.dart';
 import 'package:betty_app/alarm/presentation/camera/camera_fullscreen_page.dart';
+import 'package:betty_app/core/navigation/presentation/routes.dart';
+import 'package:betty_app/home/application/home_page_bloc/home_page_bloc.dart';
+import 'package:betty_app/home/application/home_page_bloc/home_page_state.dart';
+import 'package:betty_app/home/presentation/helpers/home_routes_to_index_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:async';
@@ -17,7 +21,6 @@ class VideoStreamWidget extends StatefulWidget {
   final String heroTag;
   final int? cameraIndex;
   final bool grid;
-  final bool isActive;
 
   const VideoStreamWidget({
     super.key,
@@ -26,7 +29,6 @@ class VideoStreamWidget extends StatefulWidget {
     this.heroTag = 'camera-video',
     this.cameraIndex,
     this.grid = false,
-    this.isActive = true,
   });
 
   @override
@@ -41,18 +43,21 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   StreamSubscription<Uint8List>? _streamSubscription;
   bool _isDecoding = false;
   Uint8List? _pendingFrame;
+  bool? _cameraPageActive;
+  int _streamSyncId = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.isActive) _startStream();
-  }
-
-  @override
-  void didUpdateWidget(covariant VideoStreamWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.isActive == oldWidget.isActive) return;
-    widget.isActive ? _startStream() : _stopStream();
+  void _syncStream(bool cameraPageActive) {
+    if (_cameraPageActive == cameraPageActive) return;
+    _cameraPageActive = cameraPageActive;
+    final syncId = ++_streamSyncId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || syncId != _streamSyncId) return;
+      if (cameraPageActive) {
+        _startStream();
+      } else {
+        _stopStream();
+      }
+    });
   }
 
   @override
@@ -67,7 +72,11 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
     _stopStream();
 
     final camera = context.read<CameraPort>();
-    final url = camera.getVideoStreamUrl(type: widget.cameraType, index: widget.cameraIndex, grid: widget.grid);
+    final url = camera.getVideoStreamUrl(
+      type: widget.cameraType,
+      index: widget.cameraIndex,
+      grid: widget.grid,
+    );
 
     _streamSubscription = _streamClient
         .start(url: url, headers: camera.getVideoStreamHeaders())
@@ -142,6 +151,18 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocSelector<HomePageBloc, HomePageState, bool>(
+      selector: (state) =>
+          state.activePage ==
+          HomeRoutesToIndexMapper.getIndexFromRoute(Routes.camera),
+      builder: (context, cameraPageActive) {
+        _syncStream(cameraPageActive);
+        return _buildStream(context);
+      },
+    );
+  }
+
+  Widget _buildStream(BuildContext context) {
     final content = AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       switchInCurve: Curves.easeIn,
@@ -169,7 +190,10 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
             PageRouteBuilder(
               opaque: false,
               pageBuilder: (context, animation, secondaryAnimation) {
-                return FadeTransition(opacity: animation, child: _buildFullscreenPage(context));
+                return FadeTransition(
+                  opacity: animation,
+                  child: _buildFullscreenPage(context),
+                );
               },
               transitionDuration: const Duration(milliseconds: 300),
             ),
@@ -181,7 +205,10 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   }
 
   Widget _buildFullscreenPage(BuildContext context) {
-    return CameraFullscreenPage(imageNotifier: _imageNotifier, heroTag: widget.heroTag);
+    return CameraFullscreenPage(
+      imageNotifier: _imageNotifier,
+      heroTag: widget.heroTag,
+    );
   }
 
   Widget _buildContent(BuildContext context) {
