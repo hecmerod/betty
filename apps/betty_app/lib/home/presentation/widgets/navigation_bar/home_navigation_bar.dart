@@ -1,7 +1,9 @@
+import 'package:betty_app/core/navigation/presentation/routes.dart';
 import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_bloc.dart';
 import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_event.dart';
 import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_state.dart';
 import 'package:betty_app/home/presentation/helpers/home_routes_to_index_mapper.dart';
+import 'package:betty_app/home/presentation/widgets/navigation_bar/home_navigation_bar_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,24 +12,33 @@ class HomeNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeNavigationBloc, HomeNavigationState>(
-      builder: (context, state) {
-        final int index = HomeRoutesToIndexMapper.getIndexFromRoute(state.route);
-
-        return NavigationBar(
-          selectedIndex: index,
-          onDestinationSelected: (index) {
-            final String route = HomeRoutesToIndexMapper.getRouteFromIndex(index);
-
-            context.read<HomeNavigationBloc>().add(ScrollToPage(route));
-          },
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.camera_outlined), selectedIcon: Icon(Icons.camera), label: 'Camara'),
-            NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-            NavigationDestination(icon: Icon(Icons.map_outlined), selectedIcon: Icon(Icons.map), label: 'Mapa'),
+    return Padding(
+      padding: EdgeInsets.all(MediaQuery.of(context).size.height / 40),
+      child: Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height / 12,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(100),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 12,
+              spreadRadius: 2,
+              offset: const Offset(0, 0),
+            ),
           ],
-        );
-      },
+        ),
+        child: Row(
+          children: [
+            HomeNavigationBarIcon(route: Routes.camera),
+            Spacer(),
+            HomeNavigationBarIcon(route: Routes.home),
+            Spacer(),
+            HomeNavigationBarIcon(route: Routes.map),
+          ],
+        ),
+      ),
     );
   }
 }

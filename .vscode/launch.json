@@ -47,42 +47,20 @@
       }
     },
     {
-      "name": "📱 App Run ",
-      "type": "node",
+      "name": "🚀 App Release ",
+      "type": "dart",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "betty-app"
-      ],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
-      }
+      "program": "${workspaceFolder}/apps/betty_app/lib/main.dart",
+      "cwd": "${workspaceFolder}/apps/betty_app",
+      "flutterMode": "release",
     },
     {
-      "name": "🚀 App Debug ",
+      "name": "🐛 App Debug ",
       "type": "dart",
       "request": "launch",
       "program": "${workspaceFolder}/apps/betty_app/lib/main.dart",
       "cwd": "${workspaceFolder}/apps/betty_app",
       "flutterMode": "debug",
     },
-    {
-      "name": "🔨 App Betty ",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "betty-app:build"
-      ],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PATH": "${env:PATH}:/usr/local/bin:/opt/homebrew/bin"
-      }
-    }
   ]
 }

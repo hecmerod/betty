@@ -15,25 +15,13 @@ class CameraService {
   String getVideoStreamUrl({CameraType type = CameraType.internal, int? index, bool grid = false}) {
     JwtService.instance.generateToken();
     final typeQuery = type == CameraType.internal ? 'internal' : 'external';
-    var url = '${_config.bettyCameraBaseUrl}/camera';
+    final params = <String, String>{'type': typeQuery, if (grid) 'grid': 'true', if (index != null) 'index': '$index'};
+    final query = params.entries.map((entry) => '${entry.key}=${Uri.encodeQueryComponent(entry.value)}').join('&');
 
-    if (grid) url += '&grid=true';
-
-    if (index != null) url += '&index=$index';
-
-    return url;
+    return '${_config.bettyCameraBaseUrl}/camera?$query';
   }
 
   Map<String, String> getVideoStreamHeaders() {
     return {'Authorization': 'Bearer ${_jwtService.generateToken()}'};
-  }
-
-  Future<void> capturePhoto({CameraType type = CameraType.internal, int? index}) async {
-    final typeQuery = type == CameraType.internal ? 'internal' : 'external';
-    var url = '${_config.bettyCameraBaseUrl}/camera/photo?type=$typeQuery';
-
-    if (index != null) url += '&index=$index';
-
-    await _apiService.post(url);
   }
 }

@@ -18,9 +18,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<
     return Stack(
       children: [
         Positioned.fill(child: ThreeDVanViewer()),
-        Positioned.fill(
-          child: Scaffold(appBar: CustomAppBar(), backgroundColor: Colors.transparent, body: Placeholder()),
-        ),
+        Scaffold(backgroundColor: Colors.transparent, appBar: CustomAppBar(), body: Placeholder()),
       ],
     );
   }
