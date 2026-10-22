@@ -44,5 +44,6 @@
   "python.analysis.extraPaths": ["./apps/betty-camera/src/camera"],
   "rust-analyzer.linkedProjects": [
     "./apps/betty-camera/Cargo.toml"
-  ]
+  ],
+  "debug.console.closeOnEnd": true
 }

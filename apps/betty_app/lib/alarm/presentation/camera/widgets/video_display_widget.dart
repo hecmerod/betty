@@ -5,14 +5,20 @@ import 'dart:ui' as ui;
 class VideoDisplayWidget extends StatelessWidget {
   final ValueListenable<ui.Image?> imageNotifier;
   final bool roundedCorners;
+  final Color? backgroundColor;
 
-  const VideoDisplayWidget({super.key, required this.imageNotifier, this.roundedCorners = true});
+  const VideoDisplayWidget({
+    super.key,
+    required this.imageNotifier,
+    this.roundedCorners = true,
+    this.backgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     final content = SizedBox.expand(
       child: Container(
-        color: Colors.grey[900],
+        color: backgroundColor ?? Colors.grey[900],
         child: RepaintBoundary(
           child: ValueListenableBuilder<ui.Image?>(
             valueListenable: imageNotifier,

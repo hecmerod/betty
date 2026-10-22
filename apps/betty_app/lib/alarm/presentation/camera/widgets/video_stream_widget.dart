@@ -18,7 +18,6 @@ import 'video_display_widget.dart';
 class VideoStreamWidget extends StatefulWidget {
   final CameraType cameraType;
   final bool enableFullscreen;
-  final String heroTag;
   final int? cameraIndex;
   final bool grid;
 
@@ -26,7 +25,6 @@ class VideoStreamWidget extends StatefulWidget {
     super.key,
     required this.cameraType,
     this.enableFullscreen = false,
-    this.heroTag = 'camera-video',
     this.cameraIndex,
     this.grid = false,
   });
@@ -45,6 +43,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   Uint8List? _pendingFrame;
   bool? _cameraPageActive;
   int _streamSyncId = 0;
+  bool _fullscreenOpen = false;
 
   void _syncStream(bool cameraPageActive) {
     if (_cameraPageActive == cameraPageActive) return;
@@ -69,7 +68,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   }
 
   void _startStream() {
-    _stopStream();
+    if (_streamSubscription != null) return;
 
     final camera = context.read<CameraPort>();
     final url = camera.getVideoStreamUrl(
@@ -184,30 +183,37 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
     }
 
     return GestureDetector(
-      onTap: () {
-        if (_error == null && !_isLoading) {
-          Navigator.of(context).push(
-            PageRouteBuilder(
-              opaque: false,
-              pageBuilder: (context, animation, secondaryAnimation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: _buildFullscreenPage(context),
-                );
-              },
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-          );
-        }
-      },
-      child: content,
+      onTap: _openFullscreen,
+      child: _fullscreenOpen ? const SizedBox.expand() : content,
     );
   }
 
-  Widget _buildFullscreenPage(BuildContext context) {
-    return CameraFullscreenPage(
-      imageNotifier: _imageNotifier,
-      heroTag: widget.heroTag,
+  Future<void> _openFullscreen() async {
+    if (_error != null || _isLoading || _fullscreenOpen) return;
+
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return;
+    final sourceRect = box.localToGlobal(Offset.zero) & box.size;
+
+    setState(() => _fullscreenOpen = true);
+    var listening = false;
+    await Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        transitionDuration: const Duration(milliseconds: 450),
+        reverseTransitionDuration: const Duration(milliseconds: 450),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          if (!listening) {
+            listening = true;
+            animation.addStatusListener((status) {
+              if (status == AnimationStatus.dismissed && mounted) {
+                setState(() => _fullscreenOpen = false);
+              }
+            });
+          }
+          return CameraFullscreenPage(imageNotifier: _imageNotifier, animation: animation, sourceRect: sourceRect);
+        },
+      ),
     );
   }
 

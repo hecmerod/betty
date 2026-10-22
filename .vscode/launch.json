@@ -52,6 +52,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/apps/betty_app/lib/main.dart",
       "cwd": "${workspaceFolder}/apps/betty_app",
+      "internalConsoleOptions": "openOnSessionStart",
       "flutterMode": "release",
     },
     {
@@ -60,6 +61,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/apps/betty_app/lib/main.dart",
       "cwd": "${workspaceFolder}/apps/betty_app",
+      "internalConsoleOptions": "openOnSessionStart",
       "flutterMode": "debug",
     },
   ]

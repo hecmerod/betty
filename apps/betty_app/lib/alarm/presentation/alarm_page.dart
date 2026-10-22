@@ -48,7 +48,7 @@ class _AlarmPageViewState extends State<AlarmPageView> with AutomaticKeepAliveCl
           children: [
             const AspectRatio(
               aspectRatio: 16 / 9,
-              child: VideoStreamWidget(cameraType: CameraType.internal),
+              child: VideoStreamWidget(cameraType: CameraType.internal, enableFullscreen: true),
             ),
             const SizedBox(height: 24),
             const AlarmMainButton(),
