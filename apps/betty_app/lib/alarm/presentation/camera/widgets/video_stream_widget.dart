@@ -1,6 +1,6 @@
-import 'package:betty_app/camera/infrastructure/camera_service.dart';
-import 'package:betty_app/camera/infrastructure/mjpeg_stream_client.dart';
-import 'package:betty_app/camera/presentation/camera_fullscreen_page.dart';
+import 'package:betty_app/alarm/infrastructure/camera_service.dart';
+import 'package:betty_app/alarm/infrastructure/mjpeg_stream_client.dart';
+import 'package:betty_app/alarm/presentation/camera_fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:typed_data';
@@ -65,11 +65,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   void _startStream() {
     _stopStream();
 
-    final url = _cameraService.getVideoStreamUrl(
-      type: widget.cameraType,
-      index: widget.cameraIndex,
-      grid: widget.grid,
-    );
+    final url = _cameraService.getVideoStreamUrl(type: widget.cameraType, index: widget.cameraIndex, grid: widget.grid);
 
     _streamSubscription = _streamClient
         .start(url: url, headers: _cameraService.getVideoStreamHeaders())

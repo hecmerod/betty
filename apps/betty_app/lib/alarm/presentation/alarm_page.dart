@@ -1,5 +1,5 @@
-import 'package:betty_app/camera/infrastructure/camera_service.dart';
-import 'package:betty_app/camera/presentation/widgets/video_stream_widget.dart';
+import 'package:betty_app/alarm/infrastructure/camera_service.dart';
+import 'package:betty_app/alarm/presentation/widgets/video_stream_widget.dart';
 import 'package:betty_app/core/navigation/presentation/routes.dart';
 import 'package:betty_app/home/application/home_page_bloc/home_page_bloc.dart';
 import 'package:betty_app/home/application/home_page_bloc/home_page_state.dart';
@@ -7,14 +7,14 @@ import 'package:betty_app/home/presentation/helpers/home_routes_to_index_mapper.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+class AlarmPage extends StatefulWidget {
+  const AlarmPage({super.key});
 
   @override
-  State<CameraPage> createState() => _CameraPageState();
+  State<AlarmPage> createState() => _AlarmPageState();
 }
 
-class _CameraPageState extends State<CameraPage> with AutomaticKeepAliveClientMixin<CameraPage> {
+class _AlarmPageState extends State<AlarmPage> with AutomaticKeepAliveClientMixin<AlarmPage> {
   @override
   bool get wantKeepAlive => true;
 

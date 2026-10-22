@@ -1,4 +1,4 @@
-import 'package:betty_app/camera/presentation/camera_page.dart';
+import 'package:betty_app/alarm/presentation/alarm_page.dart';
 import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_bloc.dart';
 import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_state.dart';
 import 'package:betty_app/home/application/home_page_bloc/home_page_bloc.dart';
@@ -71,7 +71,7 @@ class _HomePageViewBodyState extends State<_HomePageViewBody> {
             PageView(
               physics: const NeverScrollableScrollPhysics(),
               controller: _controller,
-              children: const [CameraPage(), HomePage(), MapPage()],
+              children: const [AlarmPage(), HomePage(), MapPage()],
             ),
             const Positioned(left: 0, right: 0, bottom: 0, child: HomeNavigationBar()),
           ],
