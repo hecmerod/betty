@@ -6,11 +6,15 @@ import {
   Logger,
   HttpException,
   HttpStatus,
+  MessageEvent,
+  Sse,
 } from '@nestjs/common';
+import { Observable, map } from 'rxjs';
 import { ReadSingleBmsUseCase } from '../../application/use-cases/read-single-bms.use-case';
 import { ReadAllBmsUseCase } from '../../application/use-cases/read-all-bms.use-case';
+import { WatchBmsUseCase } from '../../application/use-cases/watch-bms.use-case';
+import { BmsReading } from '../../domain/entities/bms-reading.entity';
 import { BmsReadingDto } from '../dtos/bms-reading.dto';
-import { Public } from '../../../shared/auth/presentation/decorators/public.decorator';
 
 @Controller('batteries')
 export class BmsController {
@@ -18,10 +22,29 @@ export class BmsController {
 
   constructor(
     private readonly readSingleBmsUseCase: ReadSingleBmsUseCase,
-    private readonly readAllBmsUseCase: ReadAllBmsUseCase
+    private readonly readAllBmsUseCase: ReadAllBmsUseCase,
+    private readonly watchBmsUseCase: WatchBmsUseCase
   ) {}
 
-  @Public()
+  @Sse('stream')
+  streamAllBatteries(): Observable<MessageEvent> {
+    return this.toMessageEvents(this.watchBmsUseCase.execute());
+  }
+
+  @Sse(':batteryId/stream')
+  streamBattery(
+    @Param('batteryId', ParseIntPipe) batteryId: number
+  ): Observable<MessageEvent> {
+    try {
+      return this.toMessageEvents(this.watchBmsUseCase.execute(batteryId));
+    } catch (error) {
+      throw new HttpException(
+        { statusCode: HttpStatus.BAD_REQUEST, message: error.message },
+        HttpStatus.BAD_REQUEST
+      );
+    }
+  }
+
   @Get()
   async readAllBatteries(): Promise<BmsReadingDto[]> {
     try {
@@ -41,7 +64,6 @@ export class BmsController {
     }
   }
 
-  @Public()
   @Get(':batteryId')
   async readBattery(
     @Param('batteryId', ParseIntPipe) batteryId: number
@@ -72,5 +94,13 @@ export class BmsController {
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
+  }
+
+  private toMessageEvents(
+    readings$: Observable<BmsReading>
+  ): Observable<MessageEvent> {
+    return readings$.pipe(
+      map((reading) => ({ data: reading.toJSON() as BmsReadingDto }))
+    );
   }
 }
