@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'jwt_service.dart';
@@ -29,41 +30,97 @@ class ApiService {
       uri = uri.replace(queryParameters: queryParameters);
     }
 
-    final response = await http.get(uri, headers: {..._defaultHeaders, ...?headers}).timeout(timeout);
-
-    return response;
-  }
-
-  Future<http.Response> post(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
-    final uri = Uri.parse('$baseUrl$endpoint');
     final response = await http
-        .post(uri, headers: {..._defaultHeaders, ...?headers}, body: body != null ? json.encode(body) : null)
+        .get(uri, headers: {..._defaultHeaders, ...?headers})
         .timeout(timeout);
 
     return response;
   }
 
-  Future<http.Response> put(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+  Stream<List<int>> getStream(
+    String endpoint, {
+    Map<String, String>? headers,
+  }) async* {
+    final client = http.Client();
+    try {
+      final request = http.Request('GET', Uri.parse('$baseUrl$endpoint'));
+      request.headers.addAll({..._defaultHeaders, ...?headers});
+
+      final response = await client.send(request);
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        final body = await response.stream.bytesToString();
+        throw ApiException(
+          statusCode: response.statusCode,
+          message: 'Error en la petición GET $endpoint',
+          body: body,
+        );
+      }
+
+      yield* response.stream;
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<http.Response> post(
+    String endpoint, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
     final uri = Uri.parse('$baseUrl$endpoint');
     final response = await http
-        .put(uri, headers: {..._defaultHeaders, ...?headers}, body: body != null ? json.encode(body) : null)
+        .post(
+          uri,
+          headers: {..._defaultHeaders, ...?headers},
+          body: body != null ? json.encode(body) : null,
+        )
         .timeout(timeout);
 
     return response;
   }
 
-  Future<http.Response> patch(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+  Future<http.Response> put(
+    String endpoint, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
     final uri = Uri.parse('$baseUrl$endpoint');
     final response = await http
-        .patch(uri, headers: {..._defaultHeaders, ...?headers}, body: body != null ? json.encode(body) : null)
+        .put(
+          uri,
+          headers: {..._defaultHeaders, ...?headers},
+          body: body != null ? json.encode(body) : null,
+        )
         .timeout(timeout);
 
     return response;
   }
 
-  Future<http.Response> delete(String endpoint, {Map<String, String>? headers}) async {
+  Future<http.Response> patch(
+    String endpoint, {
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
     final uri = Uri.parse('$baseUrl$endpoint');
-    final response = await http.delete(uri, headers: {..._defaultHeaders, ...?headers}).timeout(timeout);
+    final response = await http
+        .patch(
+          uri,
+          headers: {..._defaultHeaders, ...?headers},
+          body: body != null ? json.encode(body) : null,
+        )
+        .timeout(timeout);
+
+    return response;
+  }
+
+  Future<http.Response> delete(
+    String endpoint, {
+    Map<String, String>? headers,
+  }) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await http
+        .delete(uri, headers: {..._defaultHeaders, ...?headers})
+        .timeout(timeout);
 
     return response;
   }
@@ -74,7 +131,11 @@ class ApiService {
     Map<String, String>? queryParameters,
     required T Function(Map<String, dynamic>) fromJson,
   }) async {
-    final response = await get(endpoint, headers: headers, queryParameters: queryParameters);
+    final response = await get(
+      endpoint,
+      headers: headers,
+      queryParameters: queryParameters,
+    );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final data = json.decode(response.body);
@@ -114,7 +175,11 @@ class ApiException implements Exception {
   final String message;
   final String body;
 
-  ApiException({required this.statusCode, required this.message, required this.body});
+  ApiException({
+    required this.statusCode,
+    required this.message,
+    required this.body,
+  });
 
   @override
   String toString() => 'ApiException($statusCode): $message';

@@ -1,4 +1,4 @@
-import 'package:betty_app/home/presentation/widgets/dashboard/battery_button.dart';
+import 'package:betty_app/home/presentation/widgets/dashboard/batteries/battery_button.dart';
 import 'package:betty_app/home/presentation/widgets/dashboard/device_toggles.dart';
 import 'package:flutter/material.dart';
 

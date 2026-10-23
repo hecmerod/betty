@@ -1,4 +1,7 @@
 import 'package:betty_app/alarm/presentation/alarm_page.dart';
+import 'package:betty_app/batteries/domain/ports/batteries_port.dart';
+import 'package:betty_app/home/application/home_batteries_bloc/home_batteries_bloc.dart';
+import 'package:betty_app/home/application/home_batteries_bloc/home_batteries_event.dart';
 import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_bloc.dart';
 import 'package:betty_app/home/application/home_navigation_bloc/home_navigation_state.dart';
 import 'package:betty_app/home/application/home_page_bloc/home_page_bloc.dart';
@@ -20,6 +23,11 @@ class HomePageView extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => HomeNavigationBloc()),
         BlocProvider(create: (context) => HomePageBloc()),
+        BlocProvider(
+          create: (context) =>
+              HomeBatteriesBloc(batteriesPort: context.read<BatteriesPort>())
+                ..add(const LoadHomeBatteries()),
+        ),
       ],
       child: const _HomePageViewBody(),
     );
@@ -34,7 +42,9 @@ class _HomePageViewBody extends StatefulWidget {
 }
 
 class _HomePageViewBodyState extends State<_HomePageViewBody> {
-  final PageController _controller = PageController(initialPage: HomePageState.initialPage);
+  final PageController _controller = PageController(
+    initialPage: HomePageState.initialPage,
+  );
   int _page = HomePageState.initialPage;
 
   @override
@@ -54,7 +64,11 @@ class _HomePageViewBodyState extends State<_HomePageViewBody> {
 
     pageDistance > 1
         ? _controller.jumpToPage(destination)
-        : await _controller.animateToPage(destination, duration: const Duration(milliseconds: 300), curve: Curves.ease);
+        : await _controller.animateToPage(
+            destination,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.ease,
+          );
 
     if (!mounted || bloc.isClosed || _page != destination) return;
     bloc.add(PageTransitionFinished(destination));
@@ -65,7 +79,8 @@ class _HomePageViewBodyState extends State<_HomePageViewBody> {
     return Scaffold(
       body: BlocListener<HomeNavigationBloc, HomeNavigationState>(
         listenWhen: (previous, current) => previous.route != current.route,
-        listener: (context, state) => _goToPage(HomeRoutesToIndexMapper.getIndexFromRoute(state.route)),
+        listener: (context, state) =>
+            _goToPage(HomeRoutesToIndexMapper.getIndexFromRoute(state.route)),
         child: Stack(
           children: [
             PageView(
@@ -73,7 +88,12 @@ class _HomePageViewBodyState extends State<_HomePageViewBody> {
               controller: _controller,
               children: const [AlarmPage(), HomePage(), MapPage()],
             ),
-            const Positioned(left: 0, right: 0, bottom: 0, child: HomeNavigationBar()),
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: HomeNavigationBar(),
+            ),
           ],
         ),
       ),
