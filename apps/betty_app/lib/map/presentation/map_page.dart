@@ -51,6 +51,8 @@ class _MapPageViewState extends State<MapPageView>
   CircleAnnotationManager? _circleManager;
   PointAnnotationManager? _pointManager;
   bool _hasInitialCamera = false;
+  bool _styleLoaded = false;
+  Future<void>? _terrainSetup;
   int _annotationSync = 0;
 
   @override
@@ -90,8 +92,21 @@ class _MapPageViewState extends State<MapPageView>
     );
   }
 
-  Future<void> _enableTerrain(MapboxMap mapboxMap) async {
+  Future<void> _enableTerrain(MapboxMap mapboxMap) {
+    final pending = _terrainSetup;
+    if (pending != null) return pending;
+
+    final setup = _applyTerrain(mapboxMap);
+    _terrainSetup = setup;
+    return setup.whenComplete(() {
+      if (identical(_terrainSetup, setup)) _terrainSetup = null;
+    });
+  }
+
+  Future<void> _applyTerrain(MapboxMap mapboxMap) async {
+    if (_mapboxMap != mapboxMap) return;
     if (!await mapboxMap.styleSourceExists(_terrainSourceId)) {
+      if (_mapboxMap != mapboxMap) return;
       await mapboxMap.addSource(
         RasterDemSource(
           id: _terrainSourceId,
@@ -101,6 +116,7 @@ class _MapPageViewState extends State<MapPageView>
         ),
       );
     }
+    if (_mapboxMap != mapboxMap) return;
     await mapboxMap.setStyleTerrain(
       jsonEncode({'source': _terrainSourceId, 'exaggeration': 1.3}),
     );
@@ -108,7 +124,7 @@ class _MapPageViewState extends State<MapPageView>
 
   Future<void> _onMapCreated(MapboxMap mapboxMap) async {
     _mapboxMap = mapboxMap;
-    await _enableTerrain(mapboxMap);
+    if (_styleLoaded) await _enableTerrain(mapboxMap);
 
     await mapboxMap.logo.updateSettings(
       LogoSettings(position: OrnamentPosition.BOTTOM_LEFT, marginBottom: 8),
@@ -132,6 +148,8 @@ class _MapPageViewState extends State<MapPageView>
     _mapboxMap = null;
     _circleManager = null;
     _pointManager = null;
+    _styleLoaded = false;
+    _terrainSetup = null;
   }
 
   Future<void> _syncAnnotations(MapState state) async {
@@ -285,6 +303,7 @@ class _MapPageViewState extends State<MapPageView>
                         ),
                         onMapCreated: _onMapCreated,
                         onStyleLoadedListener: (_) {
+                          _styleLoaded = true;
                           final map = _mapboxMap;
                           if (map != null) _enableTerrain(map);
                         },
