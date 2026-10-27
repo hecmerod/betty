@@ -19,10 +19,15 @@ void main() async {
   await NotificationService.instance.initialize();
 
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark),
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
   );
 
-  runApp(MultiRepositoryProvider(providers: providers, child: const BettyApp()));
+  runApp(
+    MultiRepositoryProvider(providers: providers, child: const BettyApp()),
+  );
 }
 
 class BettyApp extends StatelessWidget {
@@ -35,8 +40,10 @@ class BettyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       navigatorKey: Navigation.instance.navigatorKey,
       scaffoldMessengerKey: Navigation.instance.scaffoldMessengerKey,
-      builder: (context, child) =>
-          NavigationRoot(navigatorKey: Navigation.instance.navigatorKey, child: child ?? const SizedBox()),
+      builder: (context, child) => NavigationRoot(
+        navigatorKey: Navigation.instance.navigatorKey,
+        child: child ?? const SizedBox(),
+      ),
       home: HomePageView(),
     );
   }

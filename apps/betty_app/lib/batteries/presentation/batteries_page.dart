@@ -25,30 +25,27 @@ class BatteriesPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return BlocBuilder<BatteriesBloc, BatteriesState>(
+      buildWhen: (previous, current) =>
+          previous.readings.isEmpty != current.readings.isEmpty ||
+          previous.isLoading != current.isLoading ||
+          previous.errorMessage != current.errorMessage,
+      builder: (context, state) {
+        if (state.readings.isEmpty) return const BatteriesPlaceholder();
 
-      body: BlocBuilder<BatteriesBloc, BatteriesState>(
-        buildWhen: (previous, current) =>
-            previous.readings.isEmpty != current.readings.isEmpty || previous.isLoading != current.isLoading,
-        builder: (context, state) {
-          if (state.readings.isEmpty) return const BatteriesPlaceholder();
+        final double gap = MediaQuery.sizeOf(context).height / 120;
 
-          final double height = MediaQuery.sizeOf(context).height;
-          final EdgeInsets cardInsets = EdgeInsets.symmetric(horizontal: height / 40);
+        return Column(
+          children: [
+            if (state.isLoading) const LinearProgressIndicator(minHeight: 2),
 
-          return Column(
-            children: [
-              SizedBox(height: height / 10),
-              if (state.isLoading) const LinearProgressIndicator(minHeight: 2),
-              if (state.errorMessage != null) const BatteriesErrorBanner(),
-              Padding(padding: cardInsets, child: const BatteryReadingCard(index: 0)),
-              SizedBox(height: height / 20),
-              Padding(padding: cardInsets, child: const BatteryReadingCard(index: 1)),
-            ],
-          );
-        },
-      ),
+            if (state.errorMessage != null) const BatteriesErrorBanner(),
+            const BatteryReadingCard(index: 0),
+            SizedBox(height: gap),
+            const BatteryReadingCard(index: 1),
+          ],
+        );
+      },
     );
   }
 }

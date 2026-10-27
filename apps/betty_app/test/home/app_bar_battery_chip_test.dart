@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('loads both batteries once and shows their combined charge', (tester) async {
+  testWidgets('loads both batteries once and shows their combined charge', (
+    tester,
+  ) async {
     var calls = 0;
     final port = _FakeBatteriesPort(
       onReadAll: () async {
@@ -25,8 +27,11 @@ void main() {
         value: port,
         child: BlocProvider(
           create: (context) =>
-              HomeBatteriesBloc(batteriesPort: context.read<BatteriesPort>())..add(const LoadHomeBatteries()),
-          child: const MaterialApp(home: Scaffold(body: BatteryPercentChip())),
+              HomeBatteriesBloc(batteriesPort: context.read<BatteriesPort>())
+                ..add(const LoadHomeBatteries()),
+          child: MaterialApp(
+            home: Scaffold(body: BatteryPercentChip(onTap: () {})),
+          ),
         ),
       ),
     );
@@ -62,7 +67,11 @@ class _FakeBatteriesPort implements BatteriesPort {
   Stream<BatteryReading> streamBattery(int batteryId) => const Stream.empty();
 }
 
-BatteryReading _reading({required int batteryId, required double remainingCapacity, required bool isCharging}) {
+BatteryReading _reading({
+  required int batteryId,
+  required double remainingCapacity,
+  required bool isCharging,
+}) {
   return BatteryReading(
     deviceAddress: 'A5:C2:37:2F:23:CE',
     batteryId: batteryId,

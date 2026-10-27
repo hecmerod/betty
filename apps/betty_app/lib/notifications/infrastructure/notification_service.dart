@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../domain/notification_model.dart';
 import 'repositories/notification_repository.dart';
+import 'package:betty_app/home/application/home_surface_bloc/home_surface_bloc.dart';
+import 'package:betty_app/home/application/home_surface_bloc/home_surface_event.dart';
+import 'package:betty_app/home/application/home_surface_bloc/home_surface_state.dart';
+
 import '../../core/navigation/navigation.dart';
-import '../../core/navigation/application/navigation_bloc/navigation_bloc.dart';
-import '../../core/navigation/application/navigation_bloc/navigation_event.dart';
-import '../../core/navigation/presentation/routes.dart';
 import '../../shared/services/api_service.dart';
 
 @pragma('vm:entry-point')
@@ -36,7 +37,11 @@ class NotificationService {
   Future<void> initialize() async {
     await _loadUnreadCount();
 
-    final settings = await _messaging.requestPermission(alert: true, badge: true, sound: true);
+    final settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       _token = await _messaging.getToken();
@@ -50,7 +55,10 @@ class NotificationService {
   }
 
   Future<void> _registerToken(String fcmToken) async {
-    await _apiService.post('/notifications/register', body: {'token': fcmToken, 'platform': 'flutter'});
+    await _apiService.post(
+      '/notifications/register',
+      body: {'token': fcmToken, 'platform': 'flutter'},
+    );
   }
 
   Future<void> _loadUnreadCount() async {
@@ -81,7 +89,9 @@ class NotificationService {
       onTap: () {
         final context = Navigation.instance.context;
         if (context != null) {
-          context.read<NavigationBloc>().add(const NavigateToPage(Routes.notifications));
+          context.read<HomeSurfaceBloc>().add(
+            const ShowHomeSurface(HomeSurface.notifications),
+          );
         }
       },
     );

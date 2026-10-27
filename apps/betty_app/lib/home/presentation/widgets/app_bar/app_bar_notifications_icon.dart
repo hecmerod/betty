@@ -1,22 +1,25 @@
-import 'package:betty_app/core/navigation/application/navigation_bloc/navigation_bloc.dart';
-import 'package:betty_app/core/navigation/application/navigation_bloc/navigation_event.dart';
-import 'package:betty_app/core/navigation/presentation/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AppBarNotificationsIcon extends StatefulWidget {
-  const AppBarNotificationsIcon({super.key});
+class AppBarNotificationsIcon extends StatelessWidget {
+  const AppBarNotificationsIcon({
+    super.key,
+    required this.onPressed,
+    this.selected = false,
+  });
 
-  @override
-  State<AppBarNotificationsIcon> createState() => _AppBarNotificationsIconState();
-}
+  final VoidCallback onPressed;
+  final bool selected;
 
-class _AppBarNotificationsIconState extends State<AppBarNotificationsIcon> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.notifications_outlined, size: 30, color: Color(0xFF1E1E1E)),
-      onPressed: () => context.read<NavigationBloc>().add(const NavigateToPage(Routes.notifications)),
+      tooltip: 'Notificaciones',
+      icon: Icon(
+        selected ? Icons.notifications : Icons.notifications_outlined,
+        size: 30,
+        color: const Color(0xFF1E1E1E),
+      ),
+      onPressed: onPressed,
     );
   }
 }
