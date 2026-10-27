@@ -1,3 +1,5 @@
+import 'package:betty_app/batteries/application/batteries_bloc/batteries_bloc.dart';
+import 'package:betty_app/batteries/domain/ports/batteries_port.dart';
 import 'package:betty_app/batteries/presentation/batteries_page.dart';
 import 'package:betty_app/home/application/home_surface_bloc/home_surface_bloc.dart';
 import 'package:betty_app/home/application/home_surface_bloc/home_surface_state.dart';
@@ -8,6 +10,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeSurfaceBody extends StatelessWidget {
   const HomeSurfaceBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          BatteriesBloc(batteriesPort: context.read<BatteriesPort>()),
+      child: const _HomeSurfacePages(),
+    );
+  }
+}
+
+class _HomeSurfacePages extends StatelessWidget {
+  const _HomeSurfacePages();
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,12 @@ abstract class BatteriesEvent extends Equatable {
 }
 
 class WatchBatteries extends BatteriesEvent {
-  const WatchBatteries();
+  const WatchBatteries({this.force = false});
+
+  final bool force;
+
+  @override
+  List<Object?> get props => [force];
 }
 
 class BatteryReadingUpdated extends BatteriesEvent {

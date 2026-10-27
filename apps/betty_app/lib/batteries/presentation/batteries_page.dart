@@ -13,11 +13,42 @@ class BatteriesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (_hasBatteriesBloc(context)) return const _ExistingBatteriesPage();
+
     return BlocProvider(
-      create: (context) => BatteriesBloc(batteriesPort: context.read<BatteriesPort>())..add(const WatchBatteries()),
+      create: (context) =>
+          BatteriesBloc(batteriesPort: context.read<BatteriesPort>())
+            ..add(const WatchBatteries()),
       child: const BatteriesPageView(),
     );
   }
+}
+
+bool _hasBatteriesBloc(BuildContext context) {
+  try {
+    context.read<BatteriesBloc>();
+    return true;
+  } on ProviderNotFoundException {
+    return false;
+  }
+}
+
+class _ExistingBatteriesPage extends StatefulWidget {
+  const _ExistingBatteriesPage();
+
+  @override
+  State<_ExistingBatteriesPage> createState() => _ExistingBatteriesPageState();
+}
+
+class _ExistingBatteriesPageState extends State<_ExistingBatteriesPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<BatteriesBloc>().add(const WatchBatteries());
+  }
+
+  @override
+  Widget build(BuildContext context) => const BatteriesPageView();
 }
 
 class BatteriesPageView extends StatelessWidget {

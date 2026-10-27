@@ -44,7 +44,7 @@ class BatteriesPlaceholder extends StatelessWidget {
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () => context.read<BatteriesBloc>().add(
-                      const WatchBatteries(),
+                      const WatchBatteries(force: true),
                     ),
                     child: const Text('Reintentar'),
                   ),

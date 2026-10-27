@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:betty_app/batteries/domain/entities/battery_reading.dart';
 import 'package:betty_app/batteries/domain/ports/batteries_port.dart';
 import 'package:betty_app/home/application/home_batteries_bloc/home_batteries_bloc.dart';
@@ -61,18 +63,90 @@ void main() {
       expect(find.text('Batería 1'), findsNothing);
     },
   );
+
+  testWidgets('keeps the batteries stream open when leaving and returning', (
+    tester,
+  ) async {
+    var reads = 0;
+    var streams = 0;
+    final updates = StreamController<BatteryReading>();
+    addTearDown(updates.close);
+
+    final port = _FakeBatteriesPort(
+      onReadAll: () async {
+        reads++;
+        return [_reading(remainingCapacity: 60)];
+      },
+      onStreamAll: () {
+        streams++;
+        return updates.stream;
+      },
+    );
+
+    await tester.pumpWidget(
+      RepositoryProvider<BatteriesPort>.value(
+        value: port,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => HomeSurfaceBloc()),
+            BlocProvider(
+              create: (context) => HomeBatteriesBloc(
+                batteriesPort: context.read<BatteriesPort>(),
+              )..add(const LoadHomeBatteries()),
+            ),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(appBar: CustomAppBar(), body: HomeSurfaceBody()),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(reads, 1);
+    expect(streams, 0);
+
+    await tester.tap(find.text('60%'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text('Batería 1'), findsOneWidget);
+    expect(reads, 2);
+    expect(streams, 1);
+
+    await tester.tap(find.byKey(const Key('homeLogo')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    updates.add(_reading(remainingCapacity: 40));
+    await tester.pump();
+
+    await tester.tap(find.text('60%'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text('Batería 1'), findsOneWidget);
+    expect(find.text('40%'), findsOneWidget);
+    expect(reads, 2);
+    expect(streams, 1);
+
+    await tester.pumpWidget(const SizedBox());
+  });
 }
 
 class _FakeBatteriesPort implements BatteriesPort {
-  _FakeBatteriesPort({required this.onReadAll});
+  _FakeBatteriesPort({required this.onReadAll, this.onStreamAll});
 
   final Future<List<BatteryReading>> Function() onReadAll;
+  final Stream<BatteryReading> Function()? onStreamAll;
 
   @override
   Future<List<BatteryReading>> readAllBatteries() => onReadAll();
 
   @override
-  Stream<BatteryReading> streamAllBatteries() => const Stream.empty();
+  Stream<BatteryReading> streamAllBatteries() =>
+      onStreamAll?.call() ?? const Stream.empty();
 
   @override
   Future<BatteryReading> readBattery(int batteryId) {

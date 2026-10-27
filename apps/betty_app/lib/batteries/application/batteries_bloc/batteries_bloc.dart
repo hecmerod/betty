@@ -10,6 +10,8 @@ class BatteriesBloc extends Bloc<BatteriesEvent, BatteriesState> {
   final BatteriesPort _batteriesPort;
   StreamSubscription<BatteryReading>? _subscription;
   int _watchGeneration = 0;
+  bool _streamOpen = false;
+  bool _watchInFlight = false;
 
   BatteriesBloc({required BatteriesPort batteriesPort})
     : _batteriesPort = batteriesPort,
@@ -23,20 +25,25 @@ class BatteriesBloc extends Bloc<BatteriesEvent, BatteriesState> {
     WatchBatteries event,
     Emitter<BatteriesState> emit,
   ) async {
+    // Reopening the page must not drop a stream that is already open.
+    if (!event.force && (_streamOpen || _watchInFlight)) return;
+
     final generation = ++_watchGeneration;
+    _watchInFlight = true;
+    _streamOpen = false;
     final previous = _subscription;
     _subscription = null;
     if (previous != null) unawaited(previous.cancel());
-    if (emit.isDone || generation != _watchGeneration) return;
+    if (!_isCurrent(emit, generation)) return;
 
     emit(state.copyWith(isLoading: true));
 
     try {
       final readings = await _batteriesPort.readAllBatteries();
-      if (emit.isDone || generation != _watchGeneration) return;
+      if (!_isCurrent(emit, generation)) return;
       emit(state.copyWith(readings: _sorted(readings), isLoading: false));
     } catch (_) {
-      if (emit.isDone || generation != _watchGeneration) return;
+      if (!_isCurrent(emit, generation)) return;
       emit(
         state.copyWith(
           isLoading: false,
@@ -45,18 +52,26 @@ class BatteriesBloc extends Bloc<BatteriesEvent, BatteriesState> {
       );
     }
 
-    if (emit.isDone || generation != _watchGeneration) return;
+    if (!_isCurrent(emit, generation)) return;
     try {
       _subscription = _batteriesPort.streamAllBatteries().listen(
         (reading) {
-          if (!isClosed) add(BatteryReadingUpdated(reading));
+          if (!isClosed && generation == _watchGeneration) {
+            add(BatteryReadingUpdated(reading));
+          }
         },
         onError: (Object _, StackTrace _) {
-          if (!isClosed) add(const BatteriesStreamFailed());
+          _onStreamClosed(generation);
+          if (!isClosed && generation == _watchGeneration) {
+            add(const BatteriesStreamFailed());
+          }
         },
+        onDone: () => _onStreamClosed(generation),
       );
     } catch (_) {
-      if (emit.isDone || generation != _watchGeneration) return;
+      if (!_isCurrent(emit, generation)) return;
+      _watchInFlight = false;
+      _streamOpen = false;
       if (state.errorMessage != null) return;
       emit(
         state.copyWith(
@@ -64,7 +79,23 @@ class BatteriesBloc extends Bloc<BatteriesEvent, BatteriesState> {
           errorMessage: 'Error al escuchar las baterías',
         ),
       );
+      return;
     }
+
+    if (!_isCurrent(emit, generation) || _subscription == null) return;
+    _streamOpen = true;
+    _watchInFlight = false;
+  }
+
+  bool _isCurrent(Emitter<BatteriesState> emit, int generation) {
+    return !emit.isDone && generation == _watchGeneration;
+  }
+
+  void _onStreamClosed(int generation) {
+    if (generation != _watchGeneration) return;
+    _streamOpen = false;
+    _watchInFlight = false;
+    _subscription = null;
   }
 
   void _onBatteryReadingUpdated(
@@ -94,7 +125,11 @@ class BatteriesBloc extends Bloc<BatteriesEvent, BatteriesState> {
   @override
   Future<void> close() {
     _watchGeneration++;
-    _subscription?.cancel();
+    _streamOpen = false;
+    _watchInFlight = false;
+    final subscription = _subscription;
+    _subscription = null;
+    subscription?.cancel();
     return super.close();
   }
 }

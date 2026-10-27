@@ -41,8 +41,9 @@ class BatteriesErrorBanner extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () =>
-                      context.read<BatteriesBloc>().add(const WatchBatteries()),
+                  onPressed: () => context.read<BatteriesBloc>().add(
+                    const WatchBatteries(force: true),
+                  ),
                   child: const Text('Reintentar'),
                 ),
               ],
