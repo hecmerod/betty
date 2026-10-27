@@ -71,11 +71,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
     if (_streamSubscription != null) return;
 
     final camera = context.read<CameraPort>();
-    final url = camera.getVideoStreamUrl(
-      type: widget.cameraType,
-      index: widget.cameraIndex,
-      grid: widget.grid,
-    );
+    final url = camera.getVideoStreamUrl(type: widget.cameraType, index: widget.cameraIndex, grid: widget.grid);
 
     _streamSubscription = _streamClient
         .start(url: url, headers: camera.getVideoStreamHeaders())
@@ -151,9 +147,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<HomePageBloc, HomePageState, bool>(
-      selector: (state) =>
-          state.activePage ==
-          HomeRoutesToIndexMapper.getIndexFromRoute(Routes.camera),
+      selector: (state) => state.activePage == HomeRoutesToIndexMapper.getIndexFromRoute(Routes.alarm),
       builder: (context, cameraPageActive) {
         _syncStream(cameraPageActive);
         return _buildStream(context);
@@ -182,10 +176,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       return content;
     }
 
-    return GestureDetector(
-      onTap: _openFullscreen,
-      child: _fullscreenOpen ? const SizedBox.expand() : content,
-    );
+    return GestureDetector(onTap: _openFullscreen, child: _fullscreenOpen ? const SizedBox.expand() : content);
   }
 
   Future<void> _openFullscreen() async {

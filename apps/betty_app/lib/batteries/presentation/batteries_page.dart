@@ -16,9 +16,7 @@ class BatteriesPage extends StatelessWidget {
     if (_hasBatteriesBloc(context)) return const _ExistingBatteriesPage();
 
     return BlocProvider(
-      create: (context) =>
-          BatteriesBloc(batteriesPort: context.read<BatteriesPort>())
-            ..add(const WatchBatteries()),
+      create: (context) => BatteriesBloc(batteriesPort: context.read<BatteriesPort>())..add(const WatchBatteries()),
       child: const BatteriesPageView(),
     );
   }
@@ -66,11 +64,12 @@ class BatteriesPageView extends StatelessWidget {
 
         final double gap = MediaQuery.sizeOf(context).height / 120;
 
+        if (state.errorMessage != null) return const BatteriesErrorBanner();
+
         return Column(
           children: [
             if (state.isLoading) const LinearProgressIndicator(minHeight: 2),
 
-            if (state.errorMessage != null) const BatteriesErrorBanner(),
             const BatteryReadingCard(index: 0),
             SizedBox(height: gap),
             const BatteryReadingCard(index: 1),
