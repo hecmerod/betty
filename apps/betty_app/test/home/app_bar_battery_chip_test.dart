@@ -2,7 +2,7 @@ import 'package:betty_app/batteries/domain/entities/battery_reading.dart';
 import 'package:betty_app/batteries/domain/ports/batteries_port.dart';
 import 'package:betty_app/home/application/home_batteries_bloc/home_batteries_bloc.dart';
 import 'package:betty_app/home/application/home_batteries_bloc/home_batteries_event.dart';
-import 'package:betty_app/home/presentation/widgets/dashboard/batteries/battery_button.dart';
+import 'package:betty_app/home/presentation/widgets/app_bar/batteries/battery_percent_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,14 +26,15 @@ void main() {
         child: BlocProvider(
           create: (context) =>
               HomeBatteriesBloc(batteriesPort: context.read<BatteriesPort>())..add(const LoadHomeBatteries()),
-          child: const MaterialApp(home: Scaffold(body: BatteryButton())),
+          child: const MaterialApp(home: Scaffold(body: BatteryPercentChip())),
         ),
       ),
     );
     await tester.pump();
 
     expect(find.text('60%'), findsOneWidget);
-    expect(find.byIcon(Icons.battery_charging_full), findsOneWidget);
+    expect(find.text('Baterías'), findsNothing);
+    expect(find.byIcon(Icons.battery_charging_full), findsNothing);
     expect(calls, 1);
 
     await tester.pump();

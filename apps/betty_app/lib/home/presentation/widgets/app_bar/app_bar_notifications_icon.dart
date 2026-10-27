@@ -15,7 +15,7 @@ class _AppBarNotificationsIconState extends State<AppBarNotificationsIcon> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.notifications, size: 35),
+      icon: const Icon(Icons.notifications_outlined, size: 30, color: Color(0xFF1E1E1E)),
       onPressed: () => context.read<NavigationBloc>().add(const NavigateToPage(Routes.notifications)),
     );
   }
